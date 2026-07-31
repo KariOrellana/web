@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+  Portada de Extensión Digital.
+  Página autocontenida: HTML (estructura) + CSS (aspecto) en un solo archivo,
+  sin librerías externas. Así carga rápido incluso con mala conexión (requisito RNF5).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extensión Digital — herramientas digitales a medida</title>
+<meta name="description" content="Extensión Digital crea asistentes y herramientas interactivas a medida, que se usan desde un link, sin instalar nada.">
+
+<style>
+  /* Variables de color: se definen una vez y se reutilizan en toda la hoja. */
+  :root{
+    --bg:#f6f4ef; --card:#ffffff; --ink:#2d2a26; --muted:#8a8378;
+    --accent:#3e7a5e; --accent-soft:#e3efe8; --gold:#c9a24b; --line:#e8e3da;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:Georgia,'Times New Roman',serif;
+    background:var(--bg); color:var(--ink); line-height:1.6;
+  }
+
+  /* Cabecera con el nombre y la frase principal */
+  header{
+    background:var(--accent); color:#fff;
+    padding:60px 20px 52px; text-align:center;
+  }
+  header h1{font-size:2.1rem; font-weight:normal; letter-spacing:.5px;}
+  header .lema{
+    margin-top:12px; font-size:1.05rem; font-style:italic;
+    opacity:.9; max-width:34rem; margin-left:auto; margin-right:auto;
+  }
+
+  main{max-width:800px; margin:0 auto; padding:40px 20px 24px;}
+  section{margin-bottom:34px;}
+  h2{
+    font-size:1.2rem; color:var(--accent); margin-bottom:12px;
+    font-weight:normal; letter-spacing:.3px;
+  }
+  p{margin-bottom:12px;}
+  p.destacado{font-size:1.08rem;}
+
+  /* Las tres tarjetas de "qué hago" */
+  .tarjetas{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  .tarjeta{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:10px; padding:20px;
+  }
+  .tarjeta h3{font-size:1rem; margin-bottom:8px; color:var(--ink);}
+  .tarjeta p{font-size:.94rem; color:#4a463f; margin-bottom:0;}
+
+  /* Bloque de contacto, destacado con la línea dorada */
+  .contacto{
+    background:var(--card); border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:0 10px 10px 0; padding:20px 22px;
+  }
+  .contacto a{color:var(--accent);}
+
+  footer{
+    text-align:center; padding:26px 20px 40px;
+    font-size:.82rem; color:var(--muted);
+  }
+
+  /* En pantallas pequeñas (móvil), la cabecera ocupa menos alto */
+  @media (max-width:600px){
+    header{padding:42px 18px 36px;}
+    header h1{font-size:1.7rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌱 Extensión Digital</h1>
+  <p class="lema">Herramientas digitales a medida para quienes trabajan en terreno.</p>
+</header>
+
+<main>
+
+  <section>
+    <p class="destacado">
+      Creo <strong>artefactos digitales</strong>: asistentes y herramientas interactivas
+      pensadas para una tarea concreta y para una persona concreta.
+    </p>
+    <p>
+      Cada artefacto se entrega como <strong>un link</strong>. Se abre en el móvil o en el
+      ordenador, no hay que instalar nada, no hay que crear una cuenta, y funciona
+      también donde la conexión es mala.
+    </p>
+  </section>
+
+  <section>
+    <h2>Qué puedo construir</h2>
+    <div class="tarjetas">
+      <div class="tarjeta">
+        <h3>Asistentes con IA</h3>
+        <p>Un ayudante que responde dudas sobre tu trabajo, con el lenguaje y el contexto de tu rubro.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>Herramientas interactivas</h3>
+        <p>Calculadoras, registros, formularios y cuadernos de campo adaptados a cómo trabajas de verdad.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>A tu medida</h3>
+        <p>Cada herramienta se diseña para tu caso. Sin funciones de sobra ni pantallas que no usarás.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cómo funciona</h2>
+    <p>
+      Conversamos sobre la tarea que te quita tiempo. Construyo una primera versión sencilla,
+      la pruebas de verdad en tu día a día, y la ajustamos con lo que aprendas usándola.
+    </p>
+  </section>
+
+  <section>
+    <h2>Hablemos</h2>
+    <div class="contacto">
+      <!-- TODO: añadir aquí el correo de contacto cuando esté decidido. -->
+      <p style="margin-bottom:0">
+        ¿Tienes una tarea repetitiva que te gustaría simplificar?
+        Estoy preparando el canal de contacto — muy pronto podrás escribirme desde aquí.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Extensión Digital · extensiondigital.cl
+</footer>
+
+</body>
+</html>

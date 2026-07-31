@@ -1,0 +1,7 @@
+# Archivos del sistema (macOS)
+.DS_Store
+
+# Secretos — nunca deben subirse, y menos a un repo público
+.env
+*.key
+*.pem

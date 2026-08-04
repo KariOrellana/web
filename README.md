@@ -7,7 +7,7 @@ GitHub Pages, bajo el dominio `extensiondigital.cl`.
 
 | Archivo | Qué es |
 |---------|--------|
-| `index.html` | Portada de Extensión Digital |
+| `index.html` | Portada de Extensión Digital. Diseño e identidad visual documentados en el repositorio privado `AED` |
 
 ## Importante
 

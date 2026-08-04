@@ -89,6 +89,22 @@
   .seccion p{max-width:58ch; margin-bottom:12px;}
   .destacado{font-weight:700; margin-bottom:0;}
 
+  /* ---------- Tarjetas ---------- */
+  .intro{color:#3D6270; max-width:56ch;}
+  .tarjetas{
+    display:grid; gap:16px; margin-top:24px;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .tarjeta{
+    background:#fff; border:1px solid var(--linea);
+    border-radius:14px; padding:24px;
+  }
+  .tarjeta h3{
+    font-size:17px; font-weight:700; color:var(--azul);
+    margin:12px 0 7px;
+  }
+  .tarjeta p{font-size:15px; margin:0; max-width:none;}
+
   /* En móvil el titular baja de tamaño y el adorno se encoge,
      para que nunca se meta debajo del texto. */
   @media (max-width:620px){
@@ -146,6 +162,46 @@
     <p class="destacado">
       Casi todas se pueden automatizar, en tu trabajo o en tu vida personal.
     </p>
+  </div>
+</section>
+
+<section class="seccion crema">
+  <div class="contenido">
+    <h2>Construyamos en conjunto</h2>
+    <p class="intro">Dos tipos de herramienta, siempre pensadas para tu caso concreto.</p>
+
+    <div class="tarjetas">
+
+      <article class="tarjeta">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3FB5B1"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 4H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3v4l5-4h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+          <circle cx="8.5"  cy="10.5" r=".9" fill="#3FB5B1" stroke="none"/>
+          <circle cx="12"   cy="10.5" r=".9" fill="#3FB5B1" stroke="none"/>
+          <circle cx="15.5" cy="10.5" r=".9" fill="#3FB5B1" stroke="none"/>
+        </svg>
+        <h3>Asistentes que responden por ti</h3>
+        <p>
+          Un ayudante que contesta las dudas de siempre (las de tus clientes o las tuyas)
+          con el lenguaje y el contexto de tu trabajo.
+        </p>
+      </article>
+
+      <article class="tarjeta">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E8442B"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 4h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3"/>
+          <rect x="9" y="2" width="6" height="4" rx="1.2"/>
+          <path d="M8.6 13.4l2.3 2.3 4.5-4.5"/>
+        </svg>
+        <h3>Herramientas que hacen la tarea</h3>
+        <p>
+          Calculadoras, seguimiento de hábitos, cuadernos de campo, formularios.
+          Lo que hoy haces a mano o en un Excel que se te queda corto.
+        </p>
+      </article>
+
+    </div>
   </div>
 </section>
 

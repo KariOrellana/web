@@ -78,6 +78,17 @@
     font-size:16px; color:#3D6270; max-width:44ch; margin-top:18px;
   }
 
+  /* ---------- Secciones de contenido ---------- */
+  .blanca{background:#fff;}
+  .crema{background:var(--crema);}
+
+  h2{
+    font-size:27px; font-weight:800; letter-spacing:-.02em;
+    color:var(--azul); margin-bottom:12px;
+  }
+  .seccion p{max-width:58ch; margin-bottom:12px;}
+  .destacado{font-weight:700; margin-bottom:0;}
+
   /* En móvil el titular baja de tamaño y el adorno se encoge,
      para que nunca se meta debajo del texto. */
   @media (max-width:620px){
@@ -85,6 +96,7 @@
     .cabecera{padding:40px 0 56px;}
     .cabecera h1{font-size:34px;}
     .cabecera-piedras{width:200px; opacity:.7;}
+    h2{font-size:23px;}
   }
 </style>
 </head>
@@ -123,6 +135,19 @@
 
   </div>
 </header>
+
+<section class="seccion blanca">
+  <div class="contenido">
+    <h2>Problemas del día a día</h2>
+    <p>
+      Cada día repites tareas pequeñas: anotar lo mismo, rehacer la misma cuenta,
+      llevar el registro de un hábito, acordarte del paso que siempre se olvida.
+    </p>
+    <p class="destacado">
+      Casi todas se pueden automatizar, en tu trabajo o en tu vida personal.
+    </p>
+  </div>
+</section>
 
 </body>
 </html>

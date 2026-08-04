@@ -105,6 +105,37 @@
   }
   .tarjeta p{font-size:15px; margin:0; max-width:none;}
 
+  /* ---------- Línea de tiempo ---------- */
+  .linea-tiempo{
+    list-style:none; position:relative; margin-top:32px;
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;
+  }
+  /* El camino punteado que une los tres pasos. Va de un círculo a otro,
+     no de borde a borde: por eso empieza y acaba a un sexto de cada lado. */
+  .linea-tiempo::before{
+    content:""; position:absolute; top:21px; left:16.66%; right:16.66%;
+    border-top:3px dotted #C9D6DA;
+  }
+  .paso{position:relative; text-align:center;}
+  /* Altura fija para que los tres círculos queden centrados sobre la línea
+     aunque tengan tamaños distintos. */
+  .nodo{
+    height:44px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+  }
+  .circulo{
+    border-radius:50%; color:#fff; font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+    /* El halo blanco tapa el punteado por detrás del círculo. */
+    box-shadow:0 0 0 6px #fff;
+  }
+  /* Los círculos crecen y cambian de color igual que las piedras del logo. */
+  .paso-1 .circulo{width:32px; height:32px; background:var(--azul);}
+  .paso-2 .circulo{width:38px; height:38px; background:var(--turquesa);}
+  .paso-3 .circulo{width:44px; height:44px; background:var(--coral);}
+  .paso h3{font-size:17px; font-weight:700; color:var(--azul); margin-bottom:7px;}
+  .paso p{font-size:15px; margin:0; max-width:none;}
+
   /* En móvil el titular baja de tamaño y el adorno se encoge,
      para que nunca se meta debajo del texto. */
   @media (max-width:620px){
@@ -113,6 +144,9 @@
     .cabecera h1{font-size:34px;}
     .cabecera-piedras{width:200px; opacity:.7;}
     h2{font-size:23px;}
+    /* En vertical los pasos se apilan, así que el camino sobra. */
+    .linea-tiempo{grid-template-columns:1fr; gap:30px;}
+    .linea-tiempo::before{display:none;}
   }
 </style>
 </head>
@@ -202,6 +236,34 @@
       </article>
 
     </div>
+  </div>
+</section>
+
+<section class="seccion blanca">
+  <div class="contenido">
+    <h2>Cómo trabajamos</h2>
+
+    <ol class="linea-tiempo">
+
+      <li class="paso paso-1">
+        <div class="nodo"><div class="circulo">1</div></div>
+        <h3>Me cuentas</h3>
+        <p>Qué tarea te quita tiempo. Sin tecnicismos, en tus palabras.</p>
+      </li>
+
+      <li class="paso paso-2">
+        <div class="nodo"><div class="circulo">2</div></div>
+        <h3>Te construyo algo pequeño</h3>
+        <p>Una primera versión sencilla, rápido. No un proyecto de seis meses.</p>
+      </li>
+
+      <li class="paso paso-3">
+        <div class="nodo"><div class="circulo">3</div></div>
+        <h3>Lo usas y lo ajustamos</h3>
+        <p>Con lo que aprendas usándola de verdad. Ahí es donde mejora.</p>
+      </li>
+
+    </ol>
   </div>
 </section>
 

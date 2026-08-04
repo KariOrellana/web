@@ -136,6 +136,24 @@
   .paso h3{font-size:17px; font-weight:700; color:var(--azul); margin-bottom:7px;}
   .paso p{font-size:15px; margin:0; max-width:none;}
 
+  /* ---------- Contacto ---------- */
+  .contacto{background:var(--azul); text-align:center; padding:72px 0;}
+  .contacto h2{color:#fff;}
+  .boton-coral{background:var(--coral);}
+  /* Los márgenes automáticos lo mantienen centrado: sin ellos, el ancho máximo
+     que heredan todos los párrafos lo empujaría hacia la izquierda. */
+  .correo{margin:22px auto 0; font-size:14px;}
+  .correo a{color:#89A6AE;}
+
+  /* ---------- Pie ---------- */
+  .pie{background:var(--azul-pie); color:#7E9BA4; font-size:13px; padding:22px 0;}
+  .pie .contenido{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+  }
+  .pie-marca{display:flex; align-items:center; gap:10px;}
+  .pie-marca span{color:#C6D6DB; font-weight:700;}
+
   /* En móvil el titular baja de tamaño y el adorno se encoge,
      para que nunca se meta debajo del texto. */
   @media (max-width:620px){
@@ -266,6 +284,36 @@
     </ol>
   </div>
 </section>
+
+<section class="seccion contacto">
+  <div class="contenido">
+    <h2>¿Qué te quita tiempo?</h2>
+    <a class="boton boton-coral" href="mailto:karinaorellanamoreira@gmail.com">Escríbeme &nbsp;&rarr;</a>
+    <p class="correo">
+      <a href="mailto:karinaorellanamoreira@gmail.com">karinaorellanamoreira@gmail.com</a>
+    </p>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="contenido">
+
+    <div class="pie-marca">
+      <!-- Versión oscura del logo: las dos primeras piedras pasan a crema
+           porque en azul se perderían sobre este fondo. -->
+      <svg width="28" height="28" viewBox="0 0 64 64" role="img" aria-label="Extensión Digital">
+        <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+        <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <span>Extensión Digital</span>
+    </div>
+
+    <span>extensiondigital.cl</span>
+
+  </div>
+</footer>
 
 </body>
 </html>

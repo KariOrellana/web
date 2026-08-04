@@ -1,140 +1,353 @@
 <!DOCTYPE html>
 <!--
   Portada de Extensión Digital.
-  Página autocontenida: HTML (estructura) + CSS (aspecto) en un solo archivo,
-  sin librerías externas. Así carga rápido incluso con mala conexión (requisito RNF5).
+  Página autocontenida: estructura, estilos e iconos en un solo archivo, sin librerías
+  ni fuentes descargadas, para que cargue rápido aunque la conexión sea mala (RNF5).
+  El diseño está documentado fuera de este repositorio.
 -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Extensión Digital — herramientas digitales a medida</title>
-<meta name="description" content="Extensión Digital crea asistentes y herramientas interactivas a medida, que se usan desde un link, sin instalar nada.">
+<title>Extensión Digital · herramientas digitales a medida</title>
+<meta name="description" content="Asistentes y herramientas simples y personalizadas para tus necesidades. Se abren con un link, sin instalar nada.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='10' cy='45' r='4' fill='%2312414E'/%3E%3Ccircle cx='24' cy='33' r='5.2' fill='%2312414E'/%3E%3Ccircle cx='38' cy='27' r='6.2' fill='%233FB5B1'/%3E%3Ccircle cx='53' cy='34' r='7.6' fill='%23E8442B'/%3E%3C/svg%3E">
 
 <style>
-  /* Variables de color: se definen una vez y se reutilizan en toda la hoja. */
+  /* Los colores de la marca, definidos una vez y reutilizados en toda la hoja.
+     Cada uno tiene un papel asignado, descrito en el documento de identidad visual. */
   :root{
-    --bg:#f6f4ef; --card:#ffffff; --ink:#2d2a26; --muted:#8a8378;
-    --accent:#3e7a5e; --accent-soft:#e3efe8; --gold:#c9a24b; --line:#e8e3da;
+    --azul:#12414E;      /* títulos y color serio */
+    --coral:#E8442B;     /* el acento: botones y palabras clave */
+    --turquesa:#3FB5B1;  /* acompañante: detalles e iconos */
+    --crema:#F2F0EA;     /* fondo cálido */
+    --texto:#4B5457;     /* párrafos largos */
+    --azul-pie:#0E323C;  /* franja del pie */
+    --linea:#E4E0D6;     /* bordes suaves */
+
+    /* Colores auxiliares: no son de marca, pero se repiten y conviene
+       tenerlos con nombre en vez de sueltos por la hoja. */
+    --azul-suave:#3D6270;      /* texto secundario sobre fondo crema */
+    --punteado:#C9D6DA;        /* el camino de la línea de tiempo */
+    --texto-sobre-azul:#B0C6CD; /* el correo de la sección de contacto */
+    --gris-pie:#7E9BA4;        /* el texto del pie */
+    --turquesa-oscuro:#17807C; /* turquesa rebajado, para usar sobre blanco */
+    --blanco:#fff;             /* blanco puro, con nombre para que se note dónde se usa a propósito */
   }
+
   *{box-sizing:border-box; margin:0; padding:0;}
+
   body{
-    font-family:Georgia,'Times New Roman',serif;
-    background:var(--bg); color:var(--ink); line-height:1.6;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                'Helvetica Neue', Arial, sans-serif;
+    color:var(--texto);
+    line-height:1.6;
+    background:#fff;
   }
 
-  /* Cabecera con el nombre y la frase principal */
-  header{
-    background:var(--accent); color:#fff;
-    padding:60px 20px 52px; text-align:center;
+  /* Contenedor centrado: todas las secciones meten su contenido aquí dentro,
+     así el texto nunca se estira de lado a lado en pantallas grandes. */
+  .contenido{max-width:880px; margin:0 auto; padding:0 28px;}
+
+  .seccion{padding:64px 0;}
+
+  /* El logo con el nombre al lado */
+  .marca{display:flex; align-items:center; gap:11px;}
+  .marca .nombre{
+    font-size:19px; font-weight:800; letter-spacing:-.025em;
+    line-height:1.05; color:var(--azul);
   }
-  header h1{font-size:2.1rem; font-weight:normal; letter-spacing:.5px;}
-  header .lema{
-    margin-top:12px; font-size:1.05rem; font-style:italic;
-    opacity:.9; max-width:34rem; margin-left:auto; margin-right:auto;
+  .marca .nombre span{color:var(--coral);}
+
+  /* Botón en forma de píldora */
+  .boton{
+    display:inline-block; margin-top:26px; padding:14px 32px;
+    border-radius:999px; font-size:15px; font-weight:700;
+    text-decoration:none; background:var(--azul); color:#fff;
+  }
+  .boton:hover{opacity:.9;}
+
+  /* ---------- Cabecera ---------- */
+  .cabecera{
+    background:var(--crema); position:relative; overflow:hidden;
+    padding:52px 0 72px;
+  }
+  /* Las piedras del logo, ampliadas y recortadas por el borde derecho.
+     Van en opacidad baja porque el titular se lee por encima. */
+  .cabecera-piedras{
+    position:absolute; right:0; top:0; height:100%;
+    width:380px; max-width:55%;
+  }
+  .cabecera .contenido{position:relative;}
+  .cabecera h1{
+    font-size:48px; line-height:1.02; font-weight:800; letter-spacing:-.03em;
+    color:var(--azul); margin-top:18px; max-width:15ch;
+  }
+  .cabecera h1 span{color:var(--coral);}
+  .cabecera .bajada{
+    font-size:16px; color:var(--azul-suave); max-width:44ch; margin-top:18px;
   }
 
-  main{max-width:800px; margin:0 auto; padding:40px 20px 24px;}
-  section{margin-bottom:34px;}
+  /* ---------- Secciones de contenido ---------- */
+  .blanca{background:#fff;}
+  .crema{background:var(--crema);}
+
   h2{
-    font-size:1.2rem; color:var(--accent); margin-bottom:12px;
-    font-weight:normal; letter-spacing:.3px;
+    font-size:27px; font-weight:800; letter-spacing:-.02em;
+    color:var(--azul); margin-bottom:12px;
   }
-  p{margin-bottom:12px;}
-  p.destacado{font-size:1.08rem;}
+  .seccion p{max-width:58ch; margin-bottom:12px;}
+  /* Llevan la etiqueta "p" delante de la clase a propósito: ".seccion p" de más
+     arriba también pesa "una clase y una etiqueta", y sin la "p" aquí delante,
+     ".destacado" y ".intro" pesarían menos y perderían siempre el empate. */
+  p.destacado{font-weight:700; margin-bottom:0;}
 
-  /* Las tres tarjetas de "qué hago" */
-  .tarjetas{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  /* ---------- Tarjetas ---------- */
+  p.intro{color:var(--azul-suave); max-width:56ch;}
+  .tarjetas{
+    display:grid; gap:16px; margin-top:24px;
+    grid-template-columns:repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  }
   .tarjeta{
-    background:var(--card); border:1px solid var(--line);
-    border-radius:10px; padding:20px;
+    background:#fff; border:1px solid var(--linea);
+    border-radius:14px; padding:24px;
   }
-  .tarjeta h3{font-size:1rem; margin-bottom:8px; color:var(--ink);}
-  .tarjeta p{font-size:.94rem; color:#4a463f; margin-bottom:0;}
-
-  /* Bloque de contacto, destacado con la línea dorada */
-  .contacto{
-    background:var(--card); border:1px solid var(--line);
-    border-left:4px solid var(--gold);
-    border-radius:0 10px 10px 0; padding:20px 22px;
+  .tarjeta h3{
+    font-size:17px; font-weight:700; color:var(--azul);
+    margin:12px 0 7px;
   }
-  .contacto a{color:var(--accent);}
+  .tarjeta p{font-size:15px; margin:0; max-width:none;}
 
-  footer{
-    text-align:center; padding:26px 20px 40px;
-    font-size:.82rem; color:var(--muted);
+  /* ---------- Línea de tiempo ---------- */
+  .linea-tiempo{
+    list-style:none; position:relative; margin-top:32px;
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;
   }
+  /* El camino punteado que une los tres pasos. Va de un círculo a otro,
+     no de borde a borde: por eso empieza y acaba a un sexto de cada lado. */
+  .linea-tiempo::before{
+    content:""; position:absolute; top:21px; left:16.66%; right:16.66%;
+    border-top:3px dotted var(--punteado);
+  }
+  .paso{position:relative; text-align:center;}
+  /* Altura fija para que los tres círculos queden centrados sobre la línea
+     aunque tengan tamaños distintos. */
+  .nodo{
+    height:44px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+  }
+  .circulo{
+    border-radius:50%; color:#fff; font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+    /* El halo tapa el punteado por detrás del círculo. Da por hecho que la
+       sección de fondo es blanca, por eso usa --blanco y no un blanco cualquiera. */
+    box-shadow:0 0 0 6px var(--blanco);
+  }
+  /* Los círculos crecen y cambian de color igual que las piedras del logo. */
+  .paso-1 .circulo{width:32px; height:32px; background:var(--azul);}
+  .paso-2 .circulo{width:38px; height:38px; background:var(--turquesa);}
+  .paso-3 .circulo{width:44px; height:44px; background:var(--coral);}
+  /* El 1 se queda en blanco sobre el azul: ya se lee bien.
+     El 2 (turquesa) y el 3 (coral) son fondos más claros, así que el número
+     pasa a un azul muy oscuro para mantener el contraste. */
+  .paso-2 .circulo{color:#0E323C}
+  .paso-3 .circulo{color:#0E323C}
+  .paso h3{font-size:17px; font-weight:700; color:var(--azul); margin-bottom:7px;}
+  .paso p{font-size:15px; margin:0; max-width:none;}
 
-  /* En pantallas pequeñas (móvil), la cabecera ocupa menos alto */
-  @media (max-width:600px){
-    header{padding:42px 18px 36px;}
-    header h1{font-size:1.7rem;}
+  /* ---------- Contacto ---------- */
+  .contacto{background:var(--azul); text-align:center; padding:72px 0;}
+  .contacto h2{color:#fff;}
+  /* Letra más grande solo en este botón: con texto grande, el mínimo de
+     contraste que exige la norma baja, y el blanco sobre coral pasa a cumplirlo. */
+  .boton-coral{background:var(--coral); font-size:19px;}
+  /* Los márgenes automáticos lo mantienen centrado: sin ellos, el ancho máximo
+     que heredan todos los párrafos lo empujaría hacia la izquierda. */
+  .correo{margin:22px auto 0; font-size:14px;}
+  .correo a{color:var(--texto-sobre-azul);}
+
+  /* ---------- Pie ---------- */
+  .pie{background:var(--azul-pie); color:var(--gris-pie); font-size:13px; padding:22px 0;}
+  .pie .contenido{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+  }
+  .pie-marca{display:flex; align-items:center; gap:10px;}
+  /* "Extensión" en blanco y "Digital" en turquesa, igual que en la cabecera. */
+  .pie-marca .nombre-pie{color:#fff; font-weight:700;}
+  .pie-marca .nombre-pie span{color:var(--turquesa);}
+
+  /* En móvil el titular baja de tamaño y el adorno se encoge,
+     para que nunca se meta debajo del texto. */
+  @media (max-width:620px){
+    .seccion{padding:48px 0;}
+    .cabecera{padding:40px 0 56px;}
+    .cabecera h1{font-size:34px;}
+    .cabecera-piedras{width:200px; opacity:.7;}
+    h2{font-size:23px;}
+    /* En vertical los pasos se apilan, así que el camino sobra. */
+    .linea-tiempo{grid-template-columns:1fr; gap:30px;}
+    .linea-tiempo::before{display:none;}
+    /* En móvil el contacto usa el mismo relleno que el resto de secciones,
+       a propósito: no hace falta que destaque más aquí. Se escribe explícito
+       para no depender del orden de las reglas de más arriba. */
+    .contacto{padding:48px 0;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🌱 Extensión Digital</h1>
-  <p class="lema">Herramientas digitales a medida para quienes trabajan en terreno.</p>
+<header class="cabecera">
+
+  <svg class="cabecera-piedras" viewBox="0 0 200 300"
+       preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <circle cx="18"  cy="252" r="13" fill="#12414E" opacity=".16"/>
+    <circle cx="65"  cy="188" r="23" fill="#12414E" opacity=".16"/>
+    <circle cx="122" cy="136" r="35" fill="#3FB5B1" opacity=".42"/>
+    <circle cx="196" cy="152" r="54" fill="#E8442B" opacity=".34"/>
+  </svg>
+
+  <div class="contenido">
+
+    <div class="marca">
+      <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="10" cy="45" r="4"   fill="#12414E"/>
+        <circle cx="24" cy="33" r="5.2" fill="#12414E"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <div class="nombre">Extensión<br><span>Digital</span></div>
+    </div>
+
+    <h1>Tu herramienta digital,<br><span>hecha a tu medida.</span></h1>
+
+    <p class="bajada">
+      Asistentes y herramientas simples y personalizadas para tus necesidades.
+    </p>
+
+    <a class="boton" href="mailto:karinaorellanamoreira@gmail.com">Vamos a simplificarlo &nbsp;&rarr;</a>
+
+  </div>
 </header>
 
 <main>
 
-  <section>
+<section class="seccion blanca">
+  <div class="contenido">
+    <h2>Problemas del día a día</h2>
+    <p>
+      Cada día repites tareas pequeñas: anotar lo mismo, rehacer la misma cuenta,
+      llevar el registro de un hábito, acordarte del paso que siempre se olvida.
+    </p>
     <p class="destacado">
-      Creo <strong>artefactos digitales</strong>: asistentes y herramientas interactivas
-      pensadas para una tarea concreta y para una persona concreta.
+      Casi todas se pueden automatizar, en tu trabajo o en tu vida personal.
     </p>
-    <p>
-      Cada artefacto se entrega como <strong>un link</strong>. Se abre en el móvil o en el
-      ordenador, no hay que instalar nada, no hay que crear una cuenta, y funciona
-      también donde la conexión es mala.
-    </p>
-  </section>
+  </div>
+</section>
 
-  <section>
-    <h2>Qué puedo construir</h2>
+<section class="seccion crema">
+  <div class="contenido">
+    <h2>Construyamos en conjunto</h2>
+    <p class="intro">Dos tipos de herramienta, siempre pensadas para tu caso concreto.</p>
+
     <div class="tarjetas">
-      <div class="tarjeta">
-        <h3>Asistentes con IA</h3>
-        <p>Un ayudante que responde dudas sobre tu trabajo, con el lenguaje y el contexto de tu rubro.</p>
-      </div>
-      <div class="tarjeta">
-        <h3>Herramientas interactivas</h3>
-        <p>Calculadoras, registros, formularios y cuadernos de campo adaptados a cómo trabajas de verdad.</p>
-      </div>
-      <div class="tarjeta">
-        <h3>A tu medida</h3>
-        <p>Cada herramienta se diseña para tu caso. Sin funciones de sobra ni pantallas que no usarás.</p>
-      </div>
-    </div>
-  </section>
 
-  <section>
-    <h2>Cómo funciona</h2>
-    <p>
-      Conversamos sobre la tarea que te quita tiempo. Construyo una primera versión sencilla,
-      la pruebas de verdad en tu día a día, y la ajustamos con lo que aprendas usándola.
+      <article class="tarjeta">
+        <!-- Turquesa oscurecido (--turquesa-oscuro): el turquesa normal de la
+             marca casi no se lee sobre esta tarjeta blanca. -->
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--turquesa-oscuro)"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 4H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3v4l5-4h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+          <circle cx="8.5"  cy="10.5" r=".9" fill="var(--turquesa-oscuro)" stroke="none"/>
+          <circle cx="12"   cy="10.5" r=".9" fill="var(--turquesa-oscuro)" stroke="none"/>
+          <circle cx="15.5" cy="10.5" r=".9" fill="var(--turquesa-oscuro)" stroke="none"/>
+        </svg>
+        <h3>Asistentes que responden por ti</h3>
+        <p>
+          Un ayudante que contesta las dudas de siempre (las de tus clientes o las tuyas)
+          con el lenguaje y el contexto de tu trabajo.
+        </p>
+      </article>
+
+      <article class="tarjeta">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E8442B"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 4h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3"/>
+          <rect x="9" y="2" width="6" height="4" rx="1.2"/>
+          <path d="M8.6 13.4l2.3 2.3 4.5-4.5"/>
+        </svg>
+        <h3>Herramientas que hacen la tarea</h3>
+        <p>
+          Calculadoras, seguimiento de hábitos, cuadernos de campo, formularios.
+          Lo que hoy haces a mano o en un Excel que se te queda corto.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="seccion blanca">
+  <div class="contenido">
+    <h2>Cómo trabajamos</h2>
+
+    <ol class="linea-tiempo" role="list">
+
+      <li class="paso paso-1">
+        <div class="nodo"><div class="circulo">1</div></div>
+        <h3>Me cuentas</h3>
+        <p>Qué tarea te quita tiempo. Sin tecnicismos, en tus palabras.</p>
+      </li>
+
+      <li class="paso paso-2">
+        <div class="nodo"><div class="circulo">2</div></div>
+        <h3>Te construyo algo pequeño</h3>
+        <p>Una primera versión sencilla, rápido. No un proyecto de seis meses.</p>
+      </li>
+
+      <li class="paso paso-3">
+        <div class="nodo"><div class="circulo">3</div></div>
+        <h3>Lo usas y lo ajustamos</h3>
+        <p>Con lo que aprendas usándola de verdad. Ahí es donde mejora.</p>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+<section class="seccion contacto">
+  <div class="contenido">
+    <h2>¿Qué te quita tiempo?</h2>
+    <a class="boton boton-coral" href="mailto:karinaorellanamoreira@gmail.com">Escríbeme &nbsp;&rarr;</a>
+    <p class="correo">
+      <a href="mailto:karinaorellanamoreira@gmail.com">karinaorellanamoreira@gmail.com</a>
     </p>
-  </section>
-
-  <section>
-    <h2>Hablemos</h2>
-    <div class="contacto">
-      <p style="margin-bottom:0">
-        ¿Tienes una tarea repetitiva que te gustaría simplificar?
-        Escríbeme a
-        <a href="mailto:karinaorellanamoreira@gmail.com">karinaorellanamoreira@gmail.com</a>
-        y lo vemos.
-      </p>
-    </div>
-  </section>
+  </div>
+</section>
 
 </main>
 
-<footer>
-  Extensión Digital · extensiondigital.cl
+<footer class="pie">
+  <div class="contenido">
+
+    <div class="pie-marca">
+      <!-- Versión oscura del logo: las dos primeras piedras pasan a crema
+           porque en azul se perderían sobre este fondo. -->
+      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+        <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <!-- Igual que en la cabecera: "Extensión" en blanco y "Digital" en turquesa.
+           Aquí van en la misma línea (con un espacio, no un salto), porque la
+           franja del pie es baja y no hay sitio para apilarlas. -->
+      <div class="nombre-pie">Extensión <span>Digital</span></div>
+    </div>
+
+    <span>extensiondigital.cl</span>
+
+  </div>
 </footer>
 
 </body>

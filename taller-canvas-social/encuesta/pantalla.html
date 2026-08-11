@@ -161,6 +161,7 @@ function emojiDe(p){
 }
 
 var conteo = {};      // clave normalizada -> {n, texto}
+var proximaEntrada = 0; // cola global: proxima hora disponible para entrar al centro
 var BASE = 0; try{ BASE = parseInt(localStorage.getItem('nubeBase')||'0',10)||0; }catch(e){}
 var ultimoTotal = 0;
 var totalPrevio = -1; // -1 = primera carga (no animar lluvia inicial)
@@ -202,13 +203,29 @@ function procesar(todas){
   nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, 150 + i*1400); });
 }
 
+function medir(el, fs){
+  // medir con un clon sin transicion: la transicion CSS hace que offsetWidth quede desactualizado
+  var c = el.cloneNode(true);
+  c.style.transition = 'none';
+  c.style.fontSize = fs + 'px';
+  c.style.visibility = 'hidden';
+  c.style.left = '-9999px'; c.style.top = '0px';
+  c.classList.remove('oculta'); c.classList.remove('entrando');
+  nube.appendChild(c);
+  var r = { w: c.offsetWidth, h: c.offsetHeight };
+  c.remove();
+  return r;
+}
+
 function dibujar(nuevos){
   var claves = Object.keys(conteo).sort(function(a,b){ return conteo[b].n - conteo[a].n; });
   var W = nube.clientWidth, H = nube.clientHeight;
   var maxN = claves.length ? conteo[claves[0]].n : 1;
+  // tamano segun espacio disponible: mas palabras => letra mas chica
+  var fsTop = Math.max(22, Math.min(76, Math.round(Math.sqrt((W * H) / (Math.max(1, claves.length) * 20)))));
+  var fsMin = Math.max(16, Math.round(fsTop * 0.4));
   var puestos = [];
   var setNuevos = {}; nuevos.forEach(function(p){ setNuevos[norm(p)] = true; });
-  var ordenEntrada = 0;
 
   // eliminar spans de palabras que ya no existen (no debería pasar, pero por si acaso)
   Array.prototype.slice.call(nube.querySelectorAll('.palabra')).forEach(function(el){
@@ -217,7 +234,7 @@ function dibujar(nuevos){
 
   claves.forEach(function(k, idx){
     var d = conteo[k];
-    var fs = Math.round(24 + (d.n / maxN) * Math.min(72, 26 + claves.length*4));
+    var fs = Math.round(fsMin + (d.n / maxN) * (fsTop - fsMin));
     var el = nube.querySelector('.palabra[data-k="' + k + '"]');
     if (!el){
       el = document.createElement('div');
@@ -237,37 +254,50 @@ function dibujar(nuevos){
       el.dataset.prog = '';
     }
     el.style.fontSize = fs + 'px';
-    // medir
-    var w = el.offsetWidth + 26, h = el.offsetHeight + 14;
-    // espiral desde el centro
-    var cx = W/2, cy = H/2, ang = (idx * 2.39996), rad = 0, x, y, ok = false;
-    for (var paso=0; paso<600; paso++){
-      x = cx + rad * Math.cos(ang);
-      y = cy + rad * 0.62 * Math.sin(ang);
-      var r1 = {l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2};
-      if (r1.l > 6 && r1.t > 6 && r1.r < W-6 && r1.b < H-6){
-        ok = true;
-        for (var j=0;j<puestos.length;j++){
-          var p2 = puestos[j];
-          if (r1.l < p2.r && r1.r > p2.l && r1.t < p2.b && r1.b > p2.t){ ok = false; break; }
+    var x, y, w, h, ok = false;
+    if (el.dataset.entrando === '1' && el.dataset.prog){
+      // ya esta en cola de entrada: conservar y reservar su destino
+      var mq = medir(el, fs); w = mq.w + 26; h = mq.h + 14;
+      x = parseFloat(el.dataset.fx) || W/2; y = parseFloat(el.dataset.fy) || H/2;
+    } else {
+      // buscar espacio; si no cabe, achicar la letra y reintentar
+      for (var intento = 0; intento < 4 && !ok; intento++){
+        if (intento > 0){ fs = Math.max(16, Math.round(fs * 0.8)); el.style.fontSize = fs + 'px'; }
+        var m = medir(el, fs); w = m.w + 26; h = m.h + 14;
+        var cx = W/2, cy = H/2, ang = (idx * 2.39996), rad = 0;
+        for (var paso=0; paso<600; paso++){
+          x = cx + rad * Math.cos(ang);
+          y = cy + rad * 0.62 * Math.sin(ang);
+          var r1 = {l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2};
+          if (r1.l > 6 && r1.t > 6 && r1.r < W-6 && r1.b < H-6){
+            ok = true;
+            for (var j=0;j<puestos.length;j++){
+              var p2 = puestos[j];
+              if (r1.l < p2.r && r1.r > p2.l && r1.t < p2.b && r1.b > p2.t){ ok = false; break; }
+            }
+            if (ok) break;
+          }
+          ang += 0.35; rad += 1.4;
         }
-        if (ok) break;
       }
-      ang += 0.35; rad += 1.4;
+      if (!ok){ x = W/2; y = H/2; }
     }
-    if (!ok){ x = cx; y = cy; }
     puestos.push({l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2});
     if (el.dataset.entrando === '1'){
       if (!el.dataset.prog){
         el.dataset.prog = '1';
-        (function(elm, fx, fy, orden){
-          setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); elm.style.left = (W/2) + 'px'; elm.style.top = (H/2) + 'px'; }, 150 + orden*1400);
+        el.dataset.fx = x; el.dataset.fy = y;
+        var ahora = Date.now();
+        var base = Math.max(ahora + 150, proximaEntrada);
+        proximaEntrada = base + 1400;
+        (function(elm, d1){
+          setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); elm.style.left = (W/2) + 'px'; elm.style.top = (H/2) + 'px'; }, d1);
           setTimeout(function(){
             elm.classList.remove('entrando');
-            elm.style.left = fx + 'px'; elm.style.top = fy + 'px';
+            elm.style.left = elm.dataset.fx + 'px'; elm.style.top = elm.dataset.fy + 'px';
             elm.dataset.entrando = '';
-          }, 1450 + orden*1400);
-        })(el, x, y, ordenEntrada++);
+          }, d1 + 1300);
+        })(el, base - ahora);
       }
     } else {
       el.style.left = x + 'px';
@@ -307,6 +337,8 @@ function reiniciarNube(){
 window.addEventListener('resize', function(){ dibujar([]); });
 jsonp();
 setInterval(jsonp, 3000);
+// al terminar de cargar fuentes/emojis los anchos cambian: reacomodar
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ setTimeout(function(){ dibujar([]); }, 400); }); }
 </script>
 </body>
 </html>

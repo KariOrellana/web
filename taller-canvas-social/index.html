@@ -62,10 +62,11 @@
   .pie-marca{display:flex; align-items:center; gap:10px;}
   .pie-marca .nombre-pie{color:#fff; font-weight:700;}
   .pie-marca .nombre-pie span{color:var(--sage);}
-  .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 4px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:4px 0 10px;}
   .chip{border:1.5px solid var(--line); background:#fff; border-radius:99px; padding:7px 14px; font-size:14.5px; color:var(--texto); cursor:pointer; font-family:'Segoe UI',Roboto,Arial,sans-serif;}
   .chip:active{background:var(--sand);}
-  input#palabraEnc{text-align:center; font-size:20px;}
+  .chip.sel{background:var(--sage); border-color:var(--sage); color:#fff; font-weight:700;}
+  input#palabraEnc{text-align:center; font-size:20px; margin:2px 0 14px;}
 </style>
 </head>
 <body>
@@ -188,16 +189,16 @@
     <div class="card" style="text-align:center;">
       <div id="encPaso1">
         <h2 style="color:var(--dark);">¿Cómo te sentiste en el taller?</h2>
-        <p class="hint">Escriba una palabra: aparecerá en la pantalla grande junto a las de todos.</p>
-        <input type="text" id="palabraEnc" maxlength="40" autocomplete="off" placeholder="Escriba su palabra aquí">
+        <p class="hint">Elija <b>una o varias opciones</b>, o escriba sus propias palabras separadas por comas: aparecerán en la pantalla grande junto a las de todos.</p>
         <div class="chips" id="chipsEnc"></div>
-        <button class="btn sec" id="btnEnc" onclick="enviarPalabra()">ENVIAR MI PALABRA</button>
+        <input type="text" id="palabraEnc" maxlength="80" autocomplete="off" placeholder="O escriba aquí (separe con comas)">
+        <button class="btn sec" id="btnEnc" onclick="enviarPalabra()">ENVIAR MIS PALABRAS</button>
       </div>
       <div id="encPaso2" class="hidden">
         <div style="font-size:56px; margin:6px 0;" id="encEmoji">🎉</div>
         <h2 style="color:var(--dark);">¡Gracias!</h2>
-        <p class="hint">Su palabra <b id="encPal"></b> ya está viajando a la pantalla.</p>
-        <button class="btn ghost" onclick="otraPalabra()">Enviar otra palabra</button>
+        <p class="hint"><span id="encTxt1">Su palabra</span> <b id="encPal"></b> <span id="encTxt2">ya está viajando a la pantalla.</span></p>
+        <button class="btn ghost" onclick="otraPalabra()">Enviar más palabras</button>
       </div>
     </div>
     <button class="btn ghost" onclick="location.reload()">Registrar a otra persona</button>
@@ -431,35 +432,59 @@ function armarInfografia(){
 }
 
 /* ---------- Encuesta de cierre: una palabra a la nube ---------- */
-var SUGERENCIAS_ENC = ['Feliz','Motivada','Inspirado','Agradecida','Con esperanza','Acompañado','Con ideas'];
-var EMOJIS_ENC = {feliz:'😊',contenta:'😄',contento:'😄',alegre:'😄',motivada:'💪',motivado:'💪',inspirada:'✨',inspirado:'✨',agradecida:'🙏',agradecido:'🙏',esperanza:'🌱',ideas:'💡'};
+var SUGERENCIAS_ENC = [
+  ['Feliz','😊'],['Con motivación','💪'],['Con inspiración','✨'],['Con entusiasmo','🤩'],
+  ['Con energía','⚡'],['Con esperanza','🌱'],['Con gratitud','🙏'],['Con tranquilidad','😌'],
+  ['Con confianza','💙'],['En comunidad','🤝'],['Con orgullo','🏅'],['Con aprendizaje','📖'],
+  ['Con creatividad','🎨'],['Expectante','👀'],['Con dudas','😕']
+];
+var EMOJIS_ENC = {feliz:'😊',motivacion:'💪',inspiracion:'✨',entusiasmo:'🤩',energia:'⚡',esperanza:'🌱',gratitud:'🙏',tranquilidad:'😌',confianza:'💙',comunidad:'🤝',orgullo:'🏅',aprendizaje:'📖',creatividad:'🎨',expectante:'👀',dudas:'😕'};
+var seleccionEnc = [];
 (function(){
   var chips = document.getElementById('chipsEnc');
   SUGERENCIAS_ENC.forEach(function(s){
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = s;
-    b.onclick = function(){ document.getElementById('palabraEnc').value = s; };
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = s[1] + ' ' + s[0];
+    b.onclick = function(){
+      var i = seleccionEnc.indexOf(s[0]);
+      if(i < 0){ seleccionEnc.push(s[0]); b.classList.add('sel'); }
+      else{ seleccionEnc.splice(i,1); b.classList.remove('sel'); }
+    };
     chips.appendChild(b);
   });
   document.getElementById('palabraEnc').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); enviarPalabra(); } });
 })();
+function emojiEnc(p){
+  var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(EMOJIS_ENC[clave]) return EMOJIS_ENC[clave];
+  var partes = clave.split(/\s+/);
+  for(var i=0;i<partes.length;i++){ if(EMOJIS_ENC[partes[i]]) return EMOJIS_ENC[partes[i]]; }
+  return '🎉';
+}
 async function enviarPalabra(){
   var inp = document.getElementById('palabraEnc');
-  var p = inp.value.trim().replace(/\s+/g,' ').slice(0,40);
-  if(!p){ inp.focus(); return; }
+  var lista = seleccionEnc.slice();
+  inp.value.split(/[,;\n]+/).forEach(function(t){
+    t = t.trim().replace(/\s+/g,' ').slice(0,40);
+    if(t && lista.indexOf(t) < 0) lista.push(t);
+  });
+  if(!lista.length){ inp.focus(); return; }
   var b = document.getElementById('btnEnc'); b.disabled = true; b.textContent = 'Enviando…';
-  await enviar({tipo:'encuesta', palabra:p});
-  var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  document.getElementById('encEmoji').textContent = EMOJIS_ENC[clave] || '🎉';
-  document.getElementById('encPal').textContent = '“' + p + '”';
+  await Promise.all(lista.map(function(p){ return enviar({tipo:'encuesta', palabra:p}); }));
+  document.getElementById('encEmoji').textContent = emojiEnc(lista[0]);
+  document.getElementById('encPal').textContent = lista.map(function(p){ return '“' + p + '”'; }).join(', ');
+  document.getElementById('encTxt1').textContent = lista.length > 1 ? 'Sus palabras' : 'Su palabra';
+  document.getElementById('encTxt2').textContent = lista.length > 1 ? 'ya están viajando a la pantalla.' : 'ya está viajando a la pantalla.';
   document.getElementById('encPaso1').classList.add('hidden');
   document.getElementById('encPaso2').classList.remove('hidden');
-  b.disabled = false; b.textContent = 'ENVIAR MI PALABRA';
+  b.disabled = false; b.textContent = 'ENVIAR MIS PALABRAS';
 }
 function otraPalabra(){
+  seleccionEnc = [];
+  var cs = document.querySelectorAll('#chipsEnc .chip');
+  for(var i=0;i<cs.length;i++){ cs[i].classList.remove('sel'); }
   document.getElementById('palabraEnc').value = '';
   document.getElementById('encPaso2').classList.add('hidden');
   document.getElementById('encPaso1').classList.remove('hidden');
-  document.getElementById('palabraEnc').focus();
 }
 
 async function compartirInfo(){

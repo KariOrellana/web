@@ -232,6 +232,9 @@ function dibujar(nuevos){
       el.style.left = (W/2) + 'px';
       el.style.top = (H/2) + 'px';
       nube.appendChild(el);
+    } else if (setNuevos[k] && el.dataset.entrando !== '1'){
+      el.dataset.entrando = '1';
+      el.dataset.prog = '';
     }
     el.style.fontSize = fs + 'px';
     // medir
@@ -258,7 +261,7 @@ function dibujar(nuevos){
       if (!el.dataset.prog){
         el.dataset.prog = '1';
         (function(elm, fx, fy, orden){
-          setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); }, 150 + orden*1400);
+          setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); elm.style.left = (W/2) + 'px'; elm.style.top = (H/2) + 'px'; }, 150 + orden*1400);
           setTimeout(function(){
             elm.classList.remove('entrando');
             elm.style.left = fx + 'px'; elm.style.top = fy + 'px';

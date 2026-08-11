@@ -30,6 +30,11 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
 .participa{color:#BFD4D8;}
 .participa b{color:#fff; background:rgba(255,255,255,.12); border:1.5px solid var(--sage); border-radius:99px; padding:5px 14px;}
 .credito-iica{display:flex; align-items:center; justify-content:center; gap:14px; padding:4px 20px 14px; color:#9FBBC1; font-size:clamp(14px,1.4vw,17px); z-index:5;}
+.qr-panel{position:fixed; right:26px; bottom:118px; background:#fff; border-radius:16px; padding:10px 10px 7px; text-align:center; z-index:9; box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.qr-panel img{width:130px; height:130px; display:block;}
+.qr-panel span{display:block; color:#12414E; font-weight:700; font-size:13px; margin-top:5px;}
+.btn-reset{position:fixed; top:18px; right:22px; z-index:9; background:rgba(255,255,255,.08); color:#BFD4D8; border:1px solid rgba(255,255,255,.28); border-radius:99px; padding:7px 16px; font-size:14px; cursor:pointer; font-family:inherit;}
+.btn-reset:hover{background:rgba(255,255,255,.18); color:#fff;}
 </style>
 </head>
 <body>
@@ -46,6 +51,8 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
   <div class="cont"><b id="num">0</b> respuestas — la nube se actualiza sola</div>
 </header>
 <div id="nube"><div class="vacio" id="vacio">Esperando las primeras palabras…<br>Entra con tu teléfono y envía la tuya 👇</div></div>
+<div class="qr-panel"><img src="qr-encuesta.png" alt="QR para responder"><span>Escanea y responde</span></div>
+<button class="btn-reset" onclick="reiniciarNube()" title="Parte la nube de cero para un nuevo taller">↺ Reiniciar nube</button>
 <div class="credito-iica">Herramienta elaborada por el equipo IICA Chile <a href="https://www.instagram.com/iicachile/?hl=es-la" target="_blank" rel="noopener" title="IICA Chile en Instagram"><img src="iica-blanco.png" alt="IICA" style="height:34px; display:block;"></a></div>
 <footer class="pie">
   <div class="pie-contenido">
@@ -93,6 +100,8 @@ function emojiDe(p){
 }
 
 var conteo = {};      // clave normalizada -> {n, texto}
+var BASE = 0; try{ BASE = parseInt(localStorage.getItem('nubeBase')||'0',10)||0; }catch(e){}
+var ultimoTotal = 0;
 var totalPrevio = -1; // -1 = primera carga (no animar lluvia inicial)
 var nube = document.getElementById('nube');
 
@@ -105,7 +114,10 @@ function jsonp(){
   document.body.appendChild(s);
 }
 
-function procesar(palabras){
+function procesar(todas){
+  if (BASE > todas.length){ BASE = 0; try{ localStorage.setItem('nubeBase','0'); }catch(e){} }
+  ultimoTotal = todas.length;
+  var palabras = todas.slice(BASE);
   var nuevos = [];
   var c = {};
   palabras.forEach(function(p){
@@ -197,6 +209,17 @@ function lluviaEmoji(e){
       }, i * 300);
     })(i);
   }
+}
+
+function reiniciarNube(){
+  if (!confirm('¿Reiniciar la nube para un nuevo taller?\n\nLas palabras anteriores quedan guardadas en la planilla; la pantalla parte de cero.')) return;
+  BASE = ultimoTotal;
+  try{ localStorage.setItem('nubeBase', String(BASE)); }catch(e){}
+  conteo = {}; totalPrevio = -1;
+  Array.prototype.slice.call(nube.querySelectorAll('.palabra')).forEach(function(el){ el.remove(); });
+  document.getElementById('num').textContent = 0;
+  document.getElementById('vacio').style.display = 'block';
+  jsonp();
 }
 
 window.addEventListener('resize', function(){ dibujar([]); });

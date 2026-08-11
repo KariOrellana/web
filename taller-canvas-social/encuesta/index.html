@@ -127,17 +127,20 @@ function enviar(){
   if(!lista.length){ inp.focus(); return; }
   var btn = document.getElementById('btn');
   btn.disabled = true; btn.textContent = 'Enviando…';
-  Promise.all(lista.map(function(p){
-    return fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p, origen:'grupo'})}).catch(function(){});
-  })).then(function(){
-    document.getElementById('gemoji').textContent = emojiDe(lista[0]);
-    document.getElementById('gpal').textContent = lista.map(function(p){ return '“' + p + '”'; }).join(', ');
-    document.getElementById('gtexto1').textContent = lista.length > 1 ? 'Tus palabras' : 'Tu palabra';
-    document.getElementById('gtexto2').textContent = lista.length > 1 ? 'ya están viajando a la pantalla.' : 'ya está viajando a la pantalla.';
-    document.getElementById('paso1').style.display = 'none';
-    document.getElementById('paso2').style.display = 'block';
-    btn.disabled = false; btn.textContent = 'Enviar mis palabras';
+  // enviar en segundo plano (keepalive) y confirmar de inmediato:
+  // asi nadie queda esperando la respuesta del servidor
+  lista.forEach(function(p){
+    try{
+      fetch(EXEC, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p, origen:'grupo'})}).catch(function(){});
+    }catch(err){}
   });
+  document.getElementById('gemoji').textContent = emojiDe(lista[0]);
+  document.getElementById('gpal').textContent = lista.map(function(p){ return '“' + p + '”'; }).join(', ');
+  document.getElementById('gtexto1').textContent = lista.length > 1 ? 'Tus palabras' : 'Tu palabra';
+  document.getElementById('gtexto2').textContent = lista.length > 1 ? 'ya están viajando a la pantalla.' : 'ya está viajando a la pantalla.';
+  document.getElementById('paso1').style.display = 'none';
+  document.getElementById('paso2').style.display = 'block';
+  btn.disabled = false; btn.textContent = 'Enviar mis palabras';
 }
 function otra(){
   seleccion = [];

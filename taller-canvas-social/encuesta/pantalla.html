@@ -167,14 +167,22 @@ var ultimoTotal = 0;
 var totalPrevio = -1; // -1 = primera carga (no animar lluvia inicial)
 var nube = document.getElementById('nube');
 
+var pollSeq = 0, pollDone = 0, pollTimer = null;
 function jsonp(){
-  var cb = 'cb' + Date.now();
-  window[cb] = function(palabras){ procesar(palabras); delete window[cb]; s.remove(); };
+  var seq = ++pollSeq;
+  var cb = 'cb' + seq + '_' + Date.now();
+  window[cb] = function(palabras){
+    if (seq > pollDone){ pollDone = seq; procesar(palabras); }
+    delete window[cb]; s.remove(); programarPoll();
+  };
   var s = document.createElement('script');
   s.src = EXEC + '?q=encuesta&callback=' + cb + '&_=' + Date.now();
-  s.onerror = function(){ delete window[cb]; s.remove(); };
+  s.onerror = function(){ delete window[cb]; s.remove(); programarPoll(); };
   document.body.appendChild(s);
 }
+// consulta encadenada: la siguiente parte 2 s despues de recibir la anterior
+// (evita que se acumulen consultas cuando el servidor esta lento)
+function programarPoll(){ clearTimeout(pollTimer); pollTimer = setTimeout(jsonp, 2000); }
 
 function procesar(todas){
   if (BASE > todas.length){ BASE = 0; try{ localStorage.setItem('nubeBase','0'); }catch(e){} }
@@ -200,7 +208,7 @@ function procesar(todas){
   document.getElementById('num').textContent = palabras.length;
   document.getElementById('vacio').style.display = palabras.length ? 'none' : 'block';
   dibujar(nuevos);
-  nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, 150 + i*1400); });
+  nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, 150 + i*1000); });
 }
 
 function medir(el, fs){
@@ -289,14 +297,14 @@ function dibujar(nuevos){
         el.dataset.fx = x; el.dataset.fy = y;
         var ahora = Date.now();
         var base = Math.max(ahora + 150, proximaEntrada);
-        proximaEntrada = base + 1400;
+        proximaEntrada = base + 1000;
         (function(elm, d1){
           setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); elm.style.left = (W/2) + 'px'; elm.style.top = (H/2) + 'px'; }, d1);
           setTimeout(function(){
             elm.classList.remove('entrando');
             elm.style.left = elm.dataset.fx + 'px'; elm.style.top = elm.dataset.fy + 'px';
             elm.dataset.entrando = '';
-          }, d1 + 1300);
+          }, d1 + 1100);
         })(el, base - ahora);
       }
     } else {
@@ -336,7 +344,6 @@ function reiniciarNube(){
 
 window.addEventListener('resize', function(){ dibujar([]); });
 jsonp();
-setInterval(jsonp, 3000);
 // al terminar de cargar fuentes/emojis los anchos cambian: reacomodar
 if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ setTimeout(function(){ dibujar([]); }, 400); }); }
 </script>

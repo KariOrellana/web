@@ -73,22 +73,74 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
 var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
 var COLORES = ['#FFFFFF','#7FD6D2','#F6B6A8','#F2E7C8','#3FB5B1','#FFD9A0'];
 var EMOJIS = {
-  feliz:'😊', felicidad:'😊', contento:'😄', contenta:'😄', alegre:'😄', alegria:'😄',
-  motivado:'💪', motivada:'💪', motivacion:'💪', capaz:'💪', fuerte:'💪',
-  inspirado:'✨', inspirada:'✨', inspiracion:'✨', ilusionado:'🌟', ilusionada:'🌟',
-  entusiasmado:'🤩', entusiasmada:'🤩', entusiasmo:'🤩', emocionado:'🤩', emocionada:'🤩', emocion:'🥰',
-  agradecido:'🙏', agradecida:'🙏', gratitud:'🙏', gracias:'🙏',
-  esperanza:'🌱', esperanzado:'🌱', esperanzada:'🌱', optimista:'🌱',
-  tranquilo:'😌', tranquila:'😌', tranquilidad:'😌', relajado:'😌', relajada:'😌', comodo:'😌', comoda:'😌',
-  acompañado:'🤝', acompañada:'🤝', acompanado:'🤝', acompanada:'🤝', apoyado:'🤝', apoyada:'🤝', apoyo:'🤝', comunidad:'🤝', union:'🤝',
+  // Alegría
+  feliz:'😊', felicidad:'😊', felices:'😊', contento:'😊', contenta:'😊', satisfecho:'😊', satisfecha:'😊', satisfaccion:'😊', agradable:'😊', conforme:'😊', pleno:'😊', plena:'😊', plenitud:'😊',
+  alegre:'😄', alegria:'😄', divertido:'😄', divertida:'😄', diversion:'😄', entretenido:'😄', entretenida:'😄', risa:'😄', risas:'😄', humor:'😄',
+  // Motivación
+  motivado:'💪', motivada:'💪', motivacion:'💪', capaz:'💪', fuerte:'💪', fortalecido:'💪', fortalecida:'💪', animo:'💪',
+  empoderado:'🚀', empoderada:'🚀', emprendedor:'🚀', emprendedora:'🚀', emprendimiento:'🚀', impulso:'🚀', impulsada:'🚀',
+  energia:'⚡', energico:'⚡', energica:'⚡', animado:'⚡', animada:'⚡', activo:'⚡', activa:'⚡', vivo:'⚡', viva:'⚡',
+  desafiado:'🎯', desafiada:'🎯', desafio:'🎯', reto:'🎯', meta:'🎯', metas:'🎯', comprometido:'🎯', comprometida:'🎯', compromiso:'🎯', enfocado:'🎯', enfocada:'🎯',
+  exito:'🏆', exitoso:'🏆', exitosa:'🏆', logro:'🏆', logros:'🏆', lograr:'🏆', triunfo:'🏆', ganadora:'🏆',
+  progreso:'📈', avance:'📈', avanzar:'📈', crecimiento:'📈', crecer:'📈', mejora:'📈', mejorar:'📈',
+  // Inspiración
+  inspirado:'✨', inspirada:'✨', inspiracion:'✨', magico:'✨', magica:'✨',
+  ilusionado:'🌟', ilusionada:'🌟', brillante:'🌟', especial:'🌟',
+  entusiasmado:'🤩', entusiasmada:'🤩', entusiasmo:'🤩', emocionado:'🤩', emocionada:'🤩', increible:'🤩', maravilloso:'🤩', maravillosa:'🤩', espectacular:'🤩', genial:'🤩',
+  emocion:'🥰', encantado:'🥰', encantada:'🥰',
+  hermoso:'😍', hermosa:'😍', bonito:'😍', bonita:'😍', lindo:'😍', linda:'😍', bello:'😍', bella:'😍',
+  sonador:'💭', sonadora:'💭', sueno:'💭', suenos:'💭', imaginacion:'💭', vision:'💭',
+  interesante:'💡', idea:'💡', ideas:'💡', claridad:'💡', claro:'💡', clara:'💡', innovacion:'💡', innovador:'💡', innovadora:'💡',
+  creativo:'🎨', creativa:'🎨', creatividad:'🎨', arte:'🎨', diseno:'🎨',
+  transformacion:'🦋', transformado:'🦋', transformada:'🦋', cambio:'🦋', renovado:'🦋', renovada:'🦋', libre:'🦋', libertad:'🦋',
+  // Gratitud y esperanza
+  agradecido:'🙏', agradecida:'🙏', gratitud:'🙏', gracias:'🙏', bendecido:'🙏', bendecida:'🙏',
+  esperanza:'🌱', esperanzado:'🌱', esperanzada:'🌱', optimista:'🌱', semilla:'🌱', sembrar:'🌱',
+  florecer:'🌸', floreciente:'🌸', flor:'🌸', flores:'🌸',
+  futuro:'🌅', horizonte:'🌅',
+  // Tranquilidad
+  tranquilo:'😌', tranquila:'😌', tranquilidad:'😌', relajado:'😌', relajada:'😌', comodo:'😌', comoda:'😌', calma:'😌', calmado:'😌', calmada:'😌', sereno:'😌', serena:'😌', serenidad:'😌',
+  paz:'🕊️', armonia:'🕊️',
   confianza:'💙', confiado:'💙', confiada:'💙', seguro:'💙', segura:'💙',
-  empoderado:'🚀', empoderada:'🚀', energia:'⚡', animado:'⚡', animada:'⚡',
-  interesante:'💡', ideas:'💡', idea:'💡', claridad:'💡', claro:'💡', clara:'💡', creativo:'🎨', creativa:'🎨', creatividad:'🎨',
-  aprendizaje:'📖', aprendi:'📖', aprender:'📖', util:'👍', provechoso:'👍', productivo:'👍', productiva:'👍', buena:'👍', bueno:'👍', bien:'👍', excelente:'⭐',
-  orgulloso:'🏅', orgullosa:'🏅', orgullo:'🏅', valorado:'🏅', valorada:'🏅',
-  sorprendido:'😮', sorprendida:'😮', curioso:'🧐', curiosa:'🧐',
+  // Comunidad
+  acompanado:'🤝', acompanada:'🤝', apoyado:'🤝', apoyada:'🤝', apoyo:'🤝', comunidad:'🤝', union:'🤝', unido:'🤝', unida:'🤝', colaboracion:'🤝', equipo:'🤝', companerismo:'🤝', solidaridad:'🤝', juntas:'🤝', juntos:'🤝', red:'🤝',
+  acogido:'🤗', acogida:'🤗', bienvenida:'🤗', incluido:'🤗', incluida:'🤗', comprendido:'🤗', comprendida:'🤗', integrado:'🤗', integrada:'🤗', cercania:'🤗',
+  amor:'💗', querida:'💗', amada:'💗', carino:'💗', afecto:'💗',
+  escuchado:'👂', escuchada:'👂',
+  mujer:'💜', mujeres:'💜', sororidad:'💜', hermandad:'💜',
+  familia:'👨‍👩‍👧‍👦',
+  participacion:'🙋', participativa:'🙋', participar:'🙋', protagonista:'🙋',
+  // Aprendizaje
+  aprendizaje:'📖', aprendi:'📖', aprender:'📖', ensenanza:'📖', estudio:'📖',
+  conocimiento:'📚', conocimientos:'📚', informacion:'📚', contenido:'📚',
+  sabiduria:'🦉', experiencia:'🦉',
+  herramienta:'🧰', herramientas:'🧰', practico:'🧰', practica:'🧰',
+  util:'👍', provechoso:'👍', provechosa:'👍', productivo:'👍', productiva:'👍', bueno:'👍', buena:'👍', bien:'👍', positivo:'👍', positiva:'👍',
+  excelente:'⭐', destacado:'⭐', bacan:'⭐', bakan:'⭐',
+  orgulloso:'🏅', orgullosa:'🏅', orgullo:'🏅', valorado:'🏅', valorada:'🏅', reconocido:'🏅', reconocida:'🏅', reconocimiento:'🏅',
+  curioso:'🧐', curiosa:'🧐', interes:'🧐', interesado:'🧐', interesada:'🧐',
+  reflexion:'🤔', reflexiva:'🤔', reflexivo:'🤔', pensativa:'🤔', pensativo:'🤔',
+  // Territorio
+  oasis:'🌴', pica:'🌴',
+  agua:'💧',
+  sol:'☀️',
+  desierto:'🌵', pampa:'🌵',
+  naturaleza:'🌿', medioambiente:'🌿', tierra:'🌿', campo:'🌿', agricultura:'🌿',
+  cosecha:'🌾', siembra:'🌾', huerta:'🌾', huerto:'🌾',
+  reciclaje:'♻️', sustentable:'♻️', sostenible:'♻️',
+  tecnologia:'📱', digital:'📱', celular:'📱', telefono:'📱',
+  computador:'💻', computacion:'💻',
+  internet:'🌐', web:'🌐',
+  // Emociones difíciles
   cansado:'😴', cansada:'😴', agotado:'😴', agotada:'😴',
-  confundido:'😕', confundida:'😕', nervioso:'😬', nerviosa:'😬', ansioso:'😟', ansiosa:'😟'
+  sorprendido:'😮', sorprendida:'😮', sorpresa:'😮', impresionado:'😮', impresionada:'😮',
+  confundido:'😕', confundida:'😕', duda:'😕', dudas:'😕', perdido:'😕', perdida:'😕',
+  nervioso:'😬', nerviosa:'😬',
+  ansioso:'😟', ansiosa:'😟', preocupado:'😟', preocupada:'😟', inseguro:'😟', insegura:'😟',
+  triste:'😢', tristeza:'😢', pena:'😢',
+  frustrado:'😤', frustrada:'😤', frustracion:'😤',
+  estresado:'😫', estresada:'😫', estres:'😫', abrumado:'😫', abrumada:'😫',
+  aburrido:'😐', aburrida:'😐', indiferente:'😐'
 };
 function norm(p){ return p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
 function emojiDe(p){

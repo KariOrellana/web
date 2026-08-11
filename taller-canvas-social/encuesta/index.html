@@ -104,7 +104,7 @@ function enviar(){
   if(!p){ inp.focus(); return; }
   var btn = document.getElementById('btn');
   btn.disabled = true; btn.textContent = 'Enviando…';
-  fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p})})
+  fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p, origen:'grupo'})})
     .catch(function(){})
     .finally(function(){
       var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');

@@ -29,6 +29,7 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
 .pie-marca .nombre-pie span{color:var(--sage);}
 .participa{color:#BFD4D8;}
 .participa b{color:#fff; background:rgba(255,255,255,.12); border:1.5px solid var(--sage); border-radius:99px; padding:5px 14px;}
+.credito-iica{display:flex; align-items:center; justify-content:center; gap:14px; padding:4px 20px 14px; color:#9FBBC1; font-size:clamp(14px,1.4vw,17px); z-index:5;}
 </style>
 </head>
 <body>
@@ -45,9 +46,10 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
   <div class="cont"><b id="num">0</b> respuestas — la nube se actualiza sola</div>
 </header>
 <div id="nube"><div class="vacio" id="vacio">Esperando las primeras palabras…<br>Entra con tu teléfono y envía la tuya 👇</div></div>
+<div class="credito-iica">Herramienta elaborada por el equipo IICA Chile <a href="https://www.instagram.com/iicachile/?hl=es-la" target="_blank" rel="noopener" title="IICA Chile en Instagram"><img src="iica-blanco.png" alt="IICA" style="height:34px; display:block;"></a></div>
 <footer class="pie">
   <div class="pie-contenido">
-    <div class="pie-marca">
+    <a class="pie-marca" href="https://extensiondigital.cl/" target="_blank" rel="noopener" style="text-decoration:none;">
       <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
         <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
@@ -55,9 +57,9 @@ footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); 
         <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
       </svg>
       <div class="nombre-pie">Extensión <span>Digital</span></div>
-    </div>
+    </a>
     <span class="participa">Responde al final del formulario · <b>extensiondigital.cl/taller-canvas-social</b></span>
-    <span style="display:inline-flex; align-items:center; gap:12px;">Herramienta elaborada por el equipo IICA Chile <img src="iica-blanco.png" alt="IICA" style="height:32px;"></span>
+    <a href="https://extensiondigital.cl/" target="_blank" rel="noopener" style="color:inherit;">extensiondigital.cl</a>
   </div>
 </footer>
 <script>

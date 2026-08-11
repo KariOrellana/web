@@ -225,6 +225,8 @@ function dibujar(nuevos){
       el.innerHTML = '<span class="txt"></span><span class="emo"></span>';
       el.querySelector('.txt').textContent = t;
       el.querySelector('.emo').textContent = emojiDe(d.texto);
+      el.style.left = (W/2) + 'px';
+      el.style.top = (H/2) + 'px';
       nube.appendChild(el);
     }
     el.style.fontSize = fs + 'px';

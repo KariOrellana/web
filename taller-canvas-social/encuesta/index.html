@@ -27,9 +27,11 @@ p.sub{font-size:15.5px; line-height:1.45; margin-bottom:24px;}
 p.sub b{color:var(--dark);}
 input{width:100%; font-size:22px; text-align:center; padding:14px 16px; border:2px solid #E4E0D6; border-radius:12px; color:var(--dark); background:var(--crema); outline:none; transition:border .15s;}
 input:focus{border-color:var(--sage);}
-.chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 22px;}
+.chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 16px;}
 .chip{border:1.5px solid #E4E0D6; background:#fff; border-radius:99px; padding:7px 14px; font-size:14.5px; color:var(--texto); cursor:pointer;}
 .chip:active{background:var(--sand);}
+.chip.sel{background:var(--sage); border-color:var(--sage); color:#fff; font-weight:700;}
+#palabra{margin:2px 0 20px;}
 button.enviar{width:100%; background:var(--terra); color:#fff; border:none; border-radius:12px; padding:15px; font-size:18px; font-weight:800; cursor:pointer; letter-spacing:.01em;}
 button.enviar:disabled{opacity:.5; cursor:default;}
 .gracias{display:none;}
@@ -56,16 +58,16 @@ footer{margin-top:22px; font-size:12px; color:#9aa0a1;}
 <main class="centro">
 <div class="card">
   <div id="paso1">
-    <p class="sub">Escribe <b>una palabra</b> que describa cómo te sentiste hoy. Aparecerá en la pantalla junto a las de todos.</p>
-    <input id="palabra" maxlength="40" placeholder="Escribe tu palabra aquí" autocomplete="off">
+    <p class="sub">Elige <b>una o varias opciones</b>, o escribe tus propias palabras separadas por comas. Aparecerán en la pantalla junto a las de todos.</p>
     <div class="chips" id="chips"></div>
-    <button class="enviar" id="btn" onclick="enviar()">Enviar mi palabra</button>
+    <input id="palabra" maxlength="80" placeholder="O escribe aquí (separa con comas)" autocomplete="off">
+    <button class="enviar" id="btn" onclick="enviar()">Enviar mis palabras</button>
   </div>
   <div class="gracias" id="paso2">
     <div class="emoji" id="gemoji">🎉</div>
     <h2>¡Gracias!</h2>
-    <p>Tu palabra <b id="gpal" style="color:var(--dark)"></b> ya está viajando a la pantalla.</p>
-    <button class="otra" onclick="otra()">Enviar otra palabra</button>
+    <p><span id="gtexto1">Tu palabra</span> <b id="gpal" style="color:var(--dark)"></b> <span id="gtexto2">ya está viajando a la pantalla.</span></p>
+    <button class="otra" onclick="otra()">Enviar más palabras</button>
   </div>
 </div>
 </main>
@@ -89,37 +91,61 @@ footer{margin-top:22px; font-size:12px; color:#9aa0a1;}
 </footer>
 <script>
 var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
-var SUGERENCIAS = ['Feliz','Motivada','Inspirado','Agradecida','Con esperanza','Acompañado','Con ideas'];
+var SUGERENCIAS = [
+  ['Feliz','😊'],['Con motivación','💪'],['Con inspiración','✨'],['Con entusiasmo','🤩'],
+  ['Con energía','⚡'],['Con esperanza','🌱'],['Con gratitud','🙏'],['Con tranquilidad','😌'],
+  ['Con confianza','💙'],['En comunidad','🤝'],['Con orgullo','🏅'],['Con aprendizaje','📖'],
+  ['Con creatividad','🎨'],['Expectante','👀'],['Con dudas','😕']
+];
+var seleccion = [];
 var chips = document.getElementById('chips');
 SUGERENCIAS.forEach(function(s){
   var b = document.createElement('button');
-  b.className = 'chip'; b.textContent = s;
-  b.onclick = function(){ document.getElementById('palabra').value = s; };
+  b.className = 'chip'; b.textContent = s[1] + ' ' + s[0];
+  b.onclick = function(){
+    var i = seleccion.indexOf(s[0]);
+    if(i < 0){ seleccion.push(s[0]); b.classList.add('sel'); }
+    else{ seleccion.splice(i,1); b.classList.remove('sel'); }
+  };
   chips.appendChild(b);
 });
-var EMOJIS = {feliz:'😊',contenta:'😄',contento:'😄',alegre:'😄',motivada:'💪',motivado:'💪',inspirada:'✨',inspirado:'✨',agradecida:'🙏',agradecido:'🙏',esperanza:'🌱',ideas:'💡'};
+var EMOJIS = {feliz:'😊',motivacion:'💪',inspiracion:'✨',entusiasmo:'🤩',energia:'⚡',esperanza:'🌱',gratitud:'🙏',tranquilidad:'😌',confianza:'💙',comunidad:'🤝',orgullo:'🏅',aprendizaje:'📖',creatividad:'🎨',expectante:'👀',dudas:'😕'};
+function emojiDe(p){
+  var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(EMOJIS[clave]) return EMOJIS[clave];
+  var partes = clave.split(/\s+/);
+  for(var i=0;i<partes.length;i++){ if(EMOJIS[partes[i]]) return EMOJIS[partes[i]]; }
+  return '🎉';
+}
 function enviar(){
   var inp = document.getElementById('palabra');
-  var p = inp.value.trim().replace(/\s+/g,' ').slice(0,40);
-  if(!p){ inp.focus(); return; }
+  var lista = seleccion.slice();
+  inp.value.split(/[,;\n]+/).forEach(function(t){
+    t = t.trim().replace(/\s+/g,' ').slice(0,40);
+    if(t && lista.indexOf(t) < 0) lista.push(t);
+  });
+  if(!lista.length){ inp.focus(); return; }
   var btn = document.getElementById('btn');
   btn.disabled = true; btn.textContent = 'Enviando…';
-  fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p, origen:'grupo'})})
-    .catch(function(){})
-    .finally(function(){
-      var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-      document.getElementById('gemoji').textContent = EMOJIS[clave] || '🎉';
-      document.getElementById('gpal').textContent = '“' + p + '”';
-      document.getElementById('paso1').style.display = 'none';
-      document.getElementById('paso2').style.display = 'block';
-      btn.disabled = false; btn.textContent = 'Enviar mi palabra';
-    });
+  Promise.all(lista.map(function(p){
+    return fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p, origen:'grupo'})}).catch(function(){});
+  })).then(function(){
+    document.getElementById('gemoji').textContent = emojiDe(lista[0]);
+    document.getElementById('gpal').textContent = lista.map(function(p){ return '“' + p + '”'; }).join(', ');
+    document.getElementById('gtexto1').textContent = lista.length > 1 ? 'Tus palabras' : 'Tu palabra';
+    document.getElementById('gtexto2').textContent = lista.length > 1 ? 'ya están viajando a la pantalla.' : 'ya está viajando a la pantalla.';
+    document.getElementById('paso1').style.display = 'none';
+    document.getElementById('paso2').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Enviar mis palabras';
+  });
 }
 function otra(){
+  seleccion = [];
+  var cs = document.querySelectorAll('.chip');
+  for(var i=0;i<cs.length;i++){ cs[i].classList.remove('sel'); }
   document.getElementById('palabra').value = '';
   document.getElementById('paso2').style.display = 'none';
   document.getElementById('paso1').style.display = 'block';
-  document.getElementById('palabra').focus();
 }
 document.getElementById('palabra').addEventListener('keydown', function(e){ if(e.key==='Enter') enviar(); });
 </script>

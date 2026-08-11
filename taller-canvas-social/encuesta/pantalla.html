@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nube de palabras en vivo — Taller CANVAS Social</title>
+<style>
+:root{ --terra:#E8442B; --sand:#F2F0EA; --sage:#3FB5B1; --dark:#12414E;}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:radial-gradient(circle at 50% 42%, #16505F 0%, var(--dark) 62%, #0C2E38 100%); color:#fff; overflow:hidden; display:flex; flex-direction:column;}
+header{text-align:center; padding:26px 20px 6px; z-index:5;}
+header .fic{font-size:14px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--sage); margin-bottom:8px;}
+header h1{font-size:clamp(28px, 4.2vw, 52px); letter-spacing:-.02em;}
+header .cont{margin-top:8px; font-size:clamp(15px,1.6vw,20px); color:#BFD4D8;}
+header .cont b{color:#fff; background:var(--terra); border-radius:99px; padding:2px 14px; margin-right:6px;}
+#nube{flex:1; position:relative;}
+.palabra{position:absolute; white-space:nowrap; font-weight:800; letter-spacing:-.01em; transform:translate(-50%,-50%) scale(1); transition:all .8s cubic-bezier(.2,.8,.25,1); text-shadow:0 2px 12px rgba(0,0,0,.35);}
+.palabra .emo{font-weight:400; margin-left:.18em;}
+.palabra.nueva{animation:pop .9s cubic-bezier(.18,1.4,.4,1);}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0); opacity:0;} 60%{transform:translate(-50%,-50%) scale(1.25);} 100%{transform:translate(-50%,-50%) scale(1); opacity:1;}}
+.vacio{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; color:#9FBBC1; font-size:clamp(18px,2.2vw,26px); line-height:1.5;}
+.flot{position:fixed; bottom:-90px; font-size:64px; z-index:8; animation:subir linear forwards; pointer-events:none; filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));}
+@keyframes subir{0%{transform:translateY(0) rotate(-8deg); opacity:0;} 8%{opacity:1;} 85%{opacity:1;} 100%{transform:translateY(-115vh) rotate(10deg); opacity:0;}}
+footer{text-align:center; padding:12px 20px 22px; font-size:clamp(15px,1.7vw,21px); color:#BFD4D8; z-index:5;}
+footer b{color:#fff; background:rgba(255,255,255,.12); border:1.5px solid var(--sage); border-radius:99px; padding:6px 18px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="fic">Proyecto FIC Tarapacá · Taller CANVAS Social</div>
+  <h1>¿Cómo te sentiste en el taller?</h1>
+  <div class="cont"><b id="num">0</b> respuestas — la nube se actualiza sola</div>
+</header>
+<div id="nube"><div class="vacio" id="vacio">Esperando las primeras palabras…<br>Entra con tu teléfono y envía la tuya 👇</div></div>
+<footer>Participa en <b>extensiondigital.cl/taller-canvas-social/encuesta</b></footer>
+<script>
+var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
+var COLORES = ['#FFFFFF','#7FD6D2','#F6B6A8','#F2E7C8','#3FB5B1','#FFD9A0'];
+var EMOJIS = {
+  feliz:'😊', felicidad:'😊', contento:'😄', contenta:'😄', alegre:'😄', alegria:'😄',
+  motivado:'💪', motivada:'💪', motivacion:'💪', capaz:'💪', fuerte:'💪',
+  inspirado:'✨', inspirada:'✨', inspiracion:'✨', ilusionado:'🌟', ilusionada:'🌟',
+  entusiasmado:'🤩', entusiasmada:'🤩', entusiasmo:'🤩', emocionado:'🤩', emocionada:'🤩', emocion:'🥰',
+  agradecido:'🙏', agradecida:'🙏', gratitud:'🙏', gracias:'🙏',
+  esperanza:'🌱', esperanzado:'🌱', esperanzada:'🌱', optimista:'🌱',
+  tranquilo:'😌', tranquila:'😌', tranquilidad:'😌', relajado:'😌', relajada:'😌', comodo:'😌', comoda:'😌',
+  acompañado:'🤝', acompañada:'🤝', acompanado:'🤝', acompanada:'🤝', apoyado:'🤝', apoyada:'🤝', apoyo:'🤝', comunidad:'🤝', union:'🤝',
+  confianza:'💙', confiado:'💙', confiada:'💙', seguro:'💙', segura:'💙',
+  empoderado:'🚀', empoderada:'🚀', energia:'⚡', animado:'⚡', animada:'⚡',
+  interesante:'💡', ideas:'💡', idea:'💡', claridad:'💡', claro:'💡', clara:'💡', creativo:'🎨', creativa:'🎨', creatividad:'🎨',
+  aprendizaje:'📖', aprendi:'📖', aprender:'📖', util:'👍', provechoso:'👍', productivo:'👍', productiva:'👍', buena:'👍', bueno:'👍', bien:'👍', excelente:'⭐',
+  orgulloso:'🏅', orgullosa:'🏅', orgullo:'🏅', valorado:'🏅', valorada:'🏅',
+  sorprendido:'😮', sorprendida:'😮', curioso:'🧐', curiosa:'🧐',
+  cansado:'😴', cansada:'😴', agotado:'😴', agotada:'😴',
+  confundido:'😕', confundida:'😕', nervioso:'😬', nerviosa:'😬', ansioso:'😟', ansiosa:'😟'
+};
+function norm(p){ return p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+function emojiDe(p){
+  var n = norm(p);
+  if (EMOJIS[n]) return EMOJIS[n];
+  var partes = n.split(' ');
+  for (var i=0;i<partes.length;i++){ if (EMOJIS[partes[i]]) return EMOJIS[partes[i]]; }
+  return '💬';
+}
+
+var conteo = {};      // clave normalizada -> {n, texto}
+var totalPrevio = -1; // -1 = primera carga (no animar lluvia inicial)
+var nube = document.getElementById('nube');
+
+function jsonp(){
+  var cb = 'cb' + Date.now();
+  window[cb] = function(palabras){ procesar(palabras); delete window[cb]; s.remove(); };
+  var s = document.createElement('script');
+  s.src = EXEC + '?q=encuesta&callback=' + cb + '&_=' + Date.now();
+  s.onerror = function(){ delete window[cb]; s.remove(); };
+  document.body.appendChild(s);
+}
+
+function procesar(palabras){
+  var nuevos = [];
+  var c = {};
+  palabras.forEach(function(p){
+    var k = norm(p);
+    if (!k) return;
+    if (!c[k]) c[k] = {n:0, texto:p};
+    c[k].n++;
+  });
+  // detectar nuevas ocurrencias
+  if (totalPrevio >= 0){
+    Object.keys(c).forEach(function(k){
+      var antes = conteo[k] ? conteo[k].n : 0;
+      for (var i=antes; i<c[k].n; i++) nuevos.push(c[k].texto);
+    });
+  }
+  conteo = c;
+  totalPrevio = palabras.length;
+  document.getElementById('num').textContent = palabras.length;
+  document.getElementById('vacio').style.display = palabras.length ? 'none' : 'block';
+  dibujar(nuevos);
+  nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, i*450); });
+}
+
+function dibujar(nuevos){
+  var claves = Object.keys(conteo).sort(function(a,b){ return conteo[b].n - conteo[a].n; });
+  var W = nube.clientWidth, H = nube.clientHeight;
+  var maxN = claves.length ? conteo[claves[0]].n : 1;
+  var puestos = [];
+  var setNuevos = {}; nuevos.forEach(function(p){ setNuevos[norm(p)] = true; });
+
+  // eliminar spans de palabras que ya no existen (no debería pasar, pero por si acaso)
+  Array.prototype.slice.call(nube.querySelectorAll('.palabra')).forEach(function(el){
+    if (!conteo[el.dataset.k]) el.remove();
+  });
+
+  claves.forEach(function(k, idx){
+    var d = conteo[k];
+    var fs = Math.round(24 + (d.n / maxN) * Math.min(72, 26 + claves.length*4));
+    var el = nube.querySelector('.palabra[data-k="' + k + '"]');
+    if (!el){
+      el = document.createElement('div');
+      el.className = 'palabra' + (setNuevos[k] ? ' nueva' : '');
+      el.dataset.k = k;
+      el.style.color = COLORES[idx % COLORES.length];
+      var t = d.texto.charAt(0).toUpperCase() + d.texto.slice(1);
+      el.innerHTML = '<span class="txt"></span><span class="emo"></span>';
+      el.querySelector('.txt').textContent = t;
+      el.querySelector('.emo').textContent = emojiDe(d.texto);
+      nube.appendChild(el);
+    }
+    el.style.fontSize = fs + 'px';
+    // medir
+    var w = el.offsetWidth + 26, h = el.offsetHeight + 14;
+    // espiral desde el centro
+    var cx = W/2, cy = H/2, ang = (idx * 2.39996), rad = 0, x, y, ok = false;
+    for (var paso=0; paso<600; paso++){
+      x = cx + rad * Math.cos(ang);
+      y = cy + rad * 0.62 * Math.sin(ang);
+      var r1 = {l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2};
+      if (r1.l > 6 && r1.t > 6 && r1.r < W-6 && r1.b < H-6){
+        ok = true;
+        for (var j=0;j<puestos.length;j++){
+          var p2 = puestos[j];
+          if (r1.l < p2.r && r1.r > p2.l && r1.t < p2.b && r1.b > p2.t){ ok = false; break; }
+        }
+        if (ok) break;
+      }
+      ang += 0.35; rad += 1.4;
+    }
+    if (!ok){ x = cx; y = cy; }
+    puestos.push({l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2});
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+  });
+}
+
+function lluviaEmoji(e){
+  for (var i=0;i<3;i++){
+    (function(i){
+      setTimeout(function(){
+        var d = document.createElement('div');
+        d.className = 'flot';
+        d.textContent = e;
+        d.style.left = (8 + Math.random()*84) + 'vw';
+        d.style.fontSize = (46 + Math.random()*40) + 'px';
+        d.style.animationDuration = (5 + Math.random()*3) + 's';
+        document.body.appendChild(d);
+        setTimeout(function(){ d.remove(); }, 9000);
+      }, i * 300);
+    })(i);
+  }
+}
+
+window.addEventListener('resize', function(){ dibujar([]); });
+jsonp();
+setInterval(jsonp, 3000);
+</script>
+</body>
+</html>

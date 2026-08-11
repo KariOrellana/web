@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cómo te sentiste? — Taller CANVAS Social</title>
+<style>
+:root{ --terra:#E8442B; --sand:#F2F0EA; --sage:#3FB5B1; --dark:#12414E; --texto:#4B5457; --crema:#FBF9F4;}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--sand); color:var(--texto); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
+.card{background:#fff; border-radius:18px; box-shadow:0 8px 30px rgba(18,65,78,.12); max-width:460px; width:100%; padding:34px 28px; text-align:center;}
+.logo{font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--sage); text-transform:uppercase; margin-bottom:14px;}
+h1{color:var(--dark); font-size:26px; line-height:1.2; letter-spacing:-.02em; margin-bottom:10px;}
+p.sub{font-size:15.5px; line-height:1.45; margin-bottom:24px;}
+p.sub b{color:var(--dark);}
+input{width:100%; font-size:22px; text-align:center; padding:14px 16px; border:2px solid #E4E0D6; border-radius:12px; color:var(--dark); background:var(--crema); outline:none; transition:border .15s;}
+input:focus{border-color:var(--sage);}
+.chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 22px;}
+.chip{border:1.5px solid #E4E0D6; background:#fff; border-radius:99px; padding:7px 14px; font-size:14.5px; color:var(--texto); cursor:pointer;}
+.chip:active{background:var(--sand);}
+button.enviar{width:100%; background:var(--terra); color:#fff; border:none; border-radius:12px; padding:15px; font-size:18px; font-weight:800; cursor:pointer; letter-spacing:.01em;}
+button.enviar:disabled{opacity:.5; cursor:default;}
+.gracias{display:none;}
+.gracias .emoji{font-size:64px; margin-bottom:12px;}
+.gracias h2{color:var(--dark); font-size:24px; margin-bottom:8px;}
+.gracias p{font-size:15.5px; margin-bottom:22px;}
+.otra{background:none; border:2px solid var(--sage); color:var(--sage); border-radius:12px; padding:12px 20px; font-size:16px; font-weight:700; cursor:pointer;}
+footer{margin-top:22px; font-size:12px; color:#9aa0a1;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="paso1">
+    <div class="logo">Proyecto FIC Tarapacá</div>
+    <h1>¿Cómo te sentiste en el taller?</h1>
+    <p class="sub">Escribe <b>una palabra</b> que describa cómo te sentiste hoy. Aparecerá en la pantalla junto a las de todos.</p>
+    <input id="palabra" maxlength="40" placeholder="Escribe tu palabra aquí" autocomplete="off">
+    <div class="chips" id="chips"></div>
+    <button class="enviar" id="btn" onclick="enviar()">Enviar mi palabra</button>
+  </div>
+  <div class="gracias" id="paso2">
+    <div class="emoji" id="gemoji">🎉</div>
+    <h2>¡Gracias!</h2>
+    <p>Tu palabra <b id="gpal" style="color:var(--dark)"></b> ya está viajando a la pantalla.</p>
+    <button class="otra" onclick="otra()">Enviar otra palabra</button>
+  </div>
+  <footer>Taller CANVAS Social — Proyecto FIC Tarapacá</footer>
+</div>
+<script>
+var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
+var SUGERENCIAS = ['Feliz','Motivada','Inspirado','Agradecida','Con esperanza','Acompañado','Con ideas'];
+var chips = document.getElementById('chips');
+SUGERENCIAS.forEach(function(s){
+  var b = document.createElement('button');
+  b.className = 'chip'; b.textContent = s;
+  b.onclick = function(){ document.getElementById('palabra').value = s; };
+  chips.appendChild(b);
+});
+var EMOJIS = {feliz:'😊',contenta:'😄',contento:'😄',alegre:'😄',motivada:'💪',motivado:'💪',inspirada:'✨',inspirado:'✨',agradecida:'🙏',agradecido:'🙏',esperanza:'🌱',ideas:'💡'};
+function enviar(){
+  var inp = document.getElementById('palabra');
+  var p = inp.value.trim().replace(/\s+/g,' ').slice(0,40);
+  if(!p){ inp.focus(); return; }
+  var btn = document.getElementById('btn');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  fetch(EXEC, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({tipo:'encuesta', palabra:p})})
+    .catch(function(){})
+    .finally(function(){
+      var clave = p.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      document.getElementById('gemoji').textContent = EMOJIS[clave] || '🎉';
+      document.getElementById('gpal').textContent = '“' + p + '”';
+      document.getElementById('paso1').style.display = 'none';
+      document.getElementById('paso2').style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Enviar mi palabra';
+    });
+}
+function otra(){
+  document.getElementById('palabra').value = '';
+  document.getElementById('paso2').style.display = 'none';
+  document.getElementById('paso1').style.display = 'block';
+  document.getElementById('palabra').focus();
+}
+document.getElementById('palabra').addEventListener('keydown', function(e){ if(e.key==='Enter') enviar(); });
+</script>
+</body>
+</html>

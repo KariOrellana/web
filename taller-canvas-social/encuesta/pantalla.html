@@ -18,6 +18,8 @@ header .cont b{color:#fff; background:var(--terra); border-radius:99px; padding:
 .palabra{position:absolute; white-space:nowrap; font-weight:800; letter-spacing:-.01em; transform:translate(-50%,-50%) scale(1); transition:all .8s cubic-bezier(.2,.8,.25,1); text-shadow:0 2px 12px rgba(0,0,0,.35);}
 .palabra .emo{font-weight:400; margin-left:.18em;}
 .palabra.nueva{animation:pop .9s cubic-bezier(.18,1.4,.4,1);}
+.palabra.oculta{opacity:0;}
+.palabra.entrando{z-index:9; transform:translate(-50%,-50%) scale(1.8);}
 @keyframes pop{0%{transform:translate(-50%,-50%) scale(0); opacity:0;} 60%{transform:translate(-50%,-50%) scale(1.25);} 100%{transform:translate(-50%,-50%) scale(1); opacity:1;}}
 .vacio{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; color:#9FBBC1; font-size:clamp(18px,2.2vw,26px); line-height:1.5;}
 .flot{position:fixed; bottom:-90px; font-size:64px; z-index:8; animation:subir linear forwards; pointer-events:none; filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));}
@@ -197,7 +199,7 @@ function procesar(todas){
   document.getElementById('num').textContent = palabras.length;
   document.getElementById('vacio').style.display = palabras.length ? 'none' : 'block';
   dibujar(nuevos);
-  nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, i*450); });
+  nuevos.forEach(function(p, i){ setTimeout(function(){ lluviaEmoji(emojiDe(p)); }, 150 + i*1400); });
 }
 
 function dibujar(nuevos){
@@ -206,6 +208,7 @@ function dibujar(nuevos){
   var maxN = claves.length ? conteo[claves[0]].n : 1;
   var puestos = [];
   var setNuevos = {}; nuevos.forEach(function(p){ setNuevos[norm(p)] = true; });
+  var ordenEntrada = 0;
 
   // eliminar spans de palabras que ya no existen (no debería pasar, pero por si acaso)
   Array.prototype.slice.call(nube.querySelectorAll('.palabra')).forEach(function(el){
@@ -218,7 +221,8 @@ function dibujar(nuevos){
     var el = nube.querySelector('.palabra[data-k="' + k + '"]');
     if (!el){
       el = document.createElement('div');
-      el.className = 'palabra' + (setNuevos[k] ? ' nueva' : '');
+      el.className = 'palabra' + (setNuevos[k] ? ' oculta' : '');
+      if (setNuevos[k]) el.dataset.entrando = '1';
       el.dataset.k = k;
       el.style.color = COLORES[idx % COLORES.length];
       var t = d.texto.charAt(0).toUpperCase() + d.texto.slice(1);
@@ -250,8 +254,22 @@ function dibujar(nuevos){
     }
     if (!ok){ x = cx; y = cy; }
     puestos.push({l:x-w/2, t:y-h/2, r:x+w/2, b:y+h/2});
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    if (el.dataset.entrando === '1'){
+      if (!el.dataset.prog){
+        el.dataset.prog = '1';
+        (function(elm, fx, fy, orden){
+          setTimeout(function(){ elm.classList.remove('oculta'); elm.classList.add('entrando'); }, 150 + orden*1400);
+          setTimeout(function(){
+            elm.classList.remove('entrando');
+            elm.style.left = fx + 'px'; elm.style.top = fy + 'px';
+            elm.dataset.entrando = '';
+          }, 1450 + orden*1400);
+        })(el, x, y, ordenEntrada++);
+      }
+    } else {
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    }
   });
 }
 

@@ -10,7 +10,7 @@
 html,body{height:100%;}
 body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:radial-gradient(circle at 50% 42%, #16505F 0%, var(--dark) 62%, #0C2E38 100%); color:#fff; overflow:hidden; display:flex; flex-direction:column;}
 header{text-align:center; padding:26px 20px 6px; z-index:5;}
-header .fic{font-size:14px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--sage); margin-bottom:8px;}
+
 header h1{font-size:clamp(28px, 4.2vw, 52px); letter-spacing:-.02em;}
 header .cont{margin-top:8px; font-size:clamp(15px,1.6vw,20px); color:#BFD4D8;}
 header .cont b{color:#fff; background:var(--terra); border-radius:99px; padding:2px 14px; margin-right:6px;}
@@ -22,18 +22,44 @@ header .cont b{color:#fff; background:var(--terra); border-radius:99px; padding:
 .vacio{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; color:#9FBBC1; font-size:clamp(18px,2.2vw,26px); line-height:1.5;}
 .flot{position:fixed; bottom:-90px; font-size:64px; z-index:8; animation:subir linear forwards; pointer-events:none; filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));}
 @keyframes subir{0%{transform:translateY(0) rotate(-8deg); opacity:0;} 8%{opacity:1;} 85%{opacity:1;} 100%{transform:translateY(-115vh) rotate(10deg); opacity:0;}}
-footer{text-align:center; padding:12px 20px 22px; font-size:clamp(15px,1.7vw,21px); color:#BFD4D8; z-index:5;}
-footer b{color:#fff; background:rgba(255,255,255,.12); border:1.5px solid var(--sage); border-radius:99px; padding:6px 18px;}
+footer.pie{background:#0E323C; color:#7E9BA4; font-size:clamp(13px,1.3vw,16px); padding:14px 0; z-index:5;}
+.pie-contenido{max-width:1200px; margin:0 auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.pie-marca{display:flex; align-items:center; gap:10px;}
+.pie-marca .nombre-pie{color:#fff; font-weight:700;}
+.pie-marca .nombre-pie span{color:var(--sage);}
+.participa{color:#BFD4D8;}
+.participa b{color:#fff; background:rgba(255,255,255,.12); border:1.5px solid var(--sage); border-radius:99px; padding:5px 14px;}
 </style>
 </head>
 <body>
 <header>
-  <div class="fic">Proyecto FIC Tarapacá · Taller CANVAS Social</div>
+  <a class="marca" href="https://extensiondigital.cl/" target="_blank" rel="noopener" title="Extensión Digital" style="display:inline-flex; margin-bottom:6px;">
+    <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+      <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+      <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+      <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+    </svg>
+  </a>
   <h1>¿Cómo te sentiste en el taller?</h1>
   <div class="cont"><b id="num">0</b> respuestas — la nube se actualiza sola</div>
 </header>
 <div id="nube"><div class="vacio" id="vacio">Esperando las primeras palabras…<br>Entra con tu teléfono y envía la tuya 👇</div></div>
-<footer>Participa en <b>extensiondigital.cl/taller-canvas-social/encuesta</b></footer>
+<footer class="pie">
+  <div class="pie-contenido">
+    <div class="pie-marca">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+        <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <div class="nombre-pie">Extensión <span>Digital</span></div>
+    </div>
+    <span class="participa">Participa en <b>extensiondigital.cl/taller-canvas-social/encuesta</b></span>
+    <span>extensiondigital.cl</span>
+  </div>
+</footer>
 <script>
 var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
 var COLORES = ['#FFFFFF','#7FD6D2','#F6B6A8','#F2E7C8','#3FB5B1','#FFD9A0'];

@@ -7,7 +7,19 @@
 <style>
 :root{ --terra:#E8442B; --sand:#F2F0EA; --sage:#3FB5B1; --dark:#12414E; --texto:#4B5457; --crema:#FBF9F4;}
 *{box-sizing:border-box; margin:0; padding:0;}
-body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--sand); color:var(--texto); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
+body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--sand); color:var(--texto); min-height:100vh; display:flex; flex-direction:column;}
+header.top{background:var(--dark); color:#fff; padding:18px 14px; text-align:center;}
+header.top h1{color:#fff; font-size:1.4em; font-weight:800; letter-spacing:-.02em; margin-top:2px;}
+header.top p{color:var(--sage); font-size:.78em; margin-top:6px;}
+.marca{display:inline-flex; align-items:center; margin-bottom:12px;}
+main.centro{flex:1; display:flex; align-items:center; justify-content:center; padding:26px 20px;}
+.credito{display:flex; flex-direction:column; align-items:center; gap:8px; padding:8px 10px 22px; font-size:13px; color:#6B7477; text-align:center;}
+.credito img{height:44px; display:block;}
+.pie{background:#0E323C; color:#7E9BA4; font-size:13px; padding:22px 0;}
+.pie-contenido{max-width:880px; margin:0 auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.pie-marca{display:flex; align-items:center; gap:10px;}
+.pie-marca .nombre-pie{color:#fff; font-weight:700;}
+.pie-marca .nombre-pie span{color:var(--sage);}
 .card{background:#fff; border-radius:18px; box-shadow:0 8px 30px rgba(18,65,78,.12); max-width:460px; width:100%; padding:34px 28px; text-align:center;}
 .logo{font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--sage); text-transform:uppercase; margin-bottom:14px;}
 h1{color:var(--dark); font-size:26px; line-height:1.2; letter-spacing:-.02em; margin-bottom:10px;}
@@ -29,10 +41,21 @@ footer{margin-top:22px; font-size:12px; color:#9aa0a1;}
 </style>
 </head>
 <body>
+<header class="top">
+  <a class="marca" href="https://extensiondigital.cl/" target="_blank" rel="noopener" title="Extensión Digital">
+    <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+      <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+      <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+      <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+    </svg>
+  </a>
+  <h1>¿CÓMO TE SENTISTE EN EL TALLER?</h1>
+  <p>Taller CANVAS Social</p>
+</header>
+<main class="centro">
 <div class="card">
   <div id="paso1">
-    <div class="logo">Proyecto FIC Tarapacá</div>
-    <h1>¿Cómo te sentiste en el taller?</h1>
     <p class="sub">Escribe <b>una palabra</b> que describa cómo te sentiste hoy. Aparecerá en la pantalla junto a las de todos.</p>
     <input id="palabra" maxlength="40" placeholder="Escribe tu palabra aquí" autocomplete="off">
     <div class="chips" id="chips"></div>
@@ -44,8 +67,26 @@ footer{margin-top:22px; font-size:12px; color:#9aa0a1;}
     <p>Tu palabra <b id="gpal" style="color:var(--dark)"></b> ya está viajando a la pantalla.</p>
     <button class="otra" onclick="otra()">Enviar otra palabra</button>
   </div>
-  <footer>Taller CANVAS Social — Proyecto FIC Tarapacá</footer>
 </div>
+</main>
+<div class="credito">
+  <span>Herramienta elaborada por el equipo IICA Chile</span>
+  <a href="https://www.instagram.com/iicachile/?hl=es-la" target="_blank" rel="noopener" title="IICA Chile en Instagram"><img src="../iica.png" alt="IICA"></a>
+</div>
+<footer class="pie">
+  <div class="pie-contenido">
+    <div class="pie-marca">
+      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+        <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <div class="nombre-pie">Extensión <span>Digital</span></div>
+    </div>
+    <span>extensiondigital.cl</span>
+  </div>
+</footer>
 <script>
 var EXEC = 'https://script.google.com/macros/s/AKfycbxgppshCMa3ySoWbt2dL5vWnZ7Dpnvnfxhx-qBL2NF-pe-D6eW4vAokkHq9E5QW4SY/exec';
 var SUGERENCIAS = ['Feliz','Motivada','Inspirado','Agradecida','Con esperanza','Acompañado','Con ideas'];

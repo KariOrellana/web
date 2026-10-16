@@ -1,0 +1,412 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Validación del Flujo en Planta</title>
+<meta name="robots" content="noindex">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+  /* Formulario de la tarea de diagnóstico: navegación por módulos a la izquierda, un módulo a la vez
+     a la derecha, guardado automático. Misma paleta del diagrama de flujo. */
+  :root{
+    --band:#f1ebee;--op-bg:#ffffff;--op-br:#7f93b4;--hinge-bg:#e9f0fa;--hinge-br:#4a6b9c;--in-bg:#e2f1d9;--in-br:#6f9f58;--wa-bg:#fcf3cd;--wa-br:#c9ab35;--pcc-bg:#f9d2d0;--pcc-br:#bb3a2c;--pcc-fg:#7c1f16;--rep-bg:#e6dcf2;--rep-br:#8168b4;--note-bg:#f4eef1;--note-br:#bda9b4;--var-bg:#e4f1ed;--var-br:#2f8671;--st-bg:#dcf0cd;--st-br:#6a9a4e;--en-bg:#f9d2d0;--en-br:#bb3a2c;--c-pp:#5f8f3e;--c-tr:#8b7d73;--c-rsc:#39699f;--c-tsc:#b4652f;--c-fra:#a6457a;--c-fin:#2f8671;--coc-bg:#fdf0d8;--coc-br:#b57f1c;--coc-fg:#6f4c06;--cocp-bg:#6d2b4e;--cocp-fg:#ffffff;
+    --bg:#f6f2f0; --panel:#ffffff; --fg:#2b2126; --muted:#6f6069; --hair:#e2d8dc; --rule:#9c8c94;
+    --accent:#6d2b4e; --on-accent:#ffffff; --accent-soft:#f3e7ee; --field:#fbf9f8;
+    --ok:#2f8671; --ok-bg:#e4f1ed; --warn:#a96f10; --warn-bg:#fcf3cd; --bad:#bb3a2c;
+    --display:"Bitter",Georgia,serif;
+    --ui:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --band:#221c24;--op-bg:#262029;--op-br:#7b91b6;--hinge-bg:#1e2634;--hinge-br:#86a7d8;--in-bg:#1f2d1a;--in-br:#7aa860;--wa-bg:#2f2810;--wa-br:#c6a83c;--pcc-bg:#3c1715;--pcc-br:#e07264;--pcc-fg:#ffd8d2;--rep-bg:#262036;--rep-br:#a28cd0;--note-bg:#262026;--note-br:#6a5c64;--var-bg:#152925;--var-br:#5cc0a6;--st-bg:#1f2d1a;--st-br:#7aa860;--en-bg:#3c1715;--en-br:#e07264;--c-pp:#8fc16c;--c-tr:#b3a49a;--c-rsc:#7eabdd;--c-tsc:#e09359;--c-fra:#e07aae;--c-fin:#5cc0a6;--coc-bg:#3a2d10;--coc-br:#d2a33c;--coc-fg:#f7dfa8;--cocp-bg:#d894b4;--cocp-fg:#1c1019;
+    --bg:#110e11; --panel:#1d181f; --fg:#efe6ea; --muted:#a5969e; --hair:#352c35; --rule:#8b7b84;
+    --accent:#d894b4; --on-accent:#1c1019; --accent-soft:#2b1c26; --field:#161216;
+    --ok:#5cc0a6; --ok-bg:#152925; --warn:#d2a33c; --warn-bg:#2f2810; --bad:#e07264;
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --band:#221c24;--op-bg:#262029;--op-br:#7b91b6;--hinge-bg:#1e2634;--hinge-br:#86a7d8;--in-bg:#1f2d1a;--in-br:#7aa860;--wa-bg:#2f2810;--wa-br:#c6a83c;--pcc-bg:#3c1715;--pcc-br:#e07264;--pcc-fg:#ffd8d2;--rep-bg:#262036;--rep-br:#a28cd0;--note-bg:#262026;--note-br:#6a5c64;--var-bg:#152925;--var-br:#5cc0a6;--st-bg:#1f2d1a;--st-br:#7aa860;--en-bg:#3c1715;--en-br:#e07264;--c-pp:#8fc16c;--c-tr:#b3a49a;--c-rsc:#7eabdd;--c-tsc:#e09359;--c-fra:#e07aae;--c-fin:#5cc0a6;--coc-bg:#3a2d10;--coc-br:#d2a33c;--coc-fg:#f7dfa8;--cocp-bg:#d894b4;--cocp-fg:#1c1019;
+    --bg:#110e11; --panel:#1d181f; --fg:#efe6ea; --muted:#a5969e; --hair:#352c35; --rule:#8b7b84;
+    --accent:#d894b4; --on-accent:#1c1019; --accent-soft:#2b1c26; --field:#161216;
+    --ok:#5cc0a6; --ok-bg:#152925; --warn:#d2a33c; --warn-bg:#2f2810; --bad:#e07264;
+    color-scheme:dark;
+  }
+  .fig svg text{font-family:var(--ui);}.fig .n rect,.fig .n polygon,.fig .n circle{stroke-width:1.4;}.fig .n.op rect{fill:var(--op-bg); stroke:var(--op-br);}.fig .n.hinge rect{fill:var(--hinge-bg); stroke:var(--hinge-br); stroke-width:1.8;}.fig .n.in rect{fill:var(--in-bg); stroke:var(--in-br);}.fig .n.waste rect{fill:var(--wa-bg); stroke:var(--wa-br);}.fig .n.rep rect{fill:var(--rep-bg); stroke:var(--rep-br); stroke-dasharray:4 3;}.fig .n.note rect{fill:var(--note-bg); stroke:var(--note-br); stroke-dasharray:4 3;}.fig .n.pcc rect{fill:var(--pcc-bg); stroke:var(--pcc-br); stroke-width:1.9;}.fig .n.var rect{fill:var(--var-bg); stroke:var(--var-br); stroke-width:1.7; stroke-dasharray:5 3;}.fig .n.opt polygon{fill:var(--wa-bg); stroke:var(--wa-br);}.fig .n.dec polygon{fill:var(--rep-bg); stroke:var(--rep-br);}.fig .n.start circle{fill:var(--st-bg); stroke:var(--st-br); stroke-width:2;}.fig .n.end circle{fill:var(--en-bg); stroke:var(--en-br); stroke-width:2;}.fig .lbl{fill:var(--fg);}.fig .n.pcc .lbl{fill:var(--pcc-fg); font-weight:600;}.fig .n.rep .lbl,.fig .n.note .lbl{fill:var(--muted);}.fig .cap{fill:var(--muted); font-style:italic;}.fig .cap2{fill:var(--muted); font-weight:600; letter-spacing:.02em;}.fig .elbl{fill:var(--muted); font-weight:600;}.fig .flow{fill:none; stroke:var(--rule); stroke-width:1.5;}.fig .feedline{opacity:.6;}.fig .repflow{stroke:var(--rep-br); stroke-width:1.5;}.fig #arfig>path{fill:var(--rule);}.fig #arr>path{fill:var(--rep-br);}.fig .band rect{fill:var(--band); stroke:none;}.fig .bpp .bedge{fill:var(--c-pp);}.fig .btr .bedge{fill:var(--c-tr);}.fig .brsc .bedge{fill:var(--c-rsc);}.fig .btsc .bedge{fill:var(--c-tsc);}.fig .bfra .bedge{fill:var(--c-fra);}.fig .bfin .bedge{fill:var(--c-fin);}.fig .bhead{font-family:var(--ui); paint-order:stroke; stroke:var(--band); stroke-width:6px;
+         stroke-linejoin:round;}.fig .bhead .bsub{fill:var(--muted); font-weight:500;}.fig .bhpp .bnum,.fig .bhpp .btit{fill:var(--c-pp);}.fig .bhtr .bnum,.fig .bhtr .btit{fill:var(--c-tr);}.fig .bhrsc .bnum,.fig .bhrsc .btit{fill:var(--c-rsc);}.fig .bhtsc .bnum,.fig .bhtsc .btit{fill:var(--c-tsc);}.fig .bhfra .bnum,.fig .bhfra .btit{fill:var(--c-fra);}.fig .bhfin .bnum,.fig .bhfin .btit{fill:var(--c-fin);}
+  
+.fig .cocpt circle{fill:var(--accent); stroke:var(--panel); stroke-width:2;} .fig .cocnum{fill:var(--panel);}
+.fig .mzc rect{fill:var(--wa-bg); stroke:var(--wa-br); stroke-width:1.5;} .fig .mzn{fill:var(--fg);}
+.fig .n.neb rect{fill:var(--wa-bg); stroke:var(--wa-br); stroke-width:1.7; stroke-dasharray:5 3;}
+.figwrap{overflow:auto; max-height:640px; border:1px solid var(--hair); border-radius:12px; background:var(--panel); padding:8px;}
+.figwrap svg{display:block; width:100%; min-width:760px; height:auto;}
+.legend2{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:12.5px; color:var(--muted); margin:8px 0 0;}
+.legend2 b{display:inline-block; min-width:20px; text-align:center; border-radius:99px; padding:0 7px; font-size:11px; margin-right:5px;}
+.legend2 .lp{background:var(--accent); color:var(--on-accent);} .legend2 .lm{background:var(--wa-bg); border:1.5px solid var(--wa-br); color:var(--fg);}
+.seg3{display:flex; gap:6px; flex-wrap:wrap;}
+.seg3 label{position:relative; flex:1 1 90px; text-align:center; padding:6px 8px; border:1px solid var(--hair); border-radius:8px; font-size:12.5px; cursor:pointer; background:var(--field); line-height:1.25;}
+.seg3 input{position:absolute; opacity:0; inset:0; cursor:pointer;}
+.seg3 label:has(input:focus-visible){outline:2px solid var(--accent); outline-offset:2px;}
+.seg3 .s-igual:has(input:checked){background:var(--ok-bg); border-color:var(--ok); color:var(--ok); font-weight:600;}
+.seg3 .s-distinto:has(input:checked){background:var(--warn-bg); border-color:var(--warn); color:var(--warn); font-weight:600;}
+.seg3 .s-no:has(input:checked){background:var(--hair); border-color:var(--rule); font-weight:600;}
+  .layout{grid-template-columns:minmax(0,1fr) !important;}
+  nav#nav{position:static !important; flex-direction:row !important; flex-wrap:wrap; gap:6px !important;}
+  nav#nav button{grid-template-columns:18px auto !important;} nav#nav small,nav#nav hr{display:none !important;}
+  .split{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:20px; align-items:start;}
+  .split .figcol{position:sticky; top:10px;} .split .figwrap{max-height:calc(100vh - 80px);}
+  table.obsT{width:100%; border-collapse:collapse; font-size:13px;} table.obsT th{font-size:11.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); text-align:left; padding:6px 8px; border-bottom:2px solid var(--hair);}
+  table.obsT td{padding:5px 8px; border-bottom:1px solid var(--hair); vertical-align:top;} table.obsT td:first-child{width:42%;} table.obsT tr.g td{background:var(--accent-soft); font-weight:700; color:var(--accent); font-size:12.5px;}
+  table.obsT textarea{min-height:36px; padding:6px 8px; font-size:13px;} .badge{display:inline-block; font-size:10.5px; font-weight:700; border-radius:99px; padding:0 7px; margin-right:6px;} .badge.p{background:var(--accent); color:var(--on-accent);} .badge.m{background:var(--wa-bg); border:1px solid var(--wa-br);}
+  @media (max-width:980px){ .split{grid-template-columns:minmax(0,1fr);} .split .figcol{position:static;} .split .figwrap{max-height:520px;} }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--fg); font-family:var(--ui); font-size:15px; line-height:1.55;}
+  button,input,select,textarea{font:inherit; color:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .wrap{max-width:1180px; margin:0 auto;
+        padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+        padding-block:22px 64px;}
+  header.top{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:flex-end; justify-content:space-between;
+             padding-bottom:18px; border-bottom:2px solid var(--accent);}
+  .eyebrow{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  h1{font-family:var(--display); font-size:clamp(24px,3.6vw,34px); line-height:1.13; margin:4px 0 0; letter-spacing:-.01em; text-wrap:balance;}
+  .chips{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .chip{font-size:12.5px; padding:4px 11px; border-radius:99px; border:1px solid var(--hair); background:var(--panel); color:var(--muted); white-space:nowrap;}
+  .chip.dl{border-color:var(--warn); color:var(--warn); background:var(--warn-bg);}
+  .chip.sv{color:var(--ok); border-color:var(--ok);} .chip.sv.busy{color:var(--muted); border-color:var(--hair);}
+  .layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:28px; margin-top:22px; align-items:start;}
+  nav#nav{position:sticky; top:12px; display:flex; flex-direction:column; gap:3px;}
+  nav#nav button{appearance:none; text-align:left; background:none; border:1px solid transparent; border-radius:10px; padding:9px 11px; cursor:pointer;
+                 display:grid; grid-template-columns:22px minmax(0,1fr); gap:2px 10px; align-items:center; font-size:13.5px;}
+  nav#nav button:hover{background:var(--accent-soft);}
+  nav#nav button[aria-current="step"]{background:var(--panel); border-color:var(--hair); box-shadow:0 1px 0 var(--hair);}
+  nav#nav .dot{width:18px; height:18px; border-radius:50%; border:2px solid var(--rule); display:block; position:relative;}
+  nav#nav .dot.ok{border-color:var(--ok); background:var(--ok);} nav#nav .dot.part{border-color:var(--warn); background:linear-gradient(90deg,var(--warn) 50%,transparent 50%);}
+  nav#nav b{font-weight:600; display:block; line-height:1.25;}
+  nav#nav small{grid-column:2; color:var(--muted); font-size:11.5px; line-height:1.3;}
+  nav#nav hr{border:0; border-top:1px solid var(--hair); margin:6px 8px;}
+  main#main{min-width:0; background:var(--panel); border:1px solid var(--hair); border-radius:16px; padding:26px 28px 30px;}
+  main h2{font-family:var(--display); font-size:24px; margin:0 0 6px; line-height:1.2;}
+  main .lead{color:var(--muted); margin:0 0 20px; max-width:68ch;}
+  main h3{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:26px 0 10px; font-weight:600;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:6px; margin-left:8px; vertical-align:middle;}
+  .tag.req{background:var(--accent); color:var(--on-accent);} .tag.opt{background:var(--hair); color:var(--muted);}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px 18px;}
+  .field{display:flex; flex-direction:column; gap:5px; min-width:0;}
+  .field > label,.lab{font-size:13px; font-weight:500;}
+  .field .hint{font-size:12px; color:var(--muted); margin-top:-2px;}
+  input[type=text],input[type=number],select,textarea{width:100%; padding:9px 11px; border:1px solid var(--hair); border-radius:9px; background:var(--field);}
+  textarea{min-height:84px; resize:vertical;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px;}
+  .opts label{display:flex; align-items:center; gap:8px; padding:7px 12px; border:1px solid var(--hair); border-radius:99px; cursor:pointer; font-size:13.5px; background:var(--field);}
+  .opts label:has(input:checked){border-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .opts input{accent-color:var(--accent);}
+  .card{border:1px solid var(--hair); border-radius:12px; padding:16px 18px; background:var(--field); margin-bottom:12px;}
+  .card h4{margin:0 0 4px; font-size:15px;} .card .sub{font-size:12.5px; color:var(--accent); font-weight:600; margin:0 0 8px;}
+  .card ul{margin:6px 0 12px; padding-left:18px; color:var(--muted); font-size:13px;}
+  .stage{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:6px 14px; align-items:center; padding:7px 0; border-bottom:1px solid var(--hair);}
+  .stage:last-child{border-bottom:0;}
+  .stage .obs{grid-column:1 / -1;} .stage .obs[hidden]{display:none;}
+  .stage select{padding:6px 8px; font-size:13px;}
+  .grp{margin-bottom:6px;} .grp > .gt{font-weight:700; font-size:13.5px; color:var(--accent); margin:14px 0 2px;}
+  .rowc{border:1px solid var(--hair); border-radius:12px; padding:14px; background:var(--field); margin-bottom:10px; position:relative;}
+  .rowc .rm{position:absolute; top:8px; right:10px;}
+  .btn{appearance:none; border:1px solid var(--hair); background:var(--panel); border-radius:9px; padding:8px 14px; font-size:13.5px; font-weight:500; cursor:pointer;}
+  .btn:hover{border-color:var(--rule);} .btn.pri{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
+  .btn.lnk{border:0; background:none; color:var(--muted); padding:2px 6px; font-size:12.5px;} .btn.lnk:hover{color:var(--bad);}
+  .btn:disabled{opacity:.5; cursor:default;}
+  .posture{margin-top:26px; padding:18px; border-radius:12px; background:var(--accent-soft); border:1px solid var(--hair);}
+  .posture h3{margin-top:0; color:var(--accent);}
+  .calc{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-top:14px;}
+  .kpi{border:1px solid var(--hair); border-radius:10px; padding:10px 12px; background:var(--panel);}
+  .kpi small{display:block; color:var(--muted); font-size:12px;} .kpi b{font-size:20px; font-variant-numeric:tabular-nums;}
+  .note{font-size:13px; color:var(--muted); background:var(--field); border-left:3px solid var(--rule); padding:9px 12px; border-radius:0 8px 8px 0; margin:12px 0;}
+  .note.warn{border-left-color:var(--warn); background:var(--warn-bg); color:var(--fg);}
+  .pager{display:flex; justify-content:space-between; gap:10px; margin-top:28px; padding-top:18px; border-top:1px solid var(--hair);}
+  table.sum{width:100%; border-collapse:collapse; font-size:13.5px;} table.sum th,table.sum td{padding:8px 10px; border-bottom:1px solid var(--hair); text-align:left; vertical-align:top;}
+  table.sum th{font-size:11.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted);}
+  .scroll{overflow-x:auto;}
+  details.resp{border:1px solid var(--hair); border-radius:10px; padding:10px 14px; margin-bottom:8px; background:var(--field);}
+  details.resp summary{cursor:pointer; font-weight:600;} .kv{font-size:13px; margin:8px 0 0; display:grid; grid-template-columns:200px minmax(0,1fr); gap:3px 12px;}
+  .kv dt{color:var(--muted);} .kv dd{margin:0; overflow-wrap:anywhere;}
+  #dlg{position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; place-items:center; padding:20px; z-index:50;} #dlg.show{display:grid;}
+  #dlg .card2{background:var(--panel); border-radius:14px; padding:22px; max-width:480px; border:1px solid var(--hair);} #dlg h3{margin:0 0 8px; text-transform:none; letter-spacing:0; font-family:var(--display); font-size:19px; color:var(--fg);}
+  #dlg .row{display:flex; gap:8px; justify-content:flex-end; margin-top:16px;}
+  @media (max-width:880px){
+    .layout{grid-template-columns:minmax(0,1fr);}
+    nav#nav{position:static; flex-direction:row; overflow-x:auto; padding-bottom:6px; gap:6px;}
+    nav#nav button{flex:0 0 auto; grid-template-columns:18px auto;} nav#nav small,nav#nav hr{display:none;}
+    main#main{padding:20px 16px 24px;}
+    .stage{grid-template-columns:minmax(0,1fr);} .kv{grid-template-columns:minmax(0,1fr);}
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Chileprunes · Programa Chile Origen Consciente</div>
+      <h1>Validación del flujo en planta</h1>
+    </div>
+    <div class="chips"><span class="chip dl">Plazo: martes 27 de octubre, fin del día</span><span class="chip sv" id="saveChip">Sin cambios</span></div>
+  </header>
+  <div class="layout"><nav id="nav" aria-label="Módulos del formulario"></nav><main id="main"></main></div>
+</div>
+<div id="dlg"><div class="card2"><h3 id="dT"></h3><div id="dP"></div><div class="row"><button class="btn" id="dNo">Volver</button><button class="btn pri" id="dYes">Enviar de todos modos</button></div></div></div>
+
+<script>
+(function(){
+'use strict';
+var $ = function(s){ return document.querySelector(s); };
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+/* ------------------------------------------------------------------ contenido */
+var PUNTOS = [{"numero": "1", "titulo": "Despacho diferenciado desde el predio", "marcas": [["d_secpp", "transp"], ["secpp", "transp"], ["d_secpp", "secext"]], "ubicaciones": ["Entre Producción primaria y Transporte"], "criterios": ["Registro de cosecha con fecha, kg por día, sector o cuartel, tipo de secado y empresa de destino.", "Guía de despacho diferenciada: número de guía, lote certificado, volumen, fecha y origen certificado o no certificado.", "Código de lote que permite rastrear la información del lote de origen (campo o cuartel y variedad)."]}, {"numero": "2", "titulo": "Verificación de origen en recepción", "marcas": [["transp", "d_seca"]], "ubicaciones": ["Entre Transporte y Recepción"], "criterios": ["Certificación vigente del productor en el registro de proveedores.", "Guía de despacho que distinga fruta certificada de no certificada.", "Consistencia entre el volumen declarado en la guía y el recibido."]}, {"numero": "3", "titulo": "Identificación del lote hasta el secado", "marcas": [["pesado", "almmp"], ["d_hum", "almseca"]], "ubicaciones": ["Entre Pesado y rotulado y Almacenamiento de materia prima", "Entre el control de humedad y Almacenamiento de fruta seca"], "criterios": ["Entre el volcado y el nuevo rotulado la fruta va sin etiqueta: procesar un lote por vez o separarlo físicamente.", "Bin etiquetado con código de lote, productor de origen y fecha de ingreso.", "La identificación sobrevive al vaciado del bin para secar y al rearmado posterior.", "Registro de ingreso completo: volumen, procedencia, tipo de secado y embalaje."]}, {"numero": "4", "titulo": "Integridad en la línea continua", "marcas": [["preserv", "met1"]], "ubicaciones": ["Entre Adición de preservante y Detección de metales (producto a granel)"], "criterios": ["Aquí termina la segregación física: o se corre una campaña separada, o aplica balance de masa.", "Protocolo de trazabilidad al día: productor, tipo de secado, calibre, % humedad, despepitado y dosis de conservante.", "Registros de los puntos de control del proceso asociados al lote."]}, {"numero": "5", "titulo": "Codificación y despacho", "marcas": [["almpt", "despacho"]], "ubicaciones": ["Entre Almacenamiento de producto terminado y Despacho"], "criterios": ["N° de lote en el empaque y la etiqueta del producto terminado.", "Guía de despacho con tipo de producto, calibre, empaque y documentación del mercado de destino.", "El N° de lote permite llegar hacia atrás hasta el productor de origen."]}];
+var MEZCLAS = [{"codigo": "M1", "titulo": "Traslado entre instalaciones", "riesgo": "En el traslado pueden viajar juntos bins de fruta certificada y no certificada.", "control": "Separación física de bins con fruta certificada y no certificada durante el traslado."}, {"codigo": "M2", "titulo": "Patio de bins", "riesgo": "Bins de lotes y orígenes distintos conviven en el patio antes del volcado.", "control": "[PENDIENTE] A levantar con las plantas en la tarea de diagnóstico."}, {"codigo": "M3", "titulo": "Entre el volcado y el nuevo rotulado", "riesgo": "Después del volcado la fruta circula sin etiqueta hasta el nuevo rotulado: la identidad solo se sostiene por organización de la producción.", "control": "Procesar un lote por vez o separarlo físicamente."}, {"codigo": "M4", "titulo": "Secado: vaciado y rearmado de bins", "riesgo": "Al vaciar el bin para secar y rearmarlo después, la identificación puede perderse (túneles, hornos o cancha).", "control": "La identificación debe sobrevivir al vaciado del bin y al rearmado posterior."}, {"codigo": "M5", "titulo": "Reproceso por humedad", "riesgo": "La fruta que reingresa por humedad fuera de rango se mezcla en línea con otra.", "control": "[PENDIENTE] A levantar con las plantas en la tarea de diagnóstico."}, {"codigo": "M6", "titulo": "Calibradoras", "riesgo": "Punto donde puede perderse la identidad del lote. En el Flujo B el calibrado puede ser externo, con orden de calibrado.", "control": "[PENDIENTE] A levantar con las plantas en la tarea de diagnóstico."}, {"codigo": "M7", "titulo": "Silos o bins de producto seco", "riesgo": "Punto donde puede perderse la identidad del lote al almacenar fruta seca.", "control": "[PENDIENTE] A levantar con las plantas en la tarea de diagnóstico."}, {"codigo": "M8", "titulo": "Línea continua del terminado", "riesgo": "Desde el tiernizado la línea es continua y termina la segregación física. Con selección automática cambian los puntos donde se junta fruta de distintos orígenes.", "control": "O se corre una campaña separada, o aplica balance de masa."}, {"codigo": "M9", "titulo": "Packing o envasado", "riesgo": "Punto donde puede perderse la identidad del lote al envasar producto a granel.", "control": "[PENDIENTE] A levantar con las plantas en la tarea de diagnóstico."}, {"codigo": "M10", "titulo": "Secado en cancha u horno fuera de la instalación", "riesgo": "Si la fruta se seca en una cancha u horno de un tercero, o en una cancha compartida, puede mezclarse con fruta de otros orígenes y la identificación del lote puede perderse. Es la parte del proceso que hoy menos se conoce.", "control": "[PENDIENTE] A levantar con las empresas: cómo viaja la tarja y quién controla la cancha o el horno."}];
+var CAT = [['R1','Registro de proveedores certificados'],['R2','Registro de cosecha con destino'],['R3','Guía de despacho diferenciada'],['R4','Registro de ingreso de fruta certificada'],['R5','Identificación de lote en bin (nuevo)'],['R6','Protocolo de trazabilidad de planta'],['R7','Número de lote en producto terminado'],['R8','Guía de despacho de cadena de custodia'],['R9','Registro de balance de masa (nuevo)'],['R10','Registro de incidencias y acciones correctivas (nuevo)']];
+var ETAPAS = [
+  { g:'1 · Predio', r:[['cosecha','Cosecha'],['d_secpp','Decisión: la fruta sale del predio fresca o seca'],['secpp','Secado en cancha dentro del predio']] },
+  { g:'2 · Transporte', r:[['transp','Traslado entre instalaciones, de fruta fresca o seca'],['secext','Secado en cancha o en horno fuera de la instalación (por mapear)']] },
+  { g:'3 · Recepción en planta', r:[['d_seca','Decisión: la fruta llega seca o fresca'],['recseca','Recepción y pesaje de fruta que llega seca'],['ccseca','Control de calidad de la fruta que llega seca'],['recep','Recepción y pesaje de fruta fresca'],['ccrec','Control de calidad de recepción'],['d_apr','Aprobación o devolución al proveedor'],['volcado','Volcado de bins'],['selec','Selección y retiro de materia extraña'],['llenado','Llenado de bins'],['pesado','Pesado y rotulado'],['almmp','Almacenamiento de materia prima']] },
+  { g:'4 · Secado y calibrado', r:[['lavado','Lavado y despedrado'],['secado','Secado en horno en la planta'],['calib','Calibrado'],['d_hum','Control de humedad'],['almseca','Almacenamiento de fruta seca'],['d_prod','Decisión: producto con tiernizado o condición natural']] },
+  { g:'5 · Segundo transporte', r:[['transp2','Traslado entre instalaciones, de fruta seca']] },
+  { g:'6 · Terminado con tiernizado', r:[['tiern','Tiernizado'],['d_caro','Decisión: se despepita o se deja con carozo (tiernizada con carozo)'],['desp','Despepitado mecánico'],['selman','Selección manual'],['preserv','Adición de preservante']] },
+  { g:'7 · Envasado y despacho', r:[['met1','Detección de metales del producto a granel'],['envase','Envasado y pesaje'],['sellado','Sellado'],['metales','Detección de metales del producto envasado'],['rotpal','Rotulado y paletizado'],['almpt','Almacenamiento de producto terminado'],['despacho','Despacho']] }
+];
+var N_ETAPAS = ETAPAS.reduce(function(n, g){ return n + g.r.length; }, 0);
+var ESTADOS = [['igual', 'De acuerdo'], ['distinto', 'Sí, con cambios'], ['no', 'No existe o no aplica']];
+var OBSPH = { distinto:'¿Qué es distinto? ¿Quién recibe o dónde ocurre?', no:'¿Por qué no existe o no aplica en tu planta?' };
+var MEZCLA = ['Patio de bins','Túneles u hornos','Cancha de secado','Hidratación o tiernizado','Calibradoras','Silos o bins de producto seco','Packing o envasado','Bodega de producto terminado','Reprocesos','Otro'];
+var SECCIONES = [
+  ['meta','Identificación','Inicio y datos de la empresa','req'],
+  ['pc','Puntos críticos y de mezcla','Flujo y observaciones','req'],
+  ['esp','Especificaciones','Orígenes de la fruta y otra certificación','req'],
+  ['envio','Enviar','Revisar y entregar',null]
+];
+
+/* ------------------------------------------------------------------ estado */
+var EXEC = 'https://script.google.com/macros/s/AKfycbyseELnaEB9lqHMv0OxF-eXU7wOTzmwN2aReJidhjlUWZ80KwMAJpfCTXOjq26_1k-JRw/exec';
+var ID_OK = /^[a-f0-9]{16,64}$/;
+var D = blank(), view = 'meta', uid = null, assets = null;
+function nuevoId(){ var a = new Uint8Array(16); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
+/* Código propio de cada respuesta: viaja en la dirección (?c=…) y se guarda en este navegador. */
+function obtenerUid(){
+  var id = null;
+  try { var q = new URLSearchParams(location.search).get('c'); if (q && ID_OK.test(q)) id = q; } catch (_) {}
+  try { if (!id){ var s = localStorage.getItem('valflujo-uid'); if (s && ID_OK.test(s)) id = s; } } catch (_) {}
+  if (!id) id = nuevoId();
+  try { localStorage.setItem('valflujo-uid', id); } catch (_) {}
+  try { history.replaceState(null, '', '?c=' + id); } catch (_) {}
+  return id;
+}
+function cargarRemoto(id){
+  return new Promise(function(res){
+    var cb = 'cb' + Date.now(), s = document.createElement('script'), t;
+    function fin(v){ clearTimeout(t); delete window[cb]; s.remove(); res(v); }
+    window[cb] = function(r){ fin(r && r.ok ? r.datos : null); };
+    s.onerror = function(){ fin(null); };
+    t = setTimeout(function(){ fin(null); }, 10000);
+    s.src = EXEC + '?q=cargar&id=' + id + '&callback=' + cb + '&_=' + Date.now();
+    document.head.appendChild(s);
+  });
+}
+function blank(){ return { meta:{}, val:{ rows:{}, puntos:{}, falta:'' }, m1:{ rows:[{}], adj:[], pm:{}, post:{} }, pc:{ post:{} }, neb:{ orig:[], adj:[] }, cert:{ adj:[] }, m2:{ docs:[], sis:[], post:{} }, m3:{ sup:{ propio:{}, contratado:{}, spot:{}, acopiador:{} }, post:{} }, m4:{ rows:[{}], post:{} }, m5:{ terceros:[], post:{} }, estado:'borrador' }; }
+function get(path){ return path.split('.').reduce(function(o, k){ return o == null ? undefined : o[k]; }, D); }
+function set(path, val){
+  var ks = path.split('.'), o = D;
+  for (var i = 0; i < ks.length - 1; i++){ if (o[ks[i]] == null) o[ks[i]] = /^\d+$/.test(ks[i + 1]) ? [] : {}; o = o[ks[i]]; }
+  o[ks[ks.length - 1]] = val;
+}
+var saveTimer = null;
+function changed(){
+  D.actualizado = Date.now();
+  var chip = $('#saveChip'); chip.textContent = 'Guardando…'; chip.classList.add('busy');
+  clearTimeout(saveTimer); saveTimer = setTimeout(save, 900);
+  try { localStorage.setItem('valflujo-borrador', JSON.stringify(D)); } catch (_) {}
+  updateNav();
+}
+async function save(){
+  var chip = $('#saveChip');
+  if (!uid){ chip.textContent = 'Guardado solo en este navegador'; chip.classList.add('busy'); return; }
+  try {
+    await fetch(EXEC, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify({ tipo:'guardar', id:uid, datos:D }) });
+    chip.textContent = 'Guardado ' + new Date().toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' }); chip.classList.remove('busy');
+  } catch (e) { chip.textContent = 'No se pudo guardar; reintentando'; chip.classList.add('busy'); clearTimeout(saveTimer); saveTimer = setTimeout(save, 4000); }
+}
+
+/* ------------------------------------------------------------------ avance */
+function st(id){
+  var n = function(x){ return x != null && String(x).trim() !== ''; };
+  if (id === 'meta'){ var m = D.meta; return n(m.empresa) && n(m.persona) && n(m.cargo) ? 'ok' : (n(m.empresa) || n(m.persona) ? 'part' : 'none'); }
+  if (id === 'pc'){ var no = obsCount(); return no && n(D.pc.post.m) ? 'ok' : (no ? 'part' : 'none'); }
+  if (id === 'esp'){ var b = D.neb; return n(b.desc) && b.orig.length ? 'ok' : (n(b.desc) || b.orig.length || b.adj.length || n(D.cert.tiene) ? 'part' : 'none'); }
+  return 'none';
+}
+function obsCount(){
+  var c = 0, f = function(o){ if (o && String(o.o || '').trim()) c++; };
+  Object.keys(D.val.rows).forEach(function(k){ f(D.val.rows[k]); }); Object.keys(D.val.puntos).forEach(function(k){ f(D.val.puntos[k]); });
+  Object.keys(D.m1.pm || {}).forEach(function(k){ if (String(D.m1.pm[k].obs || '').trim()) c++; });
+  (D.m1.rows || []).forEach(function(r){ if (String(r.desc || '').trim()) c++; });
+  return c;
+}
+function updateNav(){
+  $('#nav').innerHTML = SECCIONES.map(function(s){
+    var sts = s[3] ? st(s[0]) : 'none';
+    var dot = s[0] === 'envio' ? '' : sts;
+    return (s[0] === 'm2' ? '<hr>' : '') +
+      '<button data-v="' + s[0] + '"' + (view === s[0] ? ' aria-current="step"' : '') + '><span class="dot ' + dot + '"></span><b>' + esc(s[1]) + '</b><small>' + esc(s[2]) + (s[3] === 'req' ? ' · obligatorio' : s[3] === 'opt' ? ' · opcional' : '') + '</small></button>';
+  }).join('');
+}
+
+/* ------------------------------------------------------------------ campos */
+function txt(p, label, o){ o = o || {}; return '<div class="field"><label for="f_' + p + '">' + esc(label) + (o.hint ? ' <span style="color:var(--muted);font-weight:400">(' + esc(o.hint.replace(/\.$/, '').toLowerCase()) + ')</span>' : '') + '</label><input type="' + (o.type || 'text') + '" id="f_' + p + '" data-p="' + p + '" value="' + esc(get(p)) + '"' + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.type === 'number' ? ' min="0" step="any" inputmode="decimal"' : '') + '></div>'; }
+function ta(p, label, o){ o = o || {}; return '<div class="field"><label for="f_' + p + '">' + esc(label) + '</label>' + (o.hint ? '<span class="hint">' + esc(o.hint) + '</span>' : '') + '<textarea id="f_' + p + '" data-p="' + p + '"' + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + '>' + esc(get(p)) + '</textarea></div>'; }
+function sel(p, label, opts, o){ o = o || {}; var v = get(p) || ''; return '<div class="field"><label for="f_' + p + '">' + esc(label) + '</label><select id="f_' + p + '" data-p="' + p + '">' + opts.map(function(x){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(k) + '"' + (v === k ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select></div>'; }
+function radios(p, label, opts){ var v = get(p); return '<div class="field" role="radiogroup" aria-label="' + esc(label) + '"><span class="lab">' + esc(label) + '</span><div class="opts">' + opts.map(function(x, i){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<label><input type="radio" name="r_' + p + '" data-p="' + p + '" value="' + esc(k) + '"' + (v === k ? ' checked' : '') + '> ' + esc(l) + '</label>'; }).join('') + '</div></div>'; }
+function checks(p, label, opts, hint){ var v = get(p) || []; return '<div class="field"><span class="lab">' + esc(label) + '</span>' + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<div class="opts">' + opts.map(function(x){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<label><input type="checkbox" data-pc="' + p + '" value="' + esc(k) + '"' + (v.indexOf(k) >= 0 ? ' checked' : '') + '> ' + esc(l) + '</label>'; }).join('') + '</div></div>'; }
+function postura(mod, intro){
+  return '<div class="posture"><h3>Para cerrar este módulo</h3><p style="margin:0 0 12px">' + esc(intro || '¿Qué método les resultaría viable para verificar la cadena de custodia, y qué condiciones necesitarían?') + '</p>' +
+    radios(mod + '.post.m', 'Método que les resultaría viable', [['seg','Segregación'],['bal','Balance de masa'],['amb','Ambos'],['nose','Aún no lo sabemos']]) +
+    '<div style="margin-top:12px">' + ta(mod + '.post.c', 'Condiciones que necesitarían', { ph:'Cambios, plazos, apoyo o información que harían viable ese método' }) + '</div></div>';
+}
+function head(title, tag, lead){ return '<h2>' + esc(title) + (tag ? '<span class="tag ' + (tag === 'req' ? 'req">Obligatorio' : 'opt">Opcional') + '</span>' : '') + '</h2><p class="lead">' + esc(lead) + '</p>'; }
+function pager(prev, next, last){
+  return '<div class="pager">' + (prev ? '<button class="btn" data-v="' + prev + '">← Anterior</button>' : '<span></span>') + (next ? '<button class="btn pri" data-v="' + next + '">' + (last || 'Siguiente') + ' →</button>' : '') + '</div>';
+}
+
+/* ------------------------------------------------------------------ secciones */
+function vMeta(){
+  return head('Validación del flujo de procesos', null, 'Con este formulario cada empresa, junto a su equipo, revisa el esquema del flujo que se trabajó en el taller: marca observaciones sobre las etapas, los puntos críticos y los puntos de mezcla, y cuéntanos cómo llega la fruta a su instalación. Plazo: martes 27 de octubre, fin del día. Se acepta una respuesta parcial; se guarda sola.') +
+    '<h3>Identificación</h3><div class="grid">' + txt('meta.empresa', 'Empresa') + txt('meta.planta', 'Planta o instalación que se describe') + txt('meta.persona', 'Nombre de quien responde') + txt('meta.cargo', 'Cargo') + txt('meta.correo', 'Correo de contacto') + txt('meta.fecha', 'Fecha en que se trabajó con el equipo', { ph:'Ej.: 24 de octubre' }) + '</div>' +
+    '<div style="margin-top:14px">' + ta('meta.equipo', 'Integrantes del equipo que participaron', { ph:'Nombre y cargo, uno por línea' }) + '</div>' +
+    '<div style="margin-top:14px">' + checks('meta.rol', 'Su empresa participa en el proceso como', [['planta','Planta de secado y proceso'],['huerto','Productor con huertos propios'],['acopio','Acopiador o intermediario'],['maq','Presta servicios de maquila']]) + '</div>' +
+    '<div class="note warn" style="margin-top:20px">Las respuestas de cada empresa solo las ve el equipo IICA que edita este formulario. <i>(Texto por confirmar con IICA antes de compartir el formulario.)</i></div>' +
+    pager(null, 'pc', 'Siguiente');
+}
+function rowsEd(base, fields, addLabel, minRows){
+  var rows = get(base) || [];
+  return rows.map(function(r, i){
+    return '<div class="rowc">' + (rows.length > (minRows || 1) ? '<button class="btn lnk rm" data-rm="' + base + '" data-i="' + i + '">Quitar</button>' : '') + '<div class="grid">' + fields.map(function(f){
+      var p = base + '.' + i + '.' + f[0];
+      if (f[2] === 'sel') return sel(p, f[1], [['', 'Elige…']].concat(f[3]));
+      if (f[2] === 'ta') return '<div style="grid-column:1/-1">' + ta(p, f[1], { ph:f[3] }) + '</div>';
+      return txt(p, f[1], { ph:f[3], type:f[2] === 'num' ? 'number' : 'text' });
+    }).join('') + '</div></div>';
+  }).join('') + '<button class="btn" data-add="' + base + '">' + esc(addLabel) + '</button>';
+}
+function obsRow(label, p, badge){
+  return '<tr><td>' + (badge ? '<span class="badge ' + badge[0] + '">' + esc(badge[1]) + '</span>' : '') + esc(label) + '</td><td><textarea data-p="' + p + '" aria-label="Observaciones: ' + esc(label) + '" rows="1">' + esc(get(p)) + '</textarea></td></tr>';
+}
+function vPc(){
+  var rows = '';
+  ETAPAS.forEach(function(g){ rows += '<tr class="g"><td colspan="2">' + esc(g.g) + '</td></tr>' + g.r.map(function(r){ return obsRow(r[1], 'val.rows.' + r[0] + '.o'); }).join(''); });
+  rows += '<tr class="g"><td colspan="2">Puntos críticos de control</td></tr>' + PUNTOS.map(function(p){ return obsRow(p.titulo, 'val.puntos.' + p.numero + '.o', ['p', p.numero]); }).join('');
+  rows += '<tr class="g"><td colspan="2">Puntos de mezcla</td></tr>' + MEZCLAS.map(function(m){ return obsRow(m.titulo, 'm1.pm.' + m.codigo + '.obs', ['m', m.codigo]); }).join('');
+  var ex = (D.m1.rows || []).map(function(r, i){ return '<tr><td><input type="text" data-p="m1.rows.' + i + '.ub" value="' + esc(r.ub) + '" placeholder="Otra etapa o punto" aria-label="Otra etapa o punto"></td><td><textarea data-p="m1.rows.' + i + '.desc" rows="1" aria-label="Observaciones">' + esc(r.desc) + '</textarea></td></tr>'; }).join('');
+  return head('Puntos críticos y de mezcla', 'req', 'Mira el flujo y, en el cuadro de la derecha, anota tus observaciones por etapa: qué es distinto en tu planta, qué registro o control se usa, quién responde. Si una etapa es igual, déjala vacía. Los círculos numerados son los puntos críticos de control y los marcadores M son los puntos de mezcla.') +
+    '<div class="split"><div class="figcol"><div class="figwrap fig" tabindex="0" role="region" aria-label="Diagrama del flujo, desplazable"><svg viewBox="0 0 1200 2936" role="img" xmlns="http://www.w3.org/2000/svg" aria-label="Flujo de proceso de la ciruela deshidratada con las etapas comunes a los flujos revisados, en siete bandas: producción primaria, transporte entre instalaciones, recepción y secado en la planta, un segundo transporte, y terminado y envasado. Incluye la opción sobre dónde se seca (en el huerto, en planta o fuera de la instalación), las decisiones sobre si la fruta sale fresca o seca del predio, si llegó seca y si la humedad es conforme, y cinco puntos críticos de control de la cadena de custodia."><defs><marker id="arfig" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs><g><g class="band bpp"><rect x="12" y="20.0" width="1176" height="252.0" rx="12"/><rect class="bedge" x="12" y="20.0" width="5" height="252.0"/></g><g class="band btr"><rect x="12" y="286.0" width="1176" height="128.0" rx="12"/><rect class="bedge" x="12" y="286.0" width="5" height="128.0"/></g><g class="band baa"><rect x="12" y="428.0" width="1176" height="742.0" rx="12"/><rect class="bedge" x="12" y="428.0" width="5" height="742.0"/></g><g class="band baa"><rect x="12" y="1184.0" width="1176" height="524.0" rx="12"/><rect class="bedge" x="12" y="1184.0" width="5" height="524.0"/></g><g class="band btr"><rect x="12" y="1722.0" width="1176" height="114.0" rx="12"/><rect class="bedge" x="12" y="1722.0" width="5" height="114.0"/></g><g class="band baa"><rect x="12" y="1850.0" width="1176" height="414.0" rx="12"/><rect class="bedge" x="12" y="1850.0" width="5" height="414.0"/></g><g class="band baa"><rect x="12" y="2278.0" width="1176" height="638.0" rx="12"/><rect class="bedge" x="12" y="2278.0" width="5" height="638.0"/></g></g><g class="conns"><path class="flow feedline" d="M 605.0 140.0 L 582.0 140.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 162.0 L 425.0 183.0" marker-end="url(#arfig)"/><path class="flow" d="M 537.0 220.0 L 598.0 220.0" marker-end="url(#arfig)"/><text class="elbl" x="571.0" y="213.0" text-anchor="middle" font-size="11">en predio</text><path class="flow" d="M 425.0 250.0 L 425.0 323.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="294.0" text-anchor="start" font-size="11">fresca</text><path class="flow" d="M 730.0 244.0 L 730.0 354.0 L 582.0 354.0" marker-end="url(#arfig)"/><path class="flow" d="M 313.0 220.0 L 215.0 220.0 L 215.0 323.0" marker-end="url(#arfig)"/><text class="elbl" x="307.0" y="213.0" text-anchor="end" font-size="11">seca fuera de la instalación</text><path class="flow" d="M 245.0 354.0 L 268.0 354.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 378.0 L 425.0 465.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 532.0 L 425.0 553.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="550.0" text-anchor="start" font-size="11">NO (fresca)</text><path class="flow" d="M 521.0 502.0 L 843.0 502.0" marker-end="url(#arfig)"/><text class="elbl" x="685.5" y="495.0" text-anchor="middle" font-size="11">SÍ</text><path class="flow" d="M 995.0 526.0 L 995.0 547.0" marker-end="url(#arfig)"/><path class="flow feedline" d="M 605.0 584.0 L 582.0 584.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 608.0 L 425.0 629.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 684.0 L 425.0 699.0" marker-end="url(#arfig)"/><path class="flow" d="M 529.0 736.0 L 598.0 736.0" marker-end="url(#arfig)"/><text class="elbl" x="567.0" y="729.0" text-anchor="middle" font-size="11">NO</text><path class="flow" d="M 825.0 736.0 L 915.0 736.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 766.0 L 425.0 787.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="784.0" text-anchor="start" font-size="11">SÍ</text><path class="flow" d="M 575.0 890.0 L 598.0 890.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 838.0 L 425.0 859.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 914.0 L 425.0 935.0" marker-end="url(#arfig)"/><path class="flow feedline" d="M 605.0 1036.0 L 582.0 1036.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 986.0 L 425.0 1007.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1058.0 L 425.0 1093.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1148.0 L 425.0 1221.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1272.0 L 425.0 1293.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1348.0 L 425.0 1369.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1420.0 L 425.0 1441.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1508.0 L 425.0 1543.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="1533.0" text-anchor="start" font-size="11">SÍ</text><path class="flow" d="M 425.0 1598.0 L 425.0 1619.0" marker-end="url(#arfig)"/><path class="flow" d="M 995.0 602.0 L 995.0 1398.0 L 582.0 1398.0" marker-end="url(#arfig)"/><path class="flow" d="M 329.0 1478.0 L 252.0 1478.0 L 252.0 1324.0 L 268.0 1324.0" marker-end="url(#arfig)"/><text class="elbl" x="290.5" y="1471.0" text-anchor="middle" font-size="11">NO</text><path class="flow" d="M 425.0 1686.0 L 425.0 1759.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="1730.0" text-anchor="start" font-size="11">con tiernizado</text><path class="flow" d="M 425.0 1814.0 L 425.0 1887.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 1938.0 L 425.0 1959.0" marker-end="url(#arfig)"/><path class="flow" d="M 575.0 2076.0 L 598.0 2076.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2026.0 L 425.0 2047.0" marker-end="url(#arfig)"/><text class="elbl" x="441.0" y="2044.0" text-anchor="start" font-size="11">SÍ</text><path class="flow" d="M 329.0 1996.0 L 252.0 1996.0 L 252.0 2148.0 L 268.0 2148.0" marker-end="url(#arfig)"/><text class="elbl" x="246.0" y="1989.0" text-anchor="end" font-size="11">NO (con carozo)</text><path class="flow" d="M 575.0 2148.0 L 598.0 2148.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2098.0 L 425.0 2119.0" marker-end="url(#arfig)"/><path class="flow feedline" d="M 605.0 2220.0 L 582.0 2220.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2170.0 L 425.0 2191.0" marker-end="url(#arfig)"/><path class="flow" d="M 575.0 2346.0 L 598.0 2346.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2242.0 L 425.0 2315.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2370.0 L 425.0 2391.0" marker-end="url(#arfig)"/><path class="flow" d="M 521.0 1656.0 L 930.0 1656.0 L 930.0 2420.0 L 582.0 2420.0" marker-end="url(#arfig)"/><text class="elbl" x="725.5" y="1649.0" text-anchor="middle" font-size="11">condición natural</text><path class="flow" d="M 425.0 2442.0 L 425.0 2463.0" marker-end="url(#arfig)"/><path class="flow" d="M 575.0 2566.0 L 598.0 2566.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2514.0 L 425.0 2535.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2590.0 L 425.0 2611.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2662.0 L 425.0 2683.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2738.0 L 425.0 2773.0" marker-end="url(#arfig)"/><path class="flow" d="M 425.0 2824.0 L 425.0 2842.0" marker-end="url(#arfig)"/></g><g><text class="bhead bhpp" x="40" y="48.0"><tspan class="bnum" font-size="19" font-weight="700">1</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">PRODUCCIÓN PRIMARIA</tspan><tspan class="bsub" font-size="12.5" dx="10">·  Predio — Productor certificado</tspan></text><text class="bhead bhtr" x="40" y="314.0"><tspan class="bnum" font-size="19" font-weight="700">2</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">TRANSPORTE</tspan><tspan class="bsub" font-size="12.5" dx="10"></tspan></text><text class="bhead bhaa" x="40" y="456.0"><tspan class="bnum" font-size="19" font-weight="700">3</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">RECEPCIÓN</tspan><tspan class="bsub" font-size="12.5" dx="10">·  Planta certificada</tspan></text><text class="bhead bhaa" x="40" y="1212.0"><tspan class="bnum" font-size="19" font-weight="700">4</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">SECADO Y CALIBRADO</tspan><tspan class="bsub" font-size="12.5" dx="10">·  Planta certificada</tspan></text><text class="bhead bhtr" x="40" y="1750.0"><tspan class="bnum" font-size="19" font-weight="700">5</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">TRANSPORTE</tspan><tspan class="bsub" font-size="12.5" dx="10"></tspan></text><text class="bhead bhaa" x="40" y="1878.0"><tspan class="bnum" font-size="19" font-weight="700">6</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">TERMINADO CON TIERNIZADO</tspan><tspan class="bsub" font-size="12.5" dx="10">·  Planta certificada</tspan></text><text class="bhead bhaa" x="40" y="2306.0"><tspan class="bnum" font-size="19" font-weight="700">7</tspan><tspan class="btit" font-size="15" font-weight="700" dx="10">ENVASADO Y DESPACHO</tspan><tspan class="bsub" font-size="12.5" dx="10">·  Planta certificada</tspan></text></g><g><g class="n start"><circle cx="425.0" cy="70.0" r="13"/></g><text class="cap" text-anchor="middle" font-size="11.0"><tspan x="425.0" y="102.0">Inicio de temporada  ·  cosecha entre enero y abril</tspan></text><g class="n op"><rect x="275.0" y="118.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="144.7">Cosecha</tspan></text></g><g class="n note"><rect x="605.0" y="118.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="137.2">Registro de cosecha</tspan><tspan x="700.0" y="150.7">y código de lote</tspan></text></g><g class="n opt"><polygon points="425.0,190.0 537.0,220.0 425.0,250.0 313.0,220.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="217.3">¿Sale fresca o seca</tspan><tspan x="425.0" y="231.3">del predio?</tspan></text></g><g class="n op"><rect x="605.0" y="196.0" width="250.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="730.0" y="216.7">Secado en cancha</tspan><tspan x="730.0" y="232.7">(en el predio)</tspan></text></g><g class="n op"><rect x="275.0" y="330.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="350.7">Traslado entre instalaciones</tspan><tspan x="425.0" y="366.7">(fruta fresca o seca)</tspan></text></g><g class="n note"><rect x="760.0" y="328.0" width="215.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="867.5" y="347.2">Guía de despacho que distingue</tspan><tspan x="867.5" y="360.7">fruta certificada y no certificada</tspan></text></g><g class="n neb"><rect x="30.0" y="330.0" width="215.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="137.5" y="350.7">Secado en cancha o en horno</tspan><tspan x="137.5" y="366.7">(fuera de la instalación)</tspan></text></g><text class="cap" text-anchor="middle" font-size="11.0"><tspan x="137.5" y="392.5">Por mapear con las empresas:</tspan><tspan x="137.5" y="405.5">quién seca y cómo viaja el lote</tspan></text><g class="n dec"><polygon points="425.0,472.0 521.0,502.0 425.0,532.0 329.0,502.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="499.3">¿La fruta llegó</tspan><tspan x="425.0" y="513.3">seca?</tspan></text></g><g class="n op"><rect x="275.0" y="560.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="580.7">Recepción y pesaje</tspan><tspan x="425.0" y="596.7">de materia prima</tspan></text></g><g class="n op"><rect x="850.0" y="478.0" width="290.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="995.0" y="498.7">Recepción y pesaje</tspan><tspan x="995.0" y="514.7">de fruta seca</tspan></text></g><text class="cap" text-anchor="middle" font-size="11.0"><tspan x="995.0" y="455.5">Mismo pesaje y control de calidad;</tspan><tspan x="995.0" y="468.5">se mantiene el rotulado del lote</tspan></text><g class="n op"><rect x="850.0" y="554.0" width="290.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="995.0" y="574.7">Control de calidad</tspan><tspan x="995.0" y="590.7">de recepción</tspan></text></g><g class="n note"><rect x="605.0" y="562.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="581.2">Registro de ingreso:</tspan><tspan x="700.0" y="594.7">volumen y procedencia</tspan></text></g><g class="n op"><rect x="275.0" y="636.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="656.7">Control de calidad</tspan><tspan x="425.0" y="672.7">de recepción</tspan></text></g><g class="n dec"><polygon points="425.0,706.0 529.0,736.0 425.0,766.0 321.0,736.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="740.3">¿Fruta aprobada?</tspan></text></g><g class="n op"><rect x="605.0" y="714.0" width="220.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="715.0" y="740.7">Devolución al proveedor</tspan></text></g><g class="n end"><circle cx="935.0" cy="736.0" r="13"/></g><g class="n op"><rect x="275.0" y="794.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="820.7">Volcado de bins</tspan></text></g><g class="n op"><rect x="275.0" y="866.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="886.7">Selección y retiro</tspan><tspan x="425.0" y="902.7">de materia extraña</tspan></text></g><g class="n waste"><rect x="605.0" y="868.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="894.0">Materia extraña</tspan></text></g><g class="n op"><rect x="275.0" y="942.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="968.7">Llenado de bins</tspan></text></g><g class="n op"><rect x="275.0" y="1014.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1040.7">Pesado y rotulado</tspan></text></g><g class="n in"><rect x="605.0" y="1014.0" width="120.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="665.0" y="1040.0">Tarjas</tspan></text></g><g class="n op"><rect x="275.0" y="1100.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1120.7">Almacenamiento</tspan><tspan x="425.0" y="1136.7">de materia prima</tspan></text></g><g class="n op"><rect x="275.0" y="1228.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1254.7">Lavado y despedrado</tspan></text></g><g class="n op"><rect x="275.0" y="1300.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1320.7">Secado en horno</tspan><tspan x="425.0" y="1336.7">(en la planta)</tspan></text></g><g class="n op"><rect x="275.0" y="1376.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1402.7">Calibrado</tspan></text></g><g class="n dec"><polygon points="425.0,1448.0 521.0,1478.0 425.0,1508.0 329.0,1478.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="1475.3">¿% humedad</tspan><tspan x="425.0" y="1489.3">conforme?</tspan></text></g><g class="n op"><rect x="275.0" y="1550.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1570.7">Almacenamiento</tspan><tspan x="425.0" y="1586.7">de fruta seca</tspan></text></g><g class="n opt"><polygon points="425.0,1626.0 521.0,1656.0 425.0,1686.0 329.0,1656.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="1653.3">¿Qué producto</tspan><tspan x="425.0" y="1667.3">se elabora?</tspan></text></g><g class="n op"><rect x="275.0" y="1766.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1786.7">Traslado entre instalaciones</tspan><tspan x="425.0" y="1802.7">(fruta seca)</tspan></text></g><g class="n op"><rect x="275.0" y="1894.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="1920.7">Tiernizado</tspan></text></g><g class="n opt"><polygon points="425.0,1966.0 521.0,1996.0 425.0,2026.0 329.0,1996.0"/><text class="lbl" text-anchor="middle" font-size="12.0" font-weight="600"><tspan x="425.0" y="2000.3">¿Se despepita?</tspan></text></g><g class="n op"><rect x="275.0" y="2054.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2080.7">Despepitado mecánico</tspan></text></g><g class="n waste"><rect x="605.0" y="2056.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="2082.0">Carozo con pulpa</tspan></text></g><g class="n op"><rect x="275.0" y="2126.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2152.7">Selección manual</tspan></text></g><g class="n waste"><rect x="605.0" y="2128.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="2154.0">Ciruela de descarte</tspan></text></g><g class="n op"><rect x="275.0" y="2198.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2224.7">Adición de preservante</tspan></text></g><g class="n in"><rect x="605.0" y="2198.0" width="170.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="690.0" y="2217.2">Solución de</tspan><tspan x="690.0" y="2230.7">sorbato de potasio</tspan></text></g><g class="n op"><rect x="275.0" y="2322.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2342.7">Detección de metales</tspan><tspan x="425.0" y="2358.7">(producto a granel)</tspan></text></g><g class="n waste"><rect x="605.0" y="2324.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="2350.0">Ciruela con metal</tspan></text></g><g class="n op"><rect x="275.0" y="2398.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2424.7">Envasado y pesaje</tspan></text></g><g class="n op"><rect x="275.0" y="2470.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2496.7">Sellado</tspan></text></g><g class="n op"><rect x="275.0" y="2542.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2562.7">Detección de metales</tspan><tspan x="425.0" y="2578.7">(producto envasado)</tspan></text></g><g class="n waste"><rect x="605.0" y="2544.0" width="190.0" height="44.0" rx="6"/><text class="lbl" text-anchor="middle" font-size="11.0"><tspan x="700.0" y="2563.2">Ciruela o materiales</tspan><tspan x="700.0" y="2576.7">con metal</tspan></text></g><g class="n op"><rect x="275.0" y="2618.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2644.7">Rotulado y paletizado</tspan></text></g><g class="n op"><rect x="275.0" y="2690.0" width="300.0" height="48.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2710.7">Almacenamiento</tspan><tspan x="425.0" y="2726.7">de producto terminado</tspan></text></g><g class="n op"><rect x="275.0" y="2780.0" width="300.0" height="44.0" rx="7"/><text class="lbl" text-anchor="middle" font-size="13.0"><tspan x="425.0" y="2806.7">Despacho</tspan></text></g><g class="n end"><circle cx="425.0" cy="2862.0" r="13"/></g><text class="cap" text-anchor="middle" font-size="11.0"><tspan x="425.0" y="2896.0">Producto terminado con N° de lote  ·  mercado nacional o exportación</tspan></text></g><g class="cocpts"><g class="cocpt"><circle cx="425.0" cy="279.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="283.3">1</tspan></text></g><g class="cocpt"><circle cx="730.0" cy="279.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="730.0" y="283.3">1</tspan></text></g><g class="cocpt"><circle cx="215.0" cy="279.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="215.0" y="283.3">1</tspan></text></g><g class="cocpt"><circle cx="425.0" cy="407.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="411.3">2</tspan></text></g><g class="cocpt"><circle cx="425.0" cy="1079.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="1083.3">3</tspan></text></g><g class="cocpt"><circle cx="425.0" cy="1529.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="1533.3">3</tspan></text></g><g class="cocpt"><circle cx="425.0" cy="2271.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="2275.3">4</tspan></text></g><g class="cocpt"><circle cx="425.0" cy="2759.0" r="11"/><text class="cocnum" text-anchor="middle" font-size="12.0" font-weight="700"><tspan x="425.0" y="2763.3">5</tspan></text></g><g class="mzc"><rect x="260.0" y="322.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="334.0">M1</tspan></text></g><g class="mzc"><rect x="260.0" y="1758.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1770.0">M1</tspan></text></g><g class="mzc"><rect x="260.0" y="1092.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1104.0">M2</tspan></text></g><g class="mzc"><rect x="260.0" y="934.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="946.0">M3</tspan></text></g><g class="mzc"><rect x="260.0" y="1292.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1304.0">M4</tspan></text></g><g class="mzc"><rect x="237.0" y="1393.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="252.0" y="1405.0">M5</tspan></text></g><g class="mzc"><rect x="260.0" y="1368.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1380.0">M6</tspan></text></g><g class="mzc"><rect x="260.0" y="1542.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1554.0">M7</tspan></text></g><g class="mzc"><rect x="260.0" y="1886.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="1898.0">M8</tspan></text></g><g class="mzc"><rect x="260.0" y="2390.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="275.0" y="2402.0">M9</tspan></text></g><g class="mzc"><rect x="590.0" y="188.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="605.0" y="200.0">M10</tspan></text></g><g class="mzc"><rect x="15.0" y="322.0" width="30" height="16" rx="8"/><text class="mzn" text-anchor="middle" font-size="11.0" font-weight="700"><tspan x="30.0" y="334.0">M10</tspan></text></g></g></svg></div><p class="legend2"><span><b class="lp">1</b>Punto crítico de control</span><span><b class="lm">M1</b>Punto de mezcla</span><span>Punteado amarillo: por mapear</span></p></div>' +
+    '<div><table class="obsT"><thead><tr><th>Etapa</th><th>Observaciones</th></tr></thead><tbody>' + rows + '<tr class="g"><td colspan="2">Otras etapas o puntos de tu planta</td></tr>' + ex + '</tbody></table>' +
+    '<div style="margin-top:10px"><button class="btn" data-add="m1.rows">Agregar otra fila</button></div></div></div>' +
+    postura('pc') + pager('meta', 'esp');
+}
+var ORIG = [['propiofresca','Fruta fresca de huertos propios'],['propioseca','Fruta seca en huertos propios'],['prodfresca','Fruta fresca de productores'],['prodseca','Fruta seca por productores'],['canchat','Secada en cancha de terceros'],['hornot','Secada en horno de terceros'],['acop','Acopiadores o intermediarios'],['otro','Otro origen']];
+function vEsp(){
+  return head('Especificaciones', 'req', 'Entre la cosecha y la planta la fruta puede recorrer caminos muy distintos. Cuéntanos cómo llega a tu instalación y si ya tienen un esquema de trazabilidad por otra certificación.') +
+    checks('neb.orig', '¿De qué orígenes recibe fruta tu planta o tu empresa?', ORIG) +
+    '<div style="margin-top:14px">' + ta('neb.desc', 'Para cada origen, ¿cómo aseguran que el lote mantenga su identidad?', { hint:'Por ejemplo: tarja desde la cosecha, guía de despacho, contrato, visita al lugar de secado.', ph:'Un párrafo o una lista por origen' }) + '</div>' +
+    '<h3>Tu propio flujo</h3><p class="lead" style="margin-bottom:10px">Si prefieres mostrarlo en un diagrama, adjunta el flujo de llegada de la fruta a tu planta (imagen o PDF). Es opcional, pero ayuda mucho.</p>' + upBlock('m1.adj') +
+    '<h3>Otra certificación <span class="tag opt">Opcional</span></h3><p class="lead" style="margin-bottom:10px">Si ya tienen un esquema de trazabilidad por otra certificación (por ejemplo, halal, kosher u otra), puede servir como referencia para el protocolo.</p>' +
+    radios('cert.tiene', '¿Tienen un esquema de trazabilidad por otra certificación?', [['si','Sí'],['no','No']]) +
+    '<div class="grid" style="margin-top:14px">' + txt('cert.cual', 'Cuál certificación') + '</div>' +
+    '<div style="margin-top:14px">' + radios('cert.comp', '¿Pueden compartirlo?', [['si','Sí, lo adjunto'],['cons','Tengo que consultarlo'],['no','No']]) + '</div>' +
+    '<div style="margin-top:14px">' + upBlock('cert.adj') + '</div>' +
+    pager('pc', 'envio', 'Revisar y enviar');
+}
+function upBlock(path){
+  return '<p class="hint" style="font-size:13px;color:var(--muted)">En esta versión de prueba no se adjuntan archivos. Descríbelos arriba o envíalos por correo al equipo IICA.</p>';
+}
+function pmBlock(){
+  return MEZCLAS.map(function(m){
+    var k = 'm1.pm.' + m.codigo;
+    return '<div class="card"><h4><span class="tag opt" style="margin:0 8px 0 0">' + esc(m.codigo) + '</span>' + esc(m.titulo) + '</h4><p style="margin:4px 0 6px;font-size:13px;color:var(--muted)">' + esc(m.riesgo) + '</p>' +
+      (/^\[PENDIENTE\]/.test(m.control) ? '' : '<p class="sub" style="margin:0 0 8px;font-weight:500">Control conocido: ' + esc(m.control) + '</p>') +
+      radios(k + '.o', '¿Ocurre en tu planta?', [['si','Sí, tal cual'],['dist','Sí, pero distinto'],['no','No ocurre'],['na','No aplica']]) +
+      '<div class="grid" style="margin-top:10px">' + sel(k + '.s', '¿Se puede segregar?', [['', 'Elige…'], ['fis','Sí, físicamente'], ['temp','Sí, por campañas o tiempos'], ['no','No']]) + txt(k + '.c', 'Qué haces hoy para controlarlo', { ph:'Si no hay medida, déjalo vacío' }) + '</div></div>';
+  }).join('');
+}
+function adjList(path){ var l = get(path) || []; if (!l.length) return '<p class="hint" style="font-size:13px;color:var(--muted)">Aún no hay archivos adjuntos.</p>'; return l.map(function(a, i){ return '<div class="rowc" style="padding:8px 12px;margin-bottom:6px"><a href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.name) + '</a> <button class="btn lnk" data-rmadj="' + path + '|' + i + '">Quitar</button></div>'; }).join(''); }
+function vEnvio(){
+  var req = ['meta', 'pc', 'esp'], names = { meta:'Identificación', pc:'Puntos críticos y de mezcla', esp:'Especificaciones' };
+  var lab = { ok:'Completo', part:'En curso', none:'Pendiente' };
+  var h = head('Revisar y enviar', null, 'Revisa el avance. Si falta algo, puedes enviar igual y completarlo después, hasta el plazo.') +
+    '<table class="sum"><thead><tr><th>Sección</th><th>Estado</th></tr></thead><tbody>' + ['meta','pc','esp'].map(function(k){ return '<tr><td>' + names[k] + (req.indexOf(k) < 0 ? ' <span class="tag opt">Opcional</span>' : '') + '</td><td>' + lab[st(k)] + '</td></tr>'; }).join('') + '</tbody></table>';
+  if (D.estado === 'enviada') h += '<div class="note"><b>Enviada</b> el ' + new Date(D.enviadaEn).toLocaleString('es-CL', { dateStyle:'long', timeStyle:'short' }) + '. Puedes seguir editando; vuelve a enviar para avisar que hay cambios.</div>';
+  h += '<div style="margin-top:20px"><button class="btn pri" id="sendBtn">' + (D.estado === 'enviada' ? 'Volver a enviar' : 'Enviar la tarea') + '</button></div>' + pager('esp', null);
+  return h;
+}
+function faltantes(){ return ['meta', 'pc', 'esp'].filter(function(k){ return st(k) !== 'ok'; }); }
+function enviar(){
+  var f = faltantes(), nm = { meta:'Identificación', pc:'Puntos críticos y de mezcla', esp:'Especificaciones' };
+  function done(){ D.estado = 'enviada'; D.enviadaEn = Date.now(); changed(); render(); }
+  if (!f.length){ done(); return; }
+  $('#dT').textContent = 'Faltan partes obligatorias';
+  $('#dP').innerHTML = '<p>Todavía no están completos: <b>' + f.map(function(k){ return esc(nm[k]); }).join(', ') + '</b>.</p><p style="color:var(--muted)">Se acepta una respuesta parcial antes que ninguna. Puedes enviar ahora y seguir completando hasta el plazo.</p>';
+  $('#dlg').classList.add('show'); $('#dNo').onclick = function(){ $('#dlg').classList.remove('show'); };
+  $('#dYes').onclick = function(){ $('#dlg').classList.remove('show'); done(); };
+}
+
+/* ------------------------------------------------------------------ vista */
+function render(){
+  var f = { meta:vMeta, pc:vPc, esp:vEsp, envio:vEnvio }[view] || vMeta;
+  $('#main').innerHTML = f(); updateNav();
+  window.scrollTo({ top:0 });
+}
+function go(v){ view = v; render(); }
+function bind(){
+  var main = $('#main');
+  main.addEventListener('input', function(e){
+    var t = e.target; if (!t.dataset.p || t.type === 'radio') return;
+    set(t.dataset.p, t.value);
+    
+    changed();
+  });
+  main.addEventListener('change', function(e){
+    var t = e.target;
+    if (t.type === 'radio' && t.dataset.p){ set(t.dataset.p, t.value); if (t.dataset.obs){ var ob = $('#obs_' + t.dataset.obs); ob.hidden = t.value === 'igual' && !get('val.rows.' + t.dataset.obs + '.o'); ob.firstChild.placeholder = OBSPH[t.value] || OBSPH.distinto; } changed(); return; }
+    if (t.dataset.pc){ var l = (get(t.dataset.pc) || []).slice(), i = l.indexOf(t.value); if (t.checked && i < 0) l.push(t.value); if (!t.checked && i >= 0) l.splice(i, 1); set(t.dataset.pc, l); changed(); return; }
+    if (t.dataset.up && t.files && t.files[0] && assets){
+      var fl = t.files[0], path = t.dataset.up; t.disabled = true;
+      assets.upload(fl).then(function(r){ set(path, (get(path) || []).concat([{ name:fl.name, url:r.url, id:r.id }])); changed(); $('#adj_' + path.replace(/\./g, '_')).innerHTML = adjList(path); }).catch(function(){ $('#saveChip').textContent = 'No se pudo adjuntar el archivo'; }).finally(function(){ t.disabled = false; t.value = ''; });
+    }
+  });
+  main.addEventListener('click', function(e){
+    var t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.v){ go(t.dataset.v); return; }
+    if (t.dataset.add){ var l = get(t.dataset.add) || []; l.push({}); set(t.dataset.add, l); changed(); render(); return; }
+    if (t.dataset.rm){ var l2 = get(t.dataset.rm); l2.splice(parseInt(t.dataset.i, 10), 1); changed(); render(); return; }
+    if (t.dataset.rmadj){ var pr = t.dataset.rmadj.split('|'); get(pr[0]).splice(parseInt(pr[1], 10), 1); changed(); $('#adj_' + pr[0].replace(/\./g, '_')).innerHTML = adjList(pr[0]); return; }
+    if (t.id === 'sendBtn'){ enviar(); return; }
+  });
+  $('#nav').addEventListener('click', function(e){ var b = e.target.closest('button[data-v]'); if (b) go(b.dataset.v); });
+}
+function merge(base, src){
+  Object.keys(src || {}).forEach(function(k){
+    if (src[k] && typeof src[k] === 'object' && !Array.isArray(src[k]) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) merge(base[k], src[k]);
+    else base[k] = src[k];
+  });
+  return base;
+}
+async function boot(){
+  bind(); render();
+  var local = null;
+  try { var ls = localStorage.getItem('valflujo-borrador'); if (ls) local = JSON.parse(ls); } catch (_) {}
+  uid = obtenerUid();
+  $('#saveChip').textContent = 'Cargando…';
+  var remoto = await cargarRemoto(uid);
+  var base = blank();
+  if (remoto && local) merge(base, (local.actualizado || 0) > (remoto.actualizado || 0) ? local : remoto);
+  else if (remoto || local) merge(base, remoto || local);
+  D = base;
+  $('#saveChip').textContent = 'Se guarda solo';
+  render();
+}
+boot();
+})();
+</script>
+
+</body></html>

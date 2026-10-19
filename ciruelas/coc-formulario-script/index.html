@@ -2,31 +2,17 @@
 <title>Validación del Flujo en Planta</title>
 <meta name="robots" content="noindex">
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
   /* Formulario de la tarea de diagnóstico: navegación por módulos a la izquierda, un módulo a la vez
      a la derecha, guardado automático. Misma paleta del diagrama de flujo. */
   :root{
     --band:#f1ebee;--op-bg:#ffffff;--op-br:#7f93b4;--hinge-bg:#e9f0fa;--hinge-br:#4a6b9c;--in-bg:#e2f1d9;--in-br:#6f9f58;--wa-bg:#fcf3cd;--wa-br:#c9ab35;--pcc-bg:#f9d2d0;--pcc-br:#bb3a2c;--pcc-fg:#7c1f16;--rep-bg:#e6dcf2;--rep-br:#8168b4;--note-bg:#f4eef1;--note-br:#bda9b4;--var-bg:#e4f1ed;--var-br:#2f8671;--st-bg:#dcf0cd;--st-br:#6a9a4e;--en-bg:#f9d2d0;--en-br:#bb3a2c;--c-pp:#5f8f3e;--c-tr:#8b7d73;--c-rsc:#39699f;--c-tsc:#b4652f;--c-fra:#a6457a;--c-fin:#2f8671;--coc-bg:#fdf0d8;--coc-br:#b57f1c;--coc-fg:#6f4c06;--cocp-bg:#6d2b4e;--cocp-fg:#ffffff;
-    --bg:#f6f2f0; --panel:#ffffff; --fg:#2b2126; --muted:#6f6069; --hair:#e2d8dc; --rule:#9c8c94;
-    --accent:#6d2b4e; --on-accent:#ffffff; --accent-soft:#f3e7ee; --field:#fbf9f8;
-    --ok:#2f8671; --ok-bg:#e4f1ed; --warn:#a96f10; --warn-bg:#fcf3cd; --bad:#bb3a2c;
-    --display:"Bitter",Georgia,serif;
-    --ui:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
-  }
-  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
-    --band:#221c24;--op-bg:#262029;--op-br:#7b91b6;--hinge-bg:#1e2634;--hinge-br:#86a7d8;--in-bg:#1f2d1a;--in-br:#7aa860;--wa-bg:#2f2810;--wa-br:#c6a83c;--pcc-bg:#3c1715;--pcc-br:#e07264;--pcc-fg:#ffd8d2;--rep-bg:#262036;--rep-br:#a28cd0;--note-bg:#262026;--note-br:#6a5c64;--var-bg:#152925;--var-br:#5cc0a6;--st-bg:#1f2d1a;--st-br:#7aa860;--en-bg:#3c1715;--en-br:#e07264;--c-pp:#8fc16c;--c-tr:#b3a49a;--c-rsc:#7eabdd;--c-tsc:#e09359;--c-fra:#e07aae;--c-fin:#5cc0a6;--coc-bg:#3a2d10;--coc-br:#d2a33c;--coc-fg:#f7dfa8;--cocp-bg:#d894b4;--cocp-fg:#1c1019;
-    --bg:#110e11; --panel:#1d181f; --fg:#efe6ea; --muted:#a5969e; --hair:#352c35; --rule:#8b7b84;
-    --accent:#d894b4; --on-accent:#1c1019; --accent-soft:#2b1c26; --field:#161216;
-    --ok:#5cc0a6; --ok-bg:#152925; --warn:#d2a33c; --warn-bg:#2f2810; --bad:#e07264;
-    color-scheme:dark;
-  }}
-  :root[data-theme="dark"]{
-    --band:#221c24;--op-bg:#262029;--op-br:#7b91b6;--hinge-bg:#1e2634;--hinge-br:#86a7d8;--in-bg:#1f2d1a;--in-br:#7aa860;--wa-bg:#2f2810;--wa-br:#c6a83c;--pcc-bg:#3c1715;--pcc-br:#e07264;--pcc-fg:#ffd8d2;--rep-bg:#262036;--rep-br:#a28cd0;--note-bg:#262026;--note-br:#6a5c64;--var-bg:#152925;--var-br:#5cc0a6;--st-bg:#1f2d1a;--st-br:#7aa860;--en-bg:#3c1715;--en-br:#e07264;--c-pp:#8fc16c;--c-tr:#b3a49a;--c-rsc:#7eabdd;--c-tsc:#e09359;--c-fra:#e07aae;--c-fin:#5cc0a6;--coc-bg:#3a2d10;--coc-br:#d2a33c;--coc-fg:#f7dfa8;--cocp-bg:#d894b4;--cocp-fg:#1c1019;
-    --bg:#110e11; --panel:#1d181f; --fg:#efe6ea; --muted:#a5969e; --hair:#352c35; --rule:#8b7b84;
-    --accent:#d894b4; --on-accent:#1c1019; --accent-soft:#2b1c26; --field:#161216;
-    --ok:#5cc0a6; --ok-bg:#152925; --warn:#d2a33c; --warn-bg:#2f2810; --bad:#e07264;
-    color-scheme:dark;
+    --bg:#ffffff; --panel:#ffffff; --fg:#33323a; --muted:#6b6b73; --hair:#e6d8f0; --rule:#c9b6d6;
+    --accent:#6a4580; --on-accent:#ffffff; --accent-soft:#f3ecf7; --field:#ffffff;
+    --green:#4f7f22; --green-soft:#eff5e5;
+    --ok:#4f7f22; --ok-bg:#eff5e5; --warn:#4f7f22; --warn-bg:#eff5e5; --bad:#b3372c;
+    --display:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,sans-serif;
+    --ui:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,sans-serif;
   }
   .fig svg text{font-family:var(--ui);}.fig .n rect,.fig .n polygon,.fig .n circle{stroke-width:1.4;}.fig .n.op rect{fill:var(--op-bg); stroke:var(--op-br);}.fig .n.hinge rect{fill:var(--hinge-bg); stroke:var(--hinge-br); stroke-width:1.8;}.fig .n.in rect{fill:var(--in-bg); stroke:var(--in-br);}.fig .n.waste rect{fill:var(--wa-bg); stroke:var(--wa-br);}.fig .n.rep rect{fill:var(--rep-bg); stroke:var(--rep-br); stroke-dasharray:4 3;}.fig .n.note rect{fill:var(--note-bg); stroke:var(--note-br); stroke-dasharray:4 3;}.fig .n.pcc rect{fill:var(--pcc-bg); stroke:var(--pcc-br); stroke-width:1.9;}.fig .n.var rect{fill:var(--var-bg); stroke:var(--var-br); stroke-width:1.7; stroke-dasharray:5 3;}.fig .n.opt polygon{fill:var(--wa-bg); stroke:var(--wa-br);}.fig .n.dec polygon{fill:var(--rep-bg); stroke:var(--rep-br);}.fig .n.start circle{fill:var(--st-bg); stroke:var(--st-br); stroke-width:2;}.fig .n.end circle{fill:var(--en-bg); stroke:var(--en-br); stroke-width:2;}.fig .lbl{fill:var(--fg);}.fig .n.pcc .lbl{fill:var(--pcc-fg); font-weight:600;}.fig .n.rep .lbl,.fig .n.note .lbl{fill:var(--muted);}.fig .cap{fill:var(--muted); font-style:italic;}.fig .cap2{fill:var(--muted); font-weight:600; letter-spacing:.02em;}.fig .elbl{fill:var(--muted); font-weight:600;}.fig .flow{fill:none; stroke:var(--rule); stroke-width:1.5;}.fig .feedline{opacity:.6;}.fig .repflow{stroke:var(--rep-br); stroke-width:1.5;}.fig #arfig>path{fill:var(--rule);}.fig #arr>path{fill:var(--rep-br);}.fig .band rect{fill:var(--band); stroke:none;}.fig .bpp .bedge{fill:var(--c-pp);}.fig .btr .bedge{fill:var(--c-tr);}.fig .brsc .bedge{fill:var(--c-rsc);}.fig .btsc .bedge{fill:var(--c-tsc);}.fig .bfra .bedge{fill:var(--c-fra);}.fig .bfin .bedge{fill:var(--c-fin);}.fig .bhead{font-family:var(--ui); paint-order:stroke; stroke:var(--band); stroke-width:6px;
          stroke-linejoin:round;}.fig .bhead .bsub{fill:var(--muted); font-weight:500;}.fig .bhpp .bnum,.fig .bhpp .btit{fill:var(--c-pp);}.fig .bhtr .bnum,.fig .bhtr .btit{fill:var(--c-tr);}.fig .bhrsc .bnum,.fig .bhrsc .btit{fill:var(--c-rsc);}.fig .bhtsc .bnum,.fig .bhtsc .btit{fill:var(--c-tsc);}.fig .bhfra .bnum,.fig .bhfra .btit{fill:var(--c-fra);}.fig .bhfin .bnum,.fig .bhfin .btit{fill:var(--c-fin);}
@@ -135,9 +121,40 @@
     main#main{padding:20px 16px 24px;}
     .stage{grid-template-columns:minmax(0,1fr);} .kv{grid-template-columns:minmax(0,1fr);}
   }
+
+  /* Estilo de la presentación de la sesión (morado #6A4580, tarjetas lila y verde, Calibri) */
+  body{font-size:15.5px;}
+  h1,main h2{color:var(--accent); font-weight:700; letter-spacing:0;}
+  h1{font-size:clamp(26px,3.6vw,36px);}
+  .eyebrow{color:var(--green); letter-spacing:.16em; font-weight:700;}
+  header.top{border-bottom:0; padding:16px 0 14px;}
+  .brand{display:flex; gap:22px; align-items:center; flex-wrap:wrap; padding:14px 0 0; margin:0 0 4px;}
+  .brand img{height:34px; width:auto; display:block;}
+  .brandline{height:3px; border-radius:2px; background:linear-gradient(90deg,var(--accent) 0 70%,var(--green) 70% 100%); margin:6px 0 0;}
+  .chip.dl{border-color:transparent; background:var(--green-soft); color:var(--green); font-weight:600;}
+  .chip.sv{background:var(--accent-soft); border-color:transparent; color:var(--accent); font-weight:600;}
+  .chip.sv.busy{color:var(--muted);}
+  main#main{border:0; border-radius:16px; padding:26px 4px 30px;}
+  .card,.rowc,details.resp,.kpi{background:var(--accent-soft); border-color:transparent; border-radius:12px;}
+  .card:nth-of-type(even){background:var(--green-soft);}
+  .card h4,.card .sub{color:var(--accent);}
+  .posture{background:var(--accent-soft); border-color:transparent;}
+  .note{background:var(--accent-soft); border-left-color:var(--accent); color:var(--fg);}
+  .note.warn{background:var(--green-soft); border-left-color:var(--green);}
+  nav#nav button[aria-current="step"]{background:var(--accent); border-color:var(--accent); color:var(--on-accent); box-shadow:none;}
+  nav#nav button[aria-current="step"] small{color:#e6d8f0;}
+  nav#nav button[aria-current="step"] .dot{border-color:#e6d8f0;}
+  nav#nav button:hover{background:var(--accent-soft);} nav#nav button[aria-current="step"]:hover{background:var(--accent);}
+  .opts label,.seg3 label{background:#fff;}
+  table.obsT tr.g td,.grp > .gt{color:var(--accent);}
+  .tag.opt{background:var(--green-soft); color:var(--green);}
+  input[type=text],input[type=number],select,textarea{border-color:var(--rule);}
+  main h3{color:var(--green);}
 </style>
 
 <div class="wrap">
+  <div class="brand"><img src="logos/iica.png" alt="IICA"><img src="logos/agencia-scc.png" alt="Agencia de Sustentabilidad y Cambio Climático"><img src="logos/chile-origen-consciente.png" alt="Chile Origen Consciente"></div>
+  <div class="brandline"></div>
   <header class="top">
     <div>
       <div class="eyebrow">Chileprunes · Programa Chile Origen Consciente</div>
@@ -275,7 +292,6 @@ function vMeta(){
     '<h3>Identificación</h3><div class="grid">' + txt('meta.empresa', 'Empresa') + txt('meta.planta', 'Planta o instalación que se describe') + txt('meta.persona', 'Nombre de quien responde') + txt('meta.cargo', 'Cargo') + txt('meta.correo', 'Correo de contacto') + txt('meta.fecha', 'Fecha en que se trabajó con el equipo', { ph:'Ej.: 24 de octubre' }) + '</div>' +
     '<div style="margin-top:14px">' + ta('meta.equipo', 'Integrantes del equipo que participaron', { ph:'Nombre y cargo, uno por línea' }) + '</div>' +
     '<div style="margin-top:14px">' + checks('meta.rol', 'Su empresa participa en el proceso como', [['planta','Planta de secado y proceso'],['huerto','Productor con huertos propios'],['acopio','Acopiador o intermediario'],['maq','Presta servicios de maquila']]) + '</div>' +
-    '<div class="note warn" style="margin-top:20px">Las respuestas de cada empresa solo las ve el equipo IICA que edita este formulario. <i>(Texto por confirmar con IICA antes de compartir el formulario.)</i></div>' +
     pager(null, 'pc', 'Siguiente');
 }
 function rowsEd(base, fields, addLabel, minRows){

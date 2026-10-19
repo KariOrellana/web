@@ -318,7 +318,24 @@ function vEsp(){
     pager('pc', 'envio', 'Revisar y enviar');
 }
 function upBlock(path){
-  return '<p class="hint" style="font-size:13px;color:var(--muted)">En esta versión de prueba no se adjuntan archivos. Descríbelos arriba o envíalos por correo al equipo IICA.</p>';
+  return '<div id="adj_' + path.replace(/\./g, '_') + '">' + adjList(path) + '</div>' +
+    '<input type="file" data-up="' + path + '" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" aria-label="Adjuntar archivo">' +
+    '<p class="hint" style="font-size:13px;color:var(--muted);margin-top:6px">Imagen (png, jpg, gif, webp) o PDF, hasta 10 MB por archivo.</p>';
+}
+function subirArchivo(fl){
+  return new Promise(function(res, rej){
+    if (!uid) return rej(new Error('sinid'));
+    if (fl.size > 10 * 1024 * 1024) return rej(new Error('grande'));
+    var rd = new FileReader();
+    rd.onerror = function(){ rej(new Error('lectura')); };
+    rd.onload = function(){
+      fetch(EXEC, { method:'POST', headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify({ tipo:'subir', id:uid, nombre:fl.name, mime:fl.type, b64:String(rd.result).split(',')[1] }) })
+        .then(function(r){ return r.json(); })
+        .then(function(j){ if (j && j.ok) res(j); else rej(new Error((j && j.error) || 'fallo')); })
+        .catch(rej);
+    };
+    rd.readAsDataURL(fl);
+  });
 }
 function pmBlock(){
   return MEZCLAS.map(function(m){
@@ -369,9 +386,9 @@ function bind(){
     var t = e.target;
     if (t.type === 'radio' && t.dataset.p){ set(t.dataset.p, t.value); if (t.dataset.obs){ var ob = $('#obs_' + t.dataset.obs); ob.hidden = t.value === 'igual' && !get('val.rows.' + t.dataset.obs + '.o'); ob.firstChild.placeholder = OBSPH[t.value] || OBSPH.distinto; } changed(); return; }
     if (t.dataset.pc){ var l = (get(t.dataset.pc) || []).slice(), i = l.indexOf(t.value); if (t.checked && i < 0) l.push(t.value); if (!t.checked && i >= 0) l.splice(i, 1); set(t.dataset.pc, l); changed(); return; }
-    if (t.dataset.up && t.files && t.files[0] && assets){
+    if (t.dataset.up && t.files && t.files[0]){
       var fl = t.files[0], path = t.dataset.up; t.disabled = true;
-      assets.upload(fl).then(function(r){ set(path, (get(path) || []).concat([{ name:fl.name, url:r.url, id:r.id }])); changed(); $('#adj_' + path.replace(/\./g, '_')).innerHTML = adjList(path); }).catch(function(){ $('#saveChip').textContent = 'No se pudo adjuntar el archivo'; }).finally(function(){ t.disabled = false; t.value = ''; });
+      subirArchivo(fl).then(function(r){ set(path, (get(path) || []).concat([{ name:fl.name, url:r.url, id:r.id }])); changed(); $('#adj_' + path.replace(/\./g, '_')).innerHTML = adjList(path); }).catch(function(e){ $('#saveChip').textContent = e.message === 'grande' ? 'El archivo supera los 10 MB' : e.message === 'tipo' ? 'Solo se aceptan imágenes o PDF' : 'No se pudo adjuntar el archivo'; }).finally(function(){ t.disabled = false; t.value = ''; });
     }
   });
   main.addEventListener('click', function(e){

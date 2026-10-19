@@ -153,14 +153,14 @@
 </style>
 
 <div class="wrap">
-  <div class="brand"><img src="logos/iica.png" alt="IICA"><img src="logos/agencia-scc.png" alt="Agencia de Sustentabilidad y Cambio Climático"><img src="logos/chile-origen-consciente.png" alt="Chile Origen Consciente"></div>
+  <div class="brand"><img src="logos/chileprunes.png" alt="Chileprunes Association" style="height:46px"><img src="logos/iica.png" alt="IICA"><img src="logos/agencia-scc.png" alt="Agencia de Sustentabilidad y Cambio Climático"><img src="logos/chile-origen-consciente.png" alt="Chile Origen Consciente"></div>
   <div class="brandline"></div>
   <header class="top">
     <div>
       <div class="eyebrow">Chileprunes · Programa Chile Origen Consciente</div>
       <h1>Validación del flujo en planta</h1>
     </div>
-    <div class="chips"><span class="chip dl">Plazo: martes 27 de octubre, fin del día</span><span class="chip sv" id="saveChip">Sin cambios</span></div>
+    <div class="chips"><span class="chip sv" id="saveChip">Sin cambios</span></div>
   </header>
   <div class="layout"><nav id="nav" aria-label="Módulos del formulario"></nav><main id="main"></main></div>
 </div>
@@ -288,7 +288,7 @@ function pager(prev, next, last){
 
 /* ------------------------------------------------------------------ secciones */
 function vMeta(){
-  return head('Validación del flujo de procesos', null, 'Con este formulario cada empresa, junto a su equipo, revisa el esquema del flujo que se trabajó en el taller: marca observaciones sobre las etapas, los puntos críticos y los puntos de mezcla, y cuéntanos cómo llega la fruta a su instalación. Plazo: martes 27 de octubre, fin del día. Se acepta una respuesta parcial; se guarda sola.') +
+  return head('Validación del flujo de procesos', null, 'Con este formulario cada empresa, junto a su equipo, revisa el esquema del flujo que se trabajó en el taller: marca observaciones sobre las etapas, los puntos críticos y los puntos de mezcla, y cuéntanos cómo llega la fruta a su instalación. Se acepta una respuesta parcial; se guarda sola.') +
     '<h3>Identificación</h3><div class="grid">' + txt('meta.empresa', 'Empresa') + txt('meta.planta', 'Planta o instalación que se describe') + txt('meta.persona', 'Nombre de quien responde') + txt('meta.cargo', 'Cargo') + txt('meta.correo', 'Correo de contacto') + txt('meta.fecha', 'Fecha en que se trabajó con el equipo', { ph:'Ej.: 24 de octubre' }) + '</div>' +
     '<div style="margin-top:14px">' + ta('meta.equipo', 'Integrantes del equipo que participaron', { ph:'Nombre y cargo, uno por línea' }) + '</div>' +
     '<div style="margin-top:14px">' + checks('meta.rol', 'Su empresa participa en el proceso como', [['planta','Planta de secado y proceso'],['huerto','Productor con huertos propios'],['acopio','Acopiador o intermediario'],['maq','Presta servicios de maquila']]) + '</div>' +
@@ -366,7 +366,7 @@ function adjList(path){ var l = get(path) || []; if (!l.length) return '<p class
 function vEnvio(){
   var req = ['meta', 'pc', 'esp'], names = { meta:'Identificación', pc:'Puntos críticos y de mezcla', esp:'Especificaciones' };
   var lab = { ok:'Completo', part:'En curso', none:'Pendiente' };
-  var h = head('Revisar y enviar', null, 'Revisa el avance. Si falta algo, puedes enviar igual y completarlo después, hasta el plazo.') +
+  var h = head('Revisar y enviar', null, 'Revisa el avance. Si falta algo, puedes enviar igual y completarlo después.') +
     '<table class="sum"><thead><tr><th>Sección</th><th>Estado</th></tr></thead><tbody>' + ['meta','pc','esp'].map(function(k){ return '<tr><td>' + names[k] + (req.indexOf(k) < 0 ? ' <span class="tag opt">Opcional</span>' : '') + '</td><td>' + lab[st(k)] + '</td></tr>'; }).join('') + '</tbody></table>';
   if (D.estado === 'enviada') h += '<div class="note"><b>Enviada</b> el ' + new Date(D.enviadaEn).toLocaleString('es-CL', { dateStyle:'long', timeStyle:'short' }) + '. Puedes seguir editando; vuelve a enviar para avisar que hay cambios.</div>';
   h += '<div style="margin-top:20px"><button class="btn pri" id="sendBtn">' + (D.estado === 'enviada' ? 'Volver a enviar' : 'Enviar la tarea') + '</button></div>' + pager('esp', null);
@@ -378,7 +378,7 @@ function enviar(){
   function done(){ D.estado = 'enviada'; D.enviadaEn = Date.now(); changed(); render(); }
   if (!f.length){ done(); return; }
   $('#dT').textContent = 'Faltan partes obligatorias';
-  $('#dP').innerHTML = '<p>Todavía no están completos: <b>' + f.map(function(k){ return esc(nm[k]); }).join(', ') + '</b>.</p><p style="color:var(--muted)">Se acepta una respuesta parcial antes que ninguna. Puedes enviar ahora y seguir completando hasta el plazo.</p>';
+  $('#dP').innerHTML = '<p>Todavía no están completos: <b>' + f.map(function(k){ return esc(nm[k]); }).join(', ') + '</b>.</p><p style="color:var(--muted)">Se acepta una respuesta parcial antes que ninguna. Puedes enviar ahora y seguir completando después.</p>';
   $('#dlg').classList.add('show'); $('#dNo').onclick = function(){ $('#dlg').classList.remove('show'); };
   $('#dYes').onclick = function(){ $('#dlg').classList.remove('show'); done(); };
 }

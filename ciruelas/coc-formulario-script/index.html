@@ -168,12 +168,15 @@
   .igkey svg{flex:none; width:64px; height:40px;}
   /* ---- Puntos de verificación y de mezcla ---- */
   .figtools{display:flex; justify-content:space-between; align-items:center; gap:8px; margin:0 0 6px; min-height:26px;}
-  .figtools .hintz{font-size:12.5px; color:var(--muted);}
-  .fig .n.hl rect,.fig .n.hl polygon,.fig .n.hl circle{stroke:var(--accent); stroke-width:4.5; filter:drop-shadow(0 0 7px rgba(106,69,128,.6));}
-  .fig .n.hl rect,.fig .n.hl polygon{fill:#f3ecf7;}
-  .fig .mzc.hl rect{stroke:var(--accent); stroke-width:4; filter:drop-shadow(0 0 6px rgba(106,69,128,.6));}
-  .fig .cocpt.hl circle{r:16px; stroke:#fff; stroke-width:3; filter:drop-shadow(0 0 7px rgba(106,69,128,.8));}
-  .fig svg.dim .n:not(.hl),.fig svg.dim .mzc:not(.hl),.fig svg.dim .cocpt:not(.hl){opacity:.4;}
+  .figtools .hintz{font-size:12.5px; color:var(--muted); flex:1 1 auto;}
+  .zctl{display:inline-flex; align-items:center; gap:4px; flex:none;}
+  .zb{appearance:none; width:32px; height:32px; border-radius:8px; border:1px solid var(--rule); background:#fff; color:var(--accent); font-size:20px; font-weight:700; line-height:1; cursor:pointer; display:grid; place-items:center; padding:0;}
+  .zb:hover{background:var(--accent-soft);}
+  .zv{min-width:44px; text-align:center; font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .fig .n.hl rect,.fig .n.hl polygon,.fig .n.hl circle{stroke:var(--accent); stroke-width:3.5;}
+  .fig .mzc.hl rect{stroke:var(--accent); stroke-width:3.5;}
+  .fig .cocpt.hl circle{stroke:var(--accent); stroke-width:3.5; fill:#fff;}
+  .fig .cocpt.hl .cocnum{fill:var(--accent);}
   .fig svg [data-id],.fig svg [data-m],.fig svg [data-p]{cursor:pointer;}
   .pnl{border:1px solid var(--hair); border-radius:12px; background:#fff; max-height:calc(100vh - 80px); overflow:auto;}
   .pnl .eg{position:sticky; top:0; z-index:1; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:12.5px; letter-spacing:.04em; padding:7px 12px; border-bottom:1px solid var(--hair);}
@@ -206,6 +209,18 @@
   .upin:focus-visible + .upbtn{outline:3px solid var(--green); outline-offset:3px;}
   .upin:disabled + .upbtn{opacity:.55; cursor:progress; box-shadow:none;}
   .updrop .uph{font-size:13px; color:var(--muted); flex:1 1 220px;}
+
+  .pnl .fase{border-bottom:1px solid var(--hair);}
+  .pnl .eg{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:14px;}
+  .pnl .eg .oc{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--accent); background:#fff; border:1px solid var(--rule); border-radius:99px; padding:3px 11px 3px 8px; cursor:pointer; letter-spacing:0;}
+  .pnl .eg .oc input{accent-color:var(--accent); width:16px; height:16px; margin:0;}
+  .pnl .eg .oc:has(input:checked){background:var(--accent); color:#fff; border-color:var(--accent);}
+  .pnl .eg .oc:has(input:checked) input{accent-color:#fff;}
+  .pnl .gbody[hidden]{display:none;}
+  .pnl .gbody{border-top:1px solid var(--hair);}
+  .er .et{display:flex; align-items:flex-start; gap:9px; cursor:pointer; font-size:14px; font-weight:500; line-height:1.3;}
+  .er .et input{accent-color:var(--accent); width:17px; height:17px; margin:1px 0 0; flex:none;}
+  .er.on .et{color:var(--accent); font-weight:600;}
 </style>
 
 <div class="wrap">
@@ -263,9 +278,9 @@ function nuevoId(){ var a = new Uint8Array(16); crypto.getRandomValues(a); retur
 function obtenerUid(){
   var id = null;
   try { var q = new URLSearchParams(location.search).get('c'); if (q && ID_OK.test(q)) id = q; } catch (_) {}
-  try { if (!id){ var s = localStorage.getItem('valflujo-uid'); if (s && ID_OK.test(s)) id = s; } } catch (_) {}
+  try { if (!id){ var s = localStorage.getItem('valflujo-uid2'); if (s && ID_OK.test(s)) id = s; } } catch (_) {}
   if (!id) id = nuevoId();
-  try { localStorage.setItem('valflujo-uid', id); } catch (_) {}
+  try { localStorage.setItem('valflujo-uid2', id); } catch (_) {}
   try { history.replaceState(null, '', '?c=' + id); } catch (_) {}
   return id;
 }
@@ -292,7 +307,7 @@ function changed(){
   D.actualizado = Date.now();
   var chip = $('#saveChip'); chip.textContent = 'Guardando…'; chip.classList.add('busy');
   clearTimeout(saveTimer); saveTimer = setTimeout(save, 900);
-  try { localStorage.setItem('valflujo-borrador', JSON.stringify(D)); } catch (_) {}
+  try { localStorage.setItem('valflujo-borrador2', JSON.stringify(D)); } catch (_) {}
   updateNav();
 }
 async function save(){
@@ -334,6 +349,10 @@ function ta(p, label, o){ o = o || {}; return '<div class="field"><label for="f_
 function sel(p, label, opts, o){ o = o || {}; var v = get(p) || ''; return '<div class="field"><label for="f_' + p + '">' + esc(label) + '</label><select id="f_' + p + '" data-p="' + p + '">' + opts.map(function(x){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(k) + '"' + (v === k ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select></div>'; }
 function radios(p, label, opts){ var v = get(p); return '<div class="field" role="radiogroup" aria-label="' + esc(label) + '"><span class="lab">' + esc(label) + '</span><div class="opts">' + opts.map(function(x, i){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<label><input type="radio" name="r_' + p + '" data-p="' + p + '" value="' + esc(k) + '"' + (v === k ? ' checked' : '') + '> ' + esc(l) + '</label>'; }).join('') + '</div></div>'; }
 function checks(p, label, opts, hint){ var v = get(p) || []; return '<div class="field"><span class="lab">' + esc(label) + '</span>' + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<div class="opts">' + opts.map(function(x){ var k = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<label><input type="checkbox" data-pc="' + p + '" value="' + esc(k) + '"' + (v.indexOf(k) >= 0 ? ' checked' : '') + '> ' + esc(l) + '</label>'; }).join('') + '</div></div>'; }
+function posturaCuerpo(mod){
+  return radios(mod + '.post.m', 'Método que les resultaría viable', [['seg','Segregación'],['bal','Balance de masa'],['amb','Ambos'],['nose','Aún no lo sabemos']]) +
+    '<div style="margin-top:12px">' + ta(mod + '.post.c', 'Condiciones que necesitarían', { ph:'Cambios, plazos, apoyo o información que harían viable ese método' }) + '</div>';
+}
 function postura(mod, intro){
   return '<div class="posture"><h3>Para cerrar este módulo</h3><p style="margin:0 0 12px">' + esc(intro || '¿Qué método les resultaría viable para verificar la cadena de custodia, y qué condiciones necesitarían?') + '</p>' +
     radios(mod + '.post.m', 'Método que les resultaría viable', [['seg','Segregación'],['bal','Balance de masa'],['amb','Ambos'],['nose','Aún no lo sabemos']]) +
@@ -350,7 +369,7 @@ function vInicio(){
     '<ol class="ig">' +
     '<li><div class="igt"><span class="ign">1</span><h4>Identifícate</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#6a4580" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="27" cy="19" r="8"/><path d="M11 45c1-9 8-14 16-14s15 5 16 14"/></svg><p>Empresa, nombre, cargo y correo de quien responde.</p></li>' +
     '<li><div class="igt"><span class="ign">2</span><h4>Revisa el flujo</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#4f7f22" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="18" height="11" rx="3"/><rect x="30" y="21" width="18" height="11" rx="3"/><rect x="6" y="37" width="18" height="11" rx="3"/><path d="M24 12h8c4 0 6 2 6 6v3M30 26h-8c-4 0-6 2-6 6v5"/></svg><p>Es el flujo que se trabajó en la sesión del 20 de octubre, con los ajustes acordados.</p></li>' +
-    '<li><div class="igt"><span class="ign">3</span><h4>Marca tus observaciones</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#6a4580" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="26" height="26" rx="5"/><path d="M14 23l6 6 10-12"/><path d="M34 44l3-9 11-11 5 5-11 11z"/></svg><p>Elige una etapa del cuadro: el flujo se acerca y la destaca. Si algo es distinto en tu planta, marca “Tengo una observación” y cuéntanos. Si es igual, no hagas nada.</p></li>' +
+    '<li><div class="igt"><span class="ign">3</span><h4>Marca tus observaciones</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#6a4580" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="26" height="26" rx="5"/><path d="M14 23l6 6 10-12"/><path d="M34 44l3-9 11-11 5 5-11 11z"/></svg><p>Elige una etapa del cuadro: el flujo la destaca. Si algo es distinto en tu planta, marca “Tengo una observación” y cuéntanos. Si es igual, no hagas nada.</p></li>' +
     '<li><div class="igt"><span class="ign">4</span><h4>Cuéntanos cómo llega la fruta</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#4f7f22" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 36V12M17 22l10-10 10 10"/><path d="M8 38v6h38v-6"/></svg><p>Orígenes y cómo mantienen la identidad del lote. Si puedes, adjunta tu propio flujo o el esquema de otra certificación.</p></li>' +
     '<li><div class="igt"><span class="ign">5</span><h4>Envía</h4></div><svg class="ic" viewBox="0 0 54 54" aria-hidden="true" fill="none" stroke="#6a4580" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 27L48 9 36 46 26 31z"/><path d="M26 31l22-22"/></svg><p>Todo se guarda solo y puedes volver con el mismo enlace. Al terminar, pulsa “Enviar la tarea”.</p></li>' +
     '</ol>' +
@@ -384,21 +403,31 @@ function obsRow(label, p, badge){
 }
 function erow(t, k, label, p, badge){
   var has = String(get(p) || '').trim() !== '', on = get('val.chk.' + t + k) === true || has;
-  return '<div class="er" data-t="' + t + '" data-k="' + esc(k) + '"><div class="et">' + (badge ? '<span class="badge ' + badge[0] + '">' + esc(badge[1]) + '</span>' : '') + esc(label) + '</div>' +
-    '<label class="oc"><input type="checkbox" data-chk="' + t + k + '"' + (on ? ' checked' : '') + '> Tengo una observación</label>' +
+  return '<div class="er' + (on ? ' on' : '') + '" data-t="' + t + '" data-k="' + esc(k) + '"><label class="et"><input type="checkbox" data-chk="' + t + k + '"' + (on ? ' checked' : '') + '><span>' + (badge ? '<span class="badge ' + badge[0] + '">' + esc(badge[1]) + '</span>' : '') + esc(label) + '</span></label>' +
     '<textarea data-p="' + p + '" rows="2" aria-label="Observación: ' + esc(label) + '" placeholder="¿Qué es distinto en tu planta? ¿Qué registro o control usan? ¿Quién responde?"' + (on ? '' : ' hidden') + '>' + esc(get(p)) + '</textarea></div>';
 }
+function fase(gid, titulo, filas, hasAny, extra){
+  var on = get('val.chk.' + gid) === true || hasAny;
+  return '<div class="fase" data-g="' + gid + '"><div class="eg"><span>' + esc(titulo) + '</span><label class="oc"><input type="checkbox" data-gchk="' + gid + '"' + (on ? ' checked' : '') + '> Tengo observaciones</label></div>' +
+    '<div class="gbody"' + (on ? '' : ' hidden') + '>' + filas + (extra || '') + '</div></div>';
+}
 function vPc(){
-  var rows = '';
-  ETAPAS.forEach(function(g){ rows += '<div class="eg">' + esc(g.g) + '</div>' + g.r.map(function(r){ return erow('i', r[0], r[1], 'val.rows.' + r[0] + '.o'); }).join(''); });
-  rows += '<div class="eg">Puntos de verificación</div>' + PUNTOS.map(function(p){ return erow('p', p.numero, p.titulo, 'val.puntos.' + p.numero + '.o', ['p', p.numero]); }).join('');
-  rows += '<div class="eg">Puntos de mezcla</div>' + MEZCLAS.map(function(m){ return erow('m', m.codigo, m.titulo, 'm1.pm.' + m.codigo + '.obs', ['m', m.codigo]); }).join('');
+  var rows = '', anyOf = function(p){ return String(get(p) || '').trim() !== ''; };
+  ETAPAS.forEach(function(g, gi){
+    var any = g.r.some(function(r){ return anyOf('val.rows.' + r[0] + '.o') || get('val.chk.i' + r[0]) === true; });
+    rows += fase('g' + gi, g.g, g.r.map(function(r){ return erow('i', r[0], r[1], 'val.rows.' + r[0] + '.o'); }).join(''), any);
+  });
+  rows += fase('gp', 'Puntos de verificación', PUNTOS.map(function(p){ return erow('p', p.numero, p.titulo, 'val.puntos.' + p.numero + '.o', ['p', p.numero]); }).join(''),
+    PUNTOS.some(function(p){ return anyOf('val.puntos.' + p.numero + '.o') || get('val.chk.p' + p.numero) === true; }));
+  rows += fase('gm', 'Puntos de mezcla', MEZCLAS.map(function(m){ return erow('m', m.codigo, m.titulo, 'm1.pm.' + m.codigo + '.obs', ['m', m.codigo]); }).join(''),
+    MEZCLAS.some(function(m){ return anyOf('m1.pm.' + m.codigo + '.obs') || get('val.chk.m' + m.codigo) === true; }));
   var ex = (D.m1.rows || []).map(function(r, i){ return '<div class="er"><input type="text" data-p="m1.rows.' + i + '.ub" value="' + esc(r.ub) + '" placeholder="Otra etapa o punto de tu planta" aria-label="Otra etapa o punto"><textarea data-p="m1.rows.' + i + '.desc" rows="2" aria-label="Observación" placeholder="¿Qué ocurre ahí?">' + esc(r.desc) + '</textarea></div>'; }).join('');
-  return head('Puntos de verificación y de mezcla', null, 'A la izquierda está el flujo, que ya incorpora los ajustes de la sesión del 20 de octubre. A la derecha, elige una etapa: el flujo se acerca y la destaca. Si algo es distinto en tu planta, marca “Tengo una observación” y escríbela. Si es igual, no hagas nada.') +
-    '<div class="split"><div class="figcol"><div class="figtools"><span class="hintz">También puedes tocar una etapa en el flujo.</span><button class="btn lnk" id="zoomReset" hidden>Ver todo el flujo</button></div>' +
+  rows += fase('go', 'Otras etapas o puntos de tu planta', ex, (D.m1.rows || []).some(function(r){ return String(r.ub || r.desc || '').trim() !== ''; }), '<div class="addrow"><button class="btn" data-add="m1.rows">Agregar otra etapa o punto</button></div>');
+  return head('Puntos de verificación y de mezcla', null, 'Marca “Tengo observaciones” en las fases donde algo sea distinto en tu planta. Se despliegan sus etapas: marca la que corresponda y cuéntanos qué cambia. El flujo destaca la etapa que elijas. Si todo es igual, no hagas nada.') +
+    '<div class="split"><div class="figcol"><div class="figtools"><span class="hintz">También puedes tocar una etapa en el flujo.</span><span class="zctl" role="group" aria-label="Zoom del flujo"><button type="button" class="zb" data-zoom="-1" aria-label="Alejar el flujo" title="Alejar">−</button><span class="zv" id="zval" aria-live="polite">100%</span><button type="button" class="zb" data-zoom="1" aria-label="Acercar el flujo" title="Acercar">+</button></span></div>' +
     '<div class="figwrap fig" tabindex="0" role="region" aria-label="Diagrama del flujo, desplazable">' + FLUJO_SVG + '</div>' +
     '<p class="legend2"><span><b class="lp">1</b>Punto de verificación</span><span><b class="lm">M1</b>Punto de mezcla</span><span>Punteado amarillo: por mapear</span></p></div>' +
-    '<div class="pnl" id="pnl">' + rows + '<div class="eg">Otras etapas o puntos de tu planta</div>' + ex + '<div class="addrow"><button class="btn" data-add="m1.rows">Agregar otra etapa o punto</button></div></div></div>' +
+    '<div class="pnl" id="pnl">' + rows + '</div></div>' +
     pager('meta', 'esp');
 }
 var ORIG = [['propiofresca','Fruta fresca de huertos propios'],['propioseca','Fruta seca en huertos propios'],['prodfresca','Fruta fresca de productores'],['prodseca','Fruta seca por productores'],['canchat','Secada en cancha de terceros'],['hornot','Secada en horno de terceros'],['acop','Acopiadores o intermediarios'],['otro','Otro origen']];
@@ -416,7 +445,7 @@ function vEsp(){
       '<div class="grid" style="margin-top:14px">' + txt('cert.cual', 'Cuál certificación') + '</div>' +
       '<div style="margin-top:14px">' + radios('cert.comp', '¿Pueden compartirlo?', [['si','Sí, lo adjunto'],['cons','Tengo que consultarlo'],['no','No']]) + '</div>' +
       '<div style="margin-top:14px">' + upBlock('cert.adj') + '</div>', true) +
-    postura('pc') +
+    esec(4, 'Cómo verificarían la cadena de custodia', '¿Qué método les resultaría viable para verificar la cadena de custodia, y qué condiciones necesitarían?', posturaCuerpo('pc')) +
     pager('pc', 'envio', 'Revisar y enviar');
 }
 var UPIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/></svg>';
@@ -477,7 +506,7 @@ function render(){
   $('#main').innerHTML = f(); updateNav();
   window.scrollTo({ top:0 });
 }
-function go(v){ view = v; render(); }
+function go(v){ view = v; ZNIV = 1; render(); }
 /* ------------------------------------------------------------------ flujo: selección y zoom */
 var ANIM = null;
 function animar(fn){
@@ -492,12 +521,24 @@ function figEls(t, k){
   return Array.prototype.slice.call(svg.querySelectorAll(q));
 }
 function zoomA(el){
+  /* sin zoom: solo se desplaza el flujo si la etapa quedó fuera de la vista */
   var wrap = document.querySelector('.figwrap'); if (!wrap || !el) return;
-  var svg = wrap.querySelector('svg'), b = el.getBBox(), cx = b.x + b.width / 2, cy = b.y + b.height / 2;
-  var w0 = svg.getBoundingClientRect().width, w1 = Math.max(wrap.clientWidth - 16, 760) * 1.5, s0 = w0 / 1200;
-  var px = cx * s0 + 8 - wrap.scrollLeft, py = cy * s0 + 8 - wrap.scrollTop, tx = wrap.clientWidth / 2, ty = wrap.clientHeight / 2;
-  animar(function(e){ var w = w0 + (w1 - w0) * e; svg.style.width = w + 'px'; var s = w / 1200; wrap.scrollLeft = cx * s + 8 - (px + (tx - px) * e); wrap.scrollTop = cy * s + 8 - (py + (ty - py) * e); });
-  var rb = $('#zoomReset'); if (rb) rb.hidden = false;
+  var r = el.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+  if (r.top >= w.top + 20 && r.bottom <= w.bottom - 20 && r.left >= w.left && r.right <= w.right) return;
+  var x0 = wrap.scrollLeft, y0 = wrap.scrollTop, x1 = x0 + (r.left + r.width / 2) - (w.left + w.width / 2), y1 = y0 + (r.top + r.height / 2) - (w.top + w.height / 2);
+  animar(function(e){ wrap.scrollLeft = x0 + (x1 - x0) * e; wrap.scrollTop = y0 + (y1 - y0) * e; });
+}
+var ZNIV = 1;
+function zoomManual(dir){
+  var wrap = document.querySelector('.figwrap'); if (!wrap) return;
+  var svg = wrap.querySelector('svg'), w0 = svg.getBoundingClientRect().width, base = Math.max(wrap.clientWidth - 16, 760);
+  var n = Math.min(3, Math.max(1, Math.round(ZNIV * (dir > 0 ? 1.25 : 1 / 1.25) * 100) / 100)); if (n === ZNIV) return; ZNIV = n;
+  var w1 = base * n, s0 = w0 / 1200;
+  var cx = (wrap.scrollLeft + wrap.clientWidth / 2 - 8) / s0, cy = (wrap.scrollTop + wrap.clientHeight / 2 - 8) / s0;
+  svg.style.width = n === 1 ? '' : w1 + 'px';
+  var s1 = (n === 1 ? base : w1) / 1200;
+  wrap.scrollLeft = cx * s1 + 8 - wrap.clientWidth / 2; wrap.scrollTop = cy * s1 + 8 - wrap.clientHeight / 2;
+  var zv = $('#zval'); if (zv) zv.textContent = Math.round(n * 100) + '%';
 }
 function quitarSel(){
   document.querySelectorAll('.figwrap .hl').forEach(function(e){ e.classList.remove('hl'); });
@@ -510,17 +551,7 @@ function selFila(er){
   er.classList.add('sel'); quitarSel();
   var els = figEls(er.dataset.t, er.dataset.k); if (!els.length) return;
   els.forEach(function(e){ e.classList.add('hl'); });
-  document.querySelector('.figwrap svg').classList.add('dim');
   zoomA(els[0]);
-}
-function verTodo(){
-  var sel = document.querySelector('.er.sel'); if (sel) sel.classList.remove('sel');
-  quitarSel();
-  var wrap = document.querySelector('.figwrap'); if (!wrap) return;
-  var svg = wrap.querySelector('svg'), w0 = svg.getBoundingClientRect().width, w1 = Math.max(wrap.clientWidth - 16, 760), s0 = w0 / 1200;
-  var cx = (wrap.scrollLeft + wrap.clientWidth / 2 - 8) / s0, cy = (wrap.scrollTop + wrap.clientHeight / 2 - 8) / s0;
-  animar(function(e){ var w = w0 + (w1 - w0) * e; svg.style.width = w + 'px'; var s = w / 1200; wrap.scrollLeft = cx * s + 8 - wrap.clientWidth / 2; wrap.scrollTop = cy * s + 8 - wrap.clientHeight / 2; if (e === 1) svg.style.width = ''; });
-  var rb = $('#zoomReset'); if (rb) rb.hidden = true;
 }
 function desdeFigura(nd){
   var t, k;
@@ -541,6 +572,12 @@ function bind(){
   main.addEventListener('focusin', function(e){ var er = e.target.closest && e.target.closest('.er'); if (er && er.dataset.t) selFila(er); });
   main.addEventListener('change', function(e){
     var t = e.target;
+    if (t.dataset.gchk){
+      var fb = t.closest('.fase'), body = fb.querySelector('.gbody');
+      var conTexto = Array.prototype.some.call(body.querySelectorAll('textarea, input[type=text]'), function(x){ return x.value.trim(); }) || Array.prototype.some.call(body.querySelectorAll('input[data-chk]'), function(x){ return x.checked; });
+      if (!t.checked && conTexto){ t.checked = true; return; }
+      set('val.chk.' + t.dataset.gchk, t.checked); body.hidden = !t.checked; changed(); return;
+    }
     if (t.dataset.chk){
       var er = t.closest('.er'), ta2 = er.querySelector('textarea'), key = 'val.chk.' + t.dataset.chk;
       if (!t.checked && ta2.value.trim()){ t.checked = true; return; }
@@ -557,7 +594,7 @@ function bind(){
     var nd = e.target.closest && e.target.closest('.figwrap svg [data-id], .figwrap svg [data-p], .figwrap svg [data-m]'); if (nd){ desdeFigura(nd); return; }
     var fr = e.target.closest && e.target.closest('.er'); if (fr && fr.dataset.t && !e.target.closest('button')) selFila(fr);
     var t = e.target.closest('button'); if (!t) return;
-    if (t.id === 'zoomReset'){ verTodo(); return; }
+    if (t.dataset.zoom){ zoomManual(parseInt(t.dataset.zoom, 10)); return; }
     if (t.dataset.v){ go(t.dataset.v); return; }
     if (t.dataset.add){ var l = get(t.dataset.add) || []; l.push({}); set(t.dataset.add, l); changed(); render(); return; }
     if (t.dataset.rm){ var l2 = get(t.dataset.rm); l2.splice(parseInt(t.dataset.i, 10), 1); changed(); render(); return; }
@@ -576,7 +613,7 @@ function merge(base, src){
 async function boot(){
   bind(); render();
   var local = null;
-  try { var ls = localStorage.getItem('valflujo-borrador'); if (ls) local = JSON.parse(ls); } catch (_) {}
+  try { var ls = localStorage.getItem('valflujo-borrador2'); if (ls) local = JSON.parse(ls); } catch (_) {}
   uid = obtenerUid();
   $('#saveChip').textContent = 'Cargando…';
   var remoto = await cargarRemoto(uid);

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<!--
+  Herramientas de Extensión Digital. Para: extensionistas agrícolas de Chile.
+  Página autocontenida: estructura, estilos e iconos en un solo archivo,
+  sin librerías ni fuentes descargadas, para que cargue con mala conexión.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Organizador de terreno · Extensión Digital</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='10' cy='45' r='4' fill='%2312414E'/%3E%3Ccircle cx='24' cy='33' r='5.2' fill='%2312414E'/%3E%3Ccircle cx='38' cy='27' r='6.2' fill='%233FB5B1'/%3E%3Ccircle cx='53' cy='34' r='7.6' fill='%23E8442B'/%3E%3C/svg%3E">
+<style>
+/* Paleta de Extensión Digital. Cada color tiene un papel asignado. */
+:root{
+  --azul:#12414E;            /* títulos, botones y marco */
+  --coral:#E8442B;           /* el acento: lo que se mira primero */
+  --turquesa:#3FB5B1;        /* acompañante */
+  --turquesa-oscuro:#17807C; /* el turquesa cuando va sobre blanco */
+  --crema:#F2F0EA;           /* fondo cálido */
+  --texto:#4B5457;           /* párrafos */
+  --azul-suave:#3D6270;      /* texto secundario sobre crema */
+  --gris:#6B7477;            /* notas y fechas */
+  --linea:#E4E0D6;           /* bordes suaves */
+  --azul-pie:#0E323C;        /* franja del pie */
+  --blanco:#fff;
+  --peligro:#B0563F;         /* solo eliminar y errores */
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+              'Helvetica Neue', Arial, sans-serif;
+  background:var(--crema); color:var(--texto); line-height:1.55;
+}
+[hidden]{display:none !important;}
+.contenido{max-width:880px; margin:0 auto; padding:16px 20px 40px;}
+h2{font-size:17px; font-weight:800; letter-spacing:-.01em; color:var(--azul); margin-bottom:8px;}
+h3{font-size:15px; font-weight:700; color:var(--azul); margin:12px 0 6px;}
+p{font-size:14.5px;}
+.muted{color:var(--gris); font-size:13px; margin-top:6px;}
+/* La nota gris llega a 4,5 sobre blanco pero no sobre crema (4,2): sobre crema va el azul suave (manual, sección 4). */
+.contenido > .muted, .kpi .muted, .kpi label{color:var(--azul-suave);}
+
+/* barra superior */
+.barra{background:var(--azul); display:flex; align-items:center; gap:18px; padding:0 16px; flex-wrap:wrap;}
+.marca{display:flex; align-items:center; gap:9px; padding:9px 0;}
+.marca .nombre{color:var(--blanco); font-size:14px; font-weight:800; letter-spacing:-.025em; white-space:nowrap;}
+.marca .nombre span{color:var(--turquesa);}
+.herramienta{color:var(--blanco); font-size:14px; font-weight:800; padding:12px 0; box-shadow:inset 0 -3px 0 var(--coral);}
+nav{display:flex; gap:2px; overflow-x:auto;}
+nav button{
+  font-family:inherit; font-size:13px; font-weight:600; border:none; cursor:pointer;
+  background:none; color:#9FBAC1; padding:12px; white-space:nowrap;
+}
+nav{align-items:center;}
+nav .separador{align-self:stretch; width:1px; background:#3D6270; margin:10px 8px;}
+nav .chip-maqueta{display:inline-block; background:var(--peligro); color:var(--blanco); font-size:10.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:1px 6px; border-radius:8px; margin-left:4px;}
+nav button:hover{color:#CFE0E4;}
+nav button.active{color:var(--blanco); font-weight:800; box-shadow:inset 0 -3px 0 var(--coral);}
+.aviso{background:var(--peligro); color:var(--blanco); font-size:12.5px; font-weight:700; text-align:center; padding:6px 14px;}
+
+/* tarjetas */
+.card{background:var(--blanco); border:1px solid var(--linea); border-radius:14px; padding:18px 20px; margin-bottom:12px;}
+.tarjetas{display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(min(240px, 100%), 1fr));}
+
+/* botones */
+.btn{
+  font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; border:none;
+  border-radius:999px; background:var(--azul); color:var(--blanco); padding:10px 20px; margin-top:10px;
+}
+.btn:hover{opacity:.9;}
+.btn.ghost{background:transparent; color:var(--azul); border:1.5px solid var(--azul);}
+
+/* formularios */
+label{display:block; font-size:13px; margin:8px 0 3px; color:var(--gris);}
+textarea, input[type=text], input[type=number], input[type=date], select{
+  font-family:inherit; font-size:14px; width:100%; padding:10px 12px;
+  border:1px solid var(--linea); border-radius:10px;
+  background:var(--blanco); color:var(--texto); resize:vertical;
+}
+textarea:focus, input[type=text]:focus, input[type=number]:focus, input[type=date]:focus, select:focus{
+  outline:2px solid var(--turquesa-oscuro); outline-offset:1px;
+}
+nav button:focus-visible{outline:2px solid var(--turquesa); outline-offset:2px;}
+.btn:focus-visible{outline:2px solid var(--turquesa-oscuro); outline-offset:2px;} /* sobre blanco y crema llega a 3 */
+
+/* progreso, casillas, etiquetas, entradas, desplegables */
+.barwrap{background:var(--linea); border-radius:20px; height:12px; overflow:hidden; margin:8px 0 5px;}
+.bar{background:var(--coral); height:100%; border-radius:20px; transition:width .4s;}
+.bar.secundaria{background:var(--turquesa);}
+.tarea{display:flex; gap:10px; align-items:flex-start; padding:5px 0 5px 2px; font-size:14px;}
+.tarea input{margin-top:4px; accent-color:var(--turquesa-oscuro); width:16px; height:16px; cursor:pointer; flex:none;}
+.tarea label{cursor:pointer; margin:0; font-size:14px; color:var(--texto);}
+.tarea.done label{text-decoration:line-through; color:var(--gris);}
+.pill{
+  font-size:11px; font-weight:700; background:var(--crema); color:var(--azul);
+  border:1px solid var(--linea); border-radius:20px; padding:2px 9px; white-space:nowrap;
+}
+.entry{
+  border-left:3px solid var(--coral); padding:8px 14px; margin:10px 0;
+  background:#FBFAF7; border-radius:0 10px 10px 0;
+}
+.entry .fecha{font-size:12px; color:var(--gris);}
+details{margin:8px 0; border:1px solid var(--linea); border-radius:10px; background:var(--blanco);}
+details summary{cursor:pointer; padding:11px 15px; font-weight:700; color:var(--azul); font-size:14px;}
+details .inner{padding:0 16px 14px; font-size:14px;}
+
+/* analizador del grupo (C) */
+.grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(min(200px, 100%), 1fr));}
+.kpi{background:var(--crema); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--texto);}
+.kpi b{display:block; font-size:24px; font-weight:800; color:var(--azul); line-height:1.2;}
+.fila{display:flex; align-items:center; gap:8px; margin:4px 0; font-size:13.5px; flex-wrap:wrap;}
+.fila .et{flex:0 1 118px; min-width:0; overflow-wrap:anywhere;}
+.fila .barwrap{flex:1 1 80px; min-width:0; margin:0;}
+.fila .n{flex:0 0 28px; text-align:right;}
+.mini{font-family:inherit; font-size:12.5px; font-weight:700; background:transparent; color:var(--azul); border:1.5px solid var(--azul); border-radius:999px; padding:4px 10px; cursor:pointer;}
+.mini:hover{background:var(--crema);}
+.mini:focus-visible, input[type=file]:focus-visible, input[type=checkbox]:focus-visible{outline:2px solid var(--turquesa-oscuro); outline-offset:2px;}
+.btn.ghost:hover{background:var(--crema); opacity:1;}
+.btn{margin-right:8px;}
+fieldset{border:0; margin-top:6px; min-width:0;}
+.solo-lector{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+.pasos{margin:0 0 8px 20px; font-size:14px;}
+.pasos li{margin-bottom:4px;}
+table{width:100%; border-collapse:collapse; font-size:13.5px;}
+th, td{text-align:left; padding:6px; border-bottom:1px solid var(--linea); vertical-align:top; overflow-wrap:anywhere;}
+th{color:var(--azul);}
+.en-linea{display:inline; margin:0;}
+select.corto{width:auto; max-width:100%;}
+input[type=file]{width:100%; font-size:13.5px; color:var(--texto);}
+textarea.copia{margin-top:8px; background:var(--crema); font-size:13px;}
+.respuesta{white-space:pre-wrap; overflow-wrap:anywhere;}
+.entry{overflow-wrap:anywhere; font-size:14px;}
+
+@media (max-width:620px){
+  .contenido{padding:14px 14px 40px;}
+  h2{font-size:16px;}
+}
+
+/* plan de contenidos (B) */
+.error{color:#9A3F2B; font-size:13.5px; font-weight:700; margin-left:4px; overflow-wrap:anywhere;}
+.prop{margin:0; padding:12px; min-width:0;}
+.prop h3{margin-top:0;}
+.prop svg{display:block; max-width:100%; height:auto; border:1px solid var(--linea); border-radius:8px; margin-bottom:4px;}
+.prop textarea.copia{font-size:12.5px;}
+#bInfo > .btn{margin-top:14px;}
+
+/* organizador de terreno (A, maqueta) */
+.rotulo-maqueta{background:#FBFAF7; border:1px solid var(--linea); border-left:4px solid var(--peligro); border-radius:0 10px 10px 0; padding:8px 14px; margin-bottom:12px; font-size:13.5px; color:var(--texto);}
+.rotulo-maqueta b{color:var(--peligro);}
+.rotulo{font-size:12px; font-weight:800; color:var(--peligro); margin:0 0 6px;}
+.tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+.tabs button{
+  font-family:inherit; font-size:13px; font-weight:700; cursor:pointer;
+  background:var(--blanco); color:var(--azul); border:1px solid var(--linea); border-radius:999px; padding:7px 14px;
+}
+.tabs button[aria-selected="true"]{background:var(--azul); color:var(--blanco); border-color:var(--azul);}
+.tabs button:focus-visible, .mini:focus-visible, .dia:focus-visible{outline:2px solid var(--turquesa-oscuro); outline-offset:2px;}
+input.validar{border-color:var(--peligro);}
+.accesos{margin-top:10px;}
+.accesos .btn{margin-top:0; margin-bottom:6px;}
+.grid.dos{margin-bottom:12px;}
+.grid.dos > .card{margin:0; min-width:0;}
+.mapa{display:block; max-width:100%; height:auto; background:var(--crema); border-radius:10px; margin-top:10px;}
+.ficha{margin-top:12px; background:#FBFAF7;}
+.ficha h3{margin-top:0;}
+.pill.alerta{background:var(--peligro); color:var(--blanco); border-color:var(--peligro);}
+.chip{margin:0 6px 6px 0;}
+.mes-nav{display:flex; align-items:center; gap:10px; margin-top:14px;}
+.mes-nav h3{margin:0; flex:1; text-align:center;}
+.mes-nav .btn{margin:0;}
+.cal{display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:4px; margin-top:8px;}
+.cal .cab{font-size:12px; font-weight:700; color:var(--azul); text-align:center;}
+.dia{font-family:inherit; font-size:12.5px; color:var(--texto); border:1px solid var(--linea); border-radius:8px; min-height:50px; padding:4px 2px; background:var(--blanco); cursor:pointer; text-align:center; min-width:0;}
+.dia:hover{border-color:var(--azul);}
+.dia.fuera{color:var(--gris);}
+.dia.sel{outline:2px solid var(--azul); outline-offset:1px; font-weight:800; color:var(--azul);}
+.dia.hoy{background:var(--crema);}
+.punto{display:inline-block; width:8px; height:8px; border-radius:50%; margin:1px;}
+.parada{display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--linea); font-size:14px; flex-wrap:wrap;}
+.parada .ord{flex:none; width:26px; height:26px; border-radius:50%; background:var(--azul); color:var(--blanco); font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center;}
+.parada .txt{flex:1 1 140px; min-width:0; overflow-wrap:anywhere;}
+.mini:disabled{opacity:.5; cursor:default;}
+@media (max-width:620px){
+  .fila .et{flex-basis:92px;}
+}
+
+/* materiales de referencia (B) */
+details.ref{margin:14px 0 4px;}
+.ref-lista{list-style:none; margin:8px 0 0;}
+.ref-item{display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap; padding:8px 0; border-bottom:1px solid var(--linea);}
+.ref-mini{display:block; max-width:64px; max-height:64px; width:auto; height:auto; border:1px solid var(--linea); border-radius:6px; background:var(--blanco); flex:none;}
+.ref-info{flex:1 1 160px; min-width:0;}
+.ref-nombre{display:block; color:var(--azul); font-size:14px; overflow-wrap:anywhere;}
+.ref-tipo{display:block; margin-top:0;}
+.ref-info label{margin-top:4px;}
+.ref-info .pill{display:inline-block; margin-top:4px;}
+.ref-item .mini{flex:none; align-self:center;}
+.ref-caja{margin-top:10px; padding:10px 12px; background:#FBFAF7; border:1px solid var(--linea); border-radius:10px;}
+.ref-caja .tarea label{color:var(--texto);}
+.ref-vista{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.ref-colores{display:flex; align-items:center; gap:6px; flex-wrap:wrap; min-width:0;}
+.ref-colores .muted{margin:0;}
+.ref-color{display:inline-block; width:24px; height:24px; border-radius:6px; border:1px solid var(--linea);}
+#bRefMsgs p{margin-top:6px;}
+.nota-cambio{color:var(--azul); font-size:13.5px; font-weight:700; margin-top:8px; overflow-wrap:anywhere;}
+.cuenta{margin-top:4px;}
+.cuenta.excede{color:#9A3F2B; font-weight:700; text-decoration:underline;}
+
+</style>
+</head>
+<body>
+  <header class="barra">
+    <div class="marca">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="10" cy="45" r="4"   fill="#F2F0EA"/>
+        <circle cx="24" cy="33" r="5.2" fill="#F2F0EA"/>
+        <circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/>
+        <circle cx="53" cy="34" r="7.6" fill="#E8442B"/>
+      </svg>
+      <span class="nombre">Extensión <span>Digital</span></span>
+    </div>
+    <span class="herramienta">Organizador de terreno</span>
+  </header>
+  <div class="aviso">Maqueta desechable con datos inventados: el Organizador de terreno todavía no es una herramienta real.</div>
+
+  <main class="contenido">
+    <section id="A">
+      <p class="rotulo-maqueta"><b>Maqueta con datos inventados.</b> Los usuarios, las visitas y los mensajes son de ejemplo. Esta herramienta no guarda nada y no envía nada a ningún lado.</p>
+      <div class="tabs" id="aTabs" role="tablist" aria-label="Secciones del Organizador de terreno">
+        <button type="button" role="tab" id="aTab-Inicio" data-s="aInicio" aria-selected="true" aria-controls="aInicio">Inicio</button>
+        <button type="button" role="tab" id="aTab-Fotos" data-s="aFotos" aria-selected="false" aria-controls="aFotos" tabindex="-1">Subir fotos</button>
+        <button type="button" role="tab" id="aTab-Buscar" data-s="aBuscar" aria-selected="false" aria-controls="aBuscar" tabindex="-1">Buscar usuario</button>
+        <button type="button" role="tab" id="aTab-Mapa" data-s="aMapa" aria-selected="false" aria-controls="aMapa" tabindex="-1">Mapa</button>
+        <button type="button" role="tab" id="aTab-Cal" data-s="aCal" aria-selected="false" aria-controls="aCal" tabindex="-1">Calendario y ruta</button>
+      </div>
+
+      <div id="aInicio" role="tabpanel" aria-labelledby="aTab-Inicio">
+        <div class="card"><h2>Inicio</h2>
+          <p class="rotulo">Maqueta con datos inventados</p>
+          <p class="muted" id="aSaludo"></p>
+          <div class="grid" id="aKpis"></div>
+          <div class="accesos">
+            <button type="button" class="btn" data-ir="aFotos">Subir fotos de terreno</button>
+            <button type="button" class="btn ghost" data-ir="aBuscar">Buscar usuario</button>
+            <button type="button" class="btn ghost" data-ir="aMapa">Ver mapa</button>
+            <button type="button" class="btn ghost" data-ir="aCal">Planificar visitas</button>
+          </div>
+        </div>
+        <div class="grid dos"><div class="card"><h2>Próximas visitas</h2><div id="aProx"></div></div>
+          <div class="card"><h2>Requiere tu atención</h2><div id="aAten"></div></div></div>
+        <div class="grid dos"><div class="card"><h2>Usuarios por rubro</h2><div id="aRubro"></div></div>
+          <div class="card"><h2>Usuarios por comuna</h2><div id="aComuna"></div></div>
+          <div class="card"><h2>Necesidades más repetidas</h2><div id="aNec"></div></div></div>
+        <div class="card"><h2>Avisos sugeridos para esta semana</h2><div id="aAvisos"></div></div>
+      </div>
+
+      <div id="aFotos" class="card" role="tabpanel" aria-labelledby="aTab-Fotos" hidden>
+        <h2>Subir lo capturado en terreno</h2>
+        <p class="rotulo">Maqueta con datos inventados</p>
+        <p class="muted">En la versión real, la IA lee la foto y propone los campos. Acá es una simulación: no se lee ninguna foto, se muestra una ficha de ejemplo y no se envía nada.</p>
+        <label for="aArchivo">Fotos de fichas, cultivos o boletas</label>
+        <input type="file" id="aArchivo" accept="image/*" multiple>
+        <button type="button" class="btn" id="aSimula">Simular lectura de la ficha</button>
+        <div id="aFicha" hidden>
+          <h3>Datos leídos en la simulación (valida y corrige antes de guardar)</h3>
+          <div class="grid">
+            <div><label for="aFUsr">Usuario</label><input type="text" id="aFUsr" value="Sergio Aravena"></div>
+            <div><label for="aFCom">Comuna</label><input type="text" id="aFCom" value="Quillón"></div>
+            <div><label for="aFRub">Rubro</label><input type="text" id="aFRub" value="Vid"></div>
+            <div><label for="aFSup">Superficie (ha)</label><input type="text" id="aFSup" value="2,5"></div>
+            <div><label for="aFFec">Fecha de visita</label><input type="text" id="aFFec" value="14-oct-2026"></div>
+            <div><label for="aFNec">Necesidad (validar)</label><input type="text" id="aFNec" class="validar" value="control de oídio"></div>
+          </div>
+          <label for="aFCmp">Compromiso (validar)</label><input type="text" id="aFCmp" class="validar" value="Aplicar azufre antes del 25-oct">
+          <p class="muted">La firma del agricultor no se guarda ni se envía a la IA (decisión de diseño pendiente de confirmar).</p>
+          <button type="button" class="btn" id="aFGuardar">Guardar ficha</button>
+          <p class="muted" id="aFMsg" role="status"></p>
+        </div>
+      </div>
+
+      <div id="aBuscar" class="card" role="tabpanel" aria-labelledby="aTab-Buscar" hidden>
+        <h2>Buscar un usuario</h2>
+        <p class="rotulo">Maqueta con datos inventados</p>
+        <label for="aBuscarTxt">Nombre del usuario</label>
+        <input type="text" id="aBuscarTxt" placeholder="Por ejemplo: Sergio" autocomplete="off">
+        <div id="aResultados" aria-live="polite"></div>
+        <div id="aFichaU"></div>
+      </div>
+
+      <div id="aMapa" class="card" role="tabpanel" aria-labelledby="aTab-Mapa" hidden>
+        <h2>Mapa de usuarios</h2>
+        <p class="rotulo">Maqueta con datos inventados</p>
+        <p class="muted">Mapa esquemático de ejemplo. La versión real usaría un mapa verdadero y requiere definir de dónde salen las ubicaciones.</p>
+        <label for="aFiltro">Filtrar</label>
+        <select id="aFiltro"><option value="todos">Todos</option><option value="vid">Vid</option><option value="papa">Papa</option><option value="frambuesa">Frambuesa</option><option value="atrasados">Sin visita hace más de 60 días</option></select>
+        <svg id="aMapaSvg" class="mapa" viewBox="0 0 600 340" width="100%" role="img" aria-label="Mapa esquemático con un punto por usuario"></svg>
+        <p class="muted">Azul: vid. Turquesa: papa. Coral: frambuesa. Anillo rojizo: sin visita hace más de 60 días.</p>
+        <div id="aRutaMapa"></div>
+      </div>
+
+      <div id="aCal" class="card" role="tabpanel" aria-labelledby="aTab-Cal" hidden>
+        <h2>Calendario de visitas y ruta</h2>
+        <p class="rotulo">Maqueta con datos inventados</p>
+        <p class="muted">Agenda cada visita con su fecha. Toca un día para ver el orden sugerido y la ruta de ese día.</p>
+        <div class="grid">
+          <div><label for="aVUsr">Usuario</label><select id="aVUsr"></select></div>
+          <div><label for="aVFec">Fecha de la visita</label><input type="date" id="aVFec" value="2026-10-30"></div>
+          <div><label for="aVMot">Motivo</label><select id="aVMot"><option>Seguimiento</option><option>Entregar aviso</option><option>Revisar cultivo</option><option>Firmar ficha</option></select></div>
+        </div>
+        <button type="button" class="btn" id="aVAgregar">Agregar al calendario</button>
+        <p class="muted" id="aVMsg" role="status"></p>
+        <div id="aSugeridos"></div>
+        <div class="mes-nav">
+          <button type="button" class="btn ghost" id="aMesAnt" aria-label="Mes anterior">Anterior</button>
+          <h3 id="aMesTit" aria-live="polite"></h3>
+          <button type="button" class="btn ghost" id="aMesSig" aria-label="Mes siguiente">Siguiente</button>
+        </div>
+        <div class="cal" id="aCalCab" aria-hidden="true"></div>
+        <div class="cal" id="aCalGrid"></div>
+        <p class="muted">Cada punto es una visita: azul vid, turquesa papa, coral frambuesa.</p>
+        <div id="aDia"></div>
+      </div>
+    </section>
+  </main>
+<script>
+// Organizador de terreno (A, maqueta): datos inventados y logica pura, sin DOM ni almacenamiento.
+// Las fechas son cadenas AAAA-MM-DD; "hoy" esta fijo para que la maqueta sea siempre la misma.
+(function (ED) {
+  var HOY = '2026-10-24';
+
+  // 12 usuarios inventados. d: dias desde la ultima visita. x, y: posicion en el mapa esquematico.
+  var USUARIOS = [
+    { n: 'Sergio Aravena', c: 'Quillón', r: 'vid', ha: 2.5, d: 12, x: 120, y: 210, nec: 'control de oídio', comp: 'Aplicar azufre antes del 25-oct', h: ['14-oct: revisión de parras, oídio inicial', '02-sep: poda, consulta por riego', '10-jul: ficha de ingreso'] },
+    { n: 'Rosa Muñoz', c: 'Quillón', r: 'vid', ha: 1.2, d: 75, x: 150, y: 240, nec: 'riego', comp: 'Revisar goteros', h: ['08-ago: instalación de riego', '10-jun: ficha de ingreso'] },
+    { n: 'Luis Parra', c: 'Coelemu', r: 'papa', ha: 3.0, d: 20, x: 90, y: 150, nec: 'precio de venta', comp: 'Cotizar con 2 compradores', h: ['04-oct: conversación sobre venta', '12-ago: siembra'] },
+    { n: 'Marta Quiroz', c: 'Coelemu', r: 'papa', ha: 1.8, d: 90, x: 70, y: 120, nec: 'semilla certificada', comp: 'Sin compromiso', h: ['19-jul: ficha de ingreso'] },
+    { n: 'Hernán Soto', c: 'El Carmen', r: 'vid', ha: 4.0, d: 33, x: 210, y: 170, nec: 'oídio', comp: 'Mandar foto de hojas', h: ['21-sep: poda', '03-ago: ficha de ingreso'] },
+    { n: 'Gloria Reyes', c: 'El Carmen', r: 'vid', ha: 0.8, d: 8, x: 235, y: 195, nec: 'riego', comp: 'Medir caudal', h: ['16-oct: medición de caudal'] },
+    { n: 'Pedro Lagos', c: 'Carahue', r: 'frambuesa', ha: 1.0, d: 15, x: 400, y: 100, nec: 'poda y conducción', comp: 'Podar antes de brotación', h: ['09-oct: visita de poda'] },
+    { n: 'Ana Cifuentes', c: 'Carahue', r: 'frambuesa', ha: 0.6, d: 64, x: 430, y: 130, nec: 'comercialización', comp: 'Evaluar venta directa', h: ['20-ago: charla de venta'] },
+    { n: 'Julio Henríquez', c: 'Freire', r: 'papa', ha: 5.0, d: 41, x: 470, y: 230, nec: 'control de tizón', comp: 'Compra de fungicida', h: ['14-sep: monitoreo de tizón'] },
+    { n: 'Carmen Vera', c: 'Freire', r: 'papa', ha: 2.2, d: 70, x: 500, y: 260, nec: 'riego', comp: 'Sin compromiso', h: ['16-ago: ficha de ingreso'] },
+    { n: 'Iván Torres', c: 'Freire', r: 'frambuesa', ha: 1.5, d: 5, x: 450, y: 270, nec: 'oídio', comp: 'Aplicar azufre', h: ['19-oct: revisión de hojas'] },
+    { n: 'Elena Salazar', c: 'Quillón', r: 'vid', ha: 3.4, d: 28, x: 100, y: 260, nec: 'oídio', comp: 'Aplicar azufre antes del 25-oct', h: ['26-sep: visita general'] }
+  ];
+
+  // 7 visitas inventadas ya agendadas.
+  var VISITAS = [
+    { n: 'Sergio Aravena', f: '2026-10-27', m: 'Seguimiento' },
+    { n: 'Elena Salazar', f: '2026-10-27', m: 'Entregar aviso' },
+    { n: 'Gloria Reyes', f: '2026-10-27', m: 'Revisar cultivo' },
+    { n: 'Hernán Soto', f: '2026-10-28', m: 'Seguimiento' },
+    { n: 'Iván Torres', f: '2026-10-29', m: 'Revisar cultivo' },
+    { n: 'Pedro Lagos', f: '2026-10-29', m: 'Seguimiento' },
+    { n: 'Rosa Muñoz', f: '2026-11-03', m: 'Seguimiento' }
+  ];
+
+  function pad(x) { return (x < 10 ? '0' : '') + x; }
+  function aISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function sumaDias(iso, n) {
+    var p = iso.split('-').map(Number);
+    return aISO(new Date(p[0], p[1] - 1, p[2] + n));
+  }
+
+  function pos(usuarios, nombre) {
+    for (var i = 0; i < usuarios.length; i++) if (usuarios[i].n === nombre) return usuarios[i];
+    return { x: 0, y: 0 };
+  }
+
+  // Elige el indice con menor (o mayor) valor; en empate gana el primero (orden de entrada).
+  function mejor(valores, mayor) {
+    var k = 0;
+    for (var i = 1; i < valores.length; i++) if (mayor ? valores[i] > valores[k] : valores[i] < valores[k]) k = i;
+    return k;
+  }
+
+  // Orden sugerido de las visitas de UN dia, sin punto de partida fijo: empieza en la visita mas
+  // alejada del centro y sigue siempre con la mas cercana a la anterior. No modifica la lista recibida.
+  function sugerirOrden(visitas, usuarios) {
+    var pend = visitas.slice();
+    if (!pend.length) return [];
+    var ps = pend.map(function (v) { return pos(usuarios, v.n); });
+    var cx = 0, cy = 0;
+    ps.forEach(function (p) { cx += p.x; cy += p.y; });
+    cx /= ps.length; cy /= ps.length;
+    var k = mejor(ps.map(function (p) { return Math.hypot(p.x - cx, p.y - cy); }), true);
+    var salida = [pend[k]], actual = ps[k];
+    pend.splice(k, 1); ps.splice(k, 1);
+    while (pend.length) {
+      var a = actual;
+      k = mejor(ps.map(function (p) { return Math.hypot(p.x - a.x, p.y - a.y); }), false);
+      salida.push(pend[k]); actual = ps[k];
+      pend.splice(k, 1); ps.splice(k, 1);
+    }
+    return salida;
+  }
+
+  // Cuadricula del mes (mes 0 a 11), lunes primero, completa semanas: 35 o 42 celdas.
+  function celdasMes(anio, mes) {
+    var primero = (new Date(anio, mes, 1).getDay() + 6) % 7;
+    var dias = new Date(anio, mes + 1, 0).getDate();
+    var total = Math.ceil((primero + dias) / 7) * 7;
+    var celdas = [];
+    for (var i = 0; i < total; i++) {
+      var d = new Date(anio, mes, 1 - primero + i);
+      celdas.push({ f: aISO(d), dia: d.getDate(), mes: d.getMonth(), fuera: d.getMonth() !== mes });
+    }
+    return celdas;
+  }
+
+  // Visitas en una ventana de exactamente 7 dias de calendario: de hoy a hoy + 6, ambos inclusive.
+  function contarProximos(visitas, hoy) {
+    var limite = sumaDias(hoy, 6);
+    return visitas.filter(function (v) { return v.f >= hoy && v.f <= limite; }).length;
+  }
+
+  function atrasados(usuarios) { return usuarios.filter(function (u) { return u.d > 60; }); }
+  function conCompromiso(usuarios) { return usuarios.filter(function (u) { return /25-oct/.test(u.comp); }); }
+
+  // Atrasados que no tienen ninguna visita agendada desde hoy.
+  function sinAgendar(usuarios, visitas, hoy) {
+    var ag = {};
+    visitas.forEach(function (v) { if (v.f >= hoy) ag[v.n] = true; });
+    return atrasados(usuarios).filter(function (u) { return !ag[u.n]; });
+  }
+
+  function kpis(usuarios, visitas, hoy) {
+    return {
+      usuarios: usuarios.length,
+      proximos7: contarProximos(visitas, hoy),
+      atrasados: atrasados(usuarios).length,
+      sinAgendar: sinAgendar(usuarios, visitas, hoy).length,
+      compromisos: conCompromiso(usuarios).length
+    };
+  }
+
+  ED.agenda = {
+    HOY: HOY, USUARIOS: USUARIOS, VISITAS: VISITAS,
+    sumaDias: sumaDias, sugerirOrden: sugerirOrden, celdasMes: celdasMes, contarProximos: contarProximos,
+    atrasados: atrasados, conCompromiso: conCompromiso, sinAgendar: sinAgendar, kpis: kpis
+  };
+})(globalThis.ED = globalThis.ED || {});
+
+// Ayudas compartidas de la interfaz: escape de HTML, copiar al portapapeles y descargas.
+(function (ED) {
+  var ui = ED.ui = ED.ui || {};
+
+  // Unico escape para todo texto del chat o del usuario que se inserte como HTML.
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function pad(x) { return (x < 10 ? '0' : '') + x; }
+  // Fecha local AAAA-MM-DD (no UTC, para que coincida con el dia del usuario).
+  function hoyISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  // Muestra el texto en un cuadro de solo lectura y trata de copiarlo.
+  // Si el portapapeles no existe o falla, deja el texto seleccionado para copiar a mano.
+  function copia(texto, caja, aviso) {
+    caja.value = texto;
+    caja.hidden = false;
+    function selecciona() {
+      aviso.textContent = 'Selecciona y copia el texto.';
+      try { caja.focus(); caja.select(); } catch (e) { /* sin seleccion */ }
+    }
+    function listo() { aviso.textContent = 'Copiado. Ya puedes pegarlo.'; }
+    try {
+      if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') { selecciona(); return Promise.resolve(false); }
+      // Si el navegador deja la promesa pendiente (permiso sin responder), pasa al plan B.
+      var espera = new Promise(function (r) { setTimeout(function () { r(false); }, 1500); });
+      var intento = Promise.resolve(navigator.clipboard.writeText(texto)).then(function () { return true; }, function () { return false; });
+      return Promise.race([intento, espera]).then(function (ok) {
+        if (ok) listo(); else selecciona();
+        return ok;
+      });
+    } catch (e) {
+      selecciona();
+      return Promise.resolve(false);
+    }
+  }
+
+  // Se llama por ui.descarga(...) para que las pruebas puedan interceptarla.
+  function descarga(nombre, blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = nombre;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  var AVISO_SIN_GUARDAR = 'Este navegador no deja guardar datos: descarga una copia antes de cerrar la página.';
+  // Muestra el aviso si el almacenamiento no funciona y oculta la nota que dice que se guarda. Devuelve storage.ok.
+  function avisoGuardado(storage, aviso, nota) {
+    var ok = !!(storage && storage.ok);
+    aviso.textContent = ok ? '' : AVISO_SIN_GUARDAR;
+    aviso.hidden = ok;
+    if (nota) nota.hidden = !ok;
+    return ok;
+  }
+
+  ui.AVISO_SIN_GUARDAR = AVISO_SIN_GUARDAR;
+  ui.avisoGuardado = avisoGuardado;
+  ui.esc = esc;
+  ui.hoyISO = hoyISO;
+  ui.pad = pad;
+  ui.copia = copia;
+  ui.descarga = descarga;
+})(globalThis.ED = globalThis.ED || {});
+
+// Maqueta A: constantes y ayudas compartidas por las vistas del Organizador de terreno.
+// Todo vive en memoria: A no usa ED.storage ni ningun otro almacenamiento.
+(function (ED) {
+  var ui = ED.ui = ED.ui || {};
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  var COLOR = { vid: '#12414E', papa: '#3FB5B1', frambuesa: '#E8442B' };
+
+  function partes(iso) { return iso.split('-').map(Number); }
+  // "martes 27 de octubre"
+  function fechaTxt(iso) {
+    var p = partes(iso);
+    return DIAS[new Date(p[0], p[1] - 1, p[2]).getDay()] + ' ' + p[2] + ' de ' + MESES[p[1] - 1];
+  }
+  // "27 de octubre de 2026"
+  function tituloDia(iso) {
+    var p = partes(iso);
+    return p[2] + ' de ' + MESES[p[1] - 1] + ' de ' + p[0];
+  }
+
+  // Estado compartido de la maqueta: datos inventados copiados para poder agendar y quitar sin tocar el origen.
+  function estado() {
+    var A = ED.agenda;
+    var S = {
+      hoy: A.HOY,
+      usuarios: A.USUARIOS,
+      visitas: A.VISITAS.map(function (v) { return { n: v.n, f: v.f, m: v.m }; }),
+      diaSel: '2026-10-27',
+      mes: { y: 2026, m: 9 },
+      usuario: function (nombre) {
+        for (var i = 0; i < S.usuarios.length; i++) if (S.usuarios[i].n === nombre) return S.usuarios[i];
+        return null;
+      },
+      // Visitas de un dia, en el orden de la ruta.
+      delDia: function (f) {
+        return S.visitas.filter(function (v) { return v.f === f; }).sort(function (a, b) { return a.ord - b.ord; });
+      },
+      // Fija el orden sugerido de la ruta de un dia.
+      ordena: function (f) {
+        A.sugerirOrden(S.visitas.filter(function (v) { return v.f === f; }), S.usuarios).forEach(function (v, i) { v.ord = i; });
+      },
+      irA: function () {},          // los pone ui-a.js
+      redibujaInicio: function () {},
+      rellenaAgenda: function () {}
+    };
+    S.visitas.map(function (v) { return v.f; }).filter(function (f, i, l) { return l.indexOf(f) === i; }).forEach(S.ordena);
+    return S;
+  }
+
+  ui.aBase = { MESES: MESES, DIAS: DIAS, COLOR: COLOR, fechaTxt: fechaTxt, tituloDia: tituloDia, estado: estado };
+})(globalThis.ED = globalThis.ED || {});
+
+// Maqueta A: calendario de visitas, agenda y ruta del dia.
+(function (ED) {
+  var ui = ED.ui = ED.ui || {};
+  var esc = ui.esc;
+
+  ui.aCal = function (S, $) {
+    var B = ui.aBase, A = ED.agenda;
+
+    function dibujaSugeridos() {
+      var sug = A.sinAgendar(S.usuarios, S.visitas, S.hoy);
+      $('aSugeridos').innerHTML = sug.length ? '<h3>Sin visita hace más de 60 días y sin agendar</h3>' + sug.map(function (u) {
+        return '<button type="button" class="mini chip" data-n="' + esc(u.n) + '">' + esc(u.n) + ' · ' + esc(u.c) + '</button>';
+      }).join('') : '';
+    }
+
+    function dibujaCalendario() {
+      $('aMesTit').textContent = B.MESES[S.mes.m] + ' ' + S.mes.y;
+      $('aCalCab').innerHTML = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map(function (d) { return '<div class="cab">' + d + '</div>'; }).join('');
+      $('aCalGrid').innerHTML = A.celdasMes(S.mes.y, S.mes.m).map(function (c) {
+        var vs = S.visitas.filter(function (v) { return v.f === c.f; });
+        var puntos = vs.slice(0, 6).map(function (v) { return '<span class="punto" style="background:' + B.COLOR[S.usuario(v.n).r] + '"></span>'; }).join('');
+        return '<button type="button" class="dia' + (c.fuera ? ' fuera' : '') + (c.f === S.diaSel ? ' sel' : '') + (c.f === S.hoy ? ' hoy' : '') +
+          '" data-f="' + esc(c.f) + '" aria-pressed="' + (c.f === S.diaSel) + '"' + (c.f === S.hoy ? ' aria-current="date"' : '') +
+          ' aria-label="' + c.dia + ' de ' + B.MESES[c.mes] + ', ' + vs.length + (vs.length === 1 ? ' visita' : ' visitas') + '">' + c.dia + '<br>' + puntos + '</button>';
+      }).join('');
+    }
+
+    function textoRuta(lista) {
+      return 'Ruta del ' + B.tituloDia(S.diaSel) + '\n' + lista.map(function (v, i) {
+        return (i + 1) + '. ' + v.n + ' (' + S.usuario(v.n).c + '): ' + v.m;
+      }).join('\n');
+    }
+
+    function dibujaDia() {
+      var lista = S.delDia(S.diaSel), el = $('aDia'), titulo = B.tituloDia(S.diaSel);
+      if (!lista.length) {
+        el.innerHTML = '<h3>' + esc(titulo) + '</h3><p class="muted">No hay visitas este día. Elige un usuario y una fecha arriba para agendar.</p>';
+        return;
+      }
+      var ps = lista.map(function (v) { return S.usuario(v.n); });
+      var xs = ps.map(function (p) { return p.x; }), ys = ps.map(function (p) { return p.y; });
+      var mnx = Math.min.apply(null, xs), mxx = Math.max.apply(null, xs), mny = Math.min.apply(null, ys), mxy = Math.max.apply(null, ys);
+      var vw = Math.max(mxx - mnx + 120, 420), vh = Math.max(mxy - mny + 120, 240);
+      var vx = (mnx + mxx) / 2 - vw / 2, vy = (mny + mxy) / 2 - vh / 2;
+      var svg = '<svg class="mapa" viewBox="' + vx + ' ' + vy + ' ' + vw + ' ' + vh + '" width="100%" role="img" aria-label="Ruta del día con ' + lista.length + ' paradas">' +
+        '<polyline points="' + ps.map(function (p) { return p.x + ',' + p.y; }).join(' ') + '" fill="none" stroke="#17807C" stroke-width="3" stroke-dasharray="6 5"/>' +
+        ps.map(function (u, i) {
+          return '<circle cx="' + u.x + '" cy="' + u.y + '" r="13" fill="#fff" stroke="' + B.COLOR[u.r] + '" stroke-width="4"/>' +
+            '<text x="' + u.x + '" y="' + (u.y + 5) + '" text-anchor="middle" font-size="14" font-weight="800" fill="#12414E">' + (i + 1) + '</text>';
+        }).join('') + '</svg>';
+      el.innerHTML = '<h3>Ruta del ' + esc(titulo) + '</h3><p class="muted">Orden sugerido: parte en una visita de un extremo y sigue siempre con la más cercana. Puedes cambiarlo con los botones Subir y Bajar.</p>' + svg +
+        lista.map(function (v, i) {
+          var u = S.usuario(v.n), n = esc(v.n);
+          return '<div class="parada"><span class="ord">' + (i + 1) + '</span><span class="txt"><b>' + n + '</b>, ' + esc(u.c) + ' (' + esc(u.r) + '). ' + esc(v.m) + '</span>' +
+            '<button type="button" class="mini" data-a="sub" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Subir a ' + n + '">Subir</button>' +
+            '<button type="button" class="mini" data-a="baj" data-i="' + i + '"' + (i === lista.length - 1 ? ' disabled' : '') + ' aria-label="Bajar a ' + n + '">Bajar</button>' +
+            '<button type="button" class="mini" data-a="quitar" data-i="' + i + '" aria-label="Quitar a ' + n + ' de la ruta">Quitar</button></div>';
+        }).join('') +
+        '<button type="button" class="btn" id="aOrdSug">Volver al orden sugerido</button><button type="button" class="btn ghost" id="aCopiaRuta">Copiar ruta</button>' +
+        '<p class="muted" id="aRutaCopiada" role="status"></p><textarea id="aRutaTxt" class="copia" rows="5" readonly hidden aria-label="Ruta para copiar"></textarea>';
+    }
+
+    function dibujaTodo() { dibujaSugeridos(); dibujaCalendario(); dibujaDia(); S.redibujaInicio(); }
+
+    // Elige el usuario en el formulario (desde el Inicio, la ficha o un chip) y lleva el foco a la fecha.
+    function rellena(nombre) { $('aVUsr').value = nombre; $('aVFec').focus(); }
+
+    $('aVUsr').innerHTML = S.usuarios.map(function (u) { return '<option>' + esc(u.n) + '</option>'; }).join('');
+
+    $('aVAgregar').addEventListener('click', function () {
+      var f = $('aVFec').value;
+      if (!f) { $('aVMsg').textContent = 'Elige la fecha de la visita para agregarla al calendario.'; return; }
+      $('aVMsg').textContent = '';
+      S.visitas.push({ n: $('aVUsr').value, f: f, m: $('aVMot').value });
+      S.ordena(f);
+      S.diaSel = f;
+      S.mes = { y: +f.slice(0, 4), m: +f.slice(5, 7) - 1 };
+      dibujaTodo();
+    });
+    $('aMesAnt').addEventListener('click', function () { S.mes = { y: S.mes.m ? S.mes.y : S.mes.y - 1, m: (S.mes.m + 11) % 12 }; dibujaCalendario(); });
+    $('aMesSig').addEventListener('click', function () { S.mes = { y: S.mes.m === 11 ? S.mes.y + 1 : S.mes.y, m: (S.mes.m + 1) % 12 }; dibujaCalendario(); });
+    $('aCalGrid').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-f]');
+      if (!b) return;
+      S.diaSel = b.dataset.f;
+      dibujaCalendario(); dibujaDia();
+    });
+    $('aSugeridos').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-n]');
+      if (b) rellena(b.dataset.n);
+    });
+    $('aDia').addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      var lista = S.delDia(S.diaSel);
+      if (b.dataset.a) {
+        var i = +b.dataset.i, a = b.dataset.a;
+        if (a === 'quitar') S.visitas.splice(S.visitas.indexOf(lista[i]), 1);
+        else {
+          var j = a === 'sub' ? i - 1 : i + 1, t = lista[i].ord;
+          lista[i].ord = lista[j].ord; lista[j].ord = t;
+        }
+        dibujaTodo();
+      } else if (b.id === 'aOrdSug') {
+        S.ordena(S.diaSel); dibujaDia();
+      } else if (b.id === 'aCopiaRuta') {
+        ui.copia(textoRuta(lista), $('aRutaTxt'), $('aRutaCopiada')).then(function (ok) {
+          if (ok) $('aRutaCopiada').textContent = 'Ruta copiada. Pégala en WhatsApp o en tus notas.';
+        });
+      }
+    });
+
+    S.rellenaAgenda = rellena;
+    return { dibujaTodo: dibujaTodo };
+  };
+})(globalThis.ED = globalThis.ED || {});
+
+// Maqueta A: pantalla de Inicio (KPIs, proximas visitas, atencion, barras y avisos).
+(function (ED) {
+  var ui = ED.ui = ED.ui || {};
+  var esc = ui.esc;
+
+  ui.aInicio = function (S, $) {
+    var B = ui.aBase;
+
+    function cuenta(clave) {
+      var o = {};
+      S.usuarios.forEach(function (u) { o[u[clave]] = (o[u[clave]] || 0) + 1; });
+      return Object.keys(o).map(function (k) { return [k, o[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+    }
+
+    function barras(lista, colorDe) {
+      var mx = Math.max.apply(null, lista.map(function (x) { return x[1]; }));
+      return lista.map(function (x, i) {
+        var estilo = 'width:' + (100 * x[1] / mx) + '%;' + (colorDe ? 'background:' + colorDe(x[0]) : '');
+        return '<div class="fila"><span class="et">' + esc(x[0]) + '</span><div class="barwrap"><div class="bar' + (i && !colorDe ? ' secundaria' : '') +
+          '" style="' + estilo + '"></div></div><span class="n">' + x[1] + '</span></div>';
+      }).join('');
+    }
+
+    function mensaje(u) {
+      return 'Hola ' + u.n.split(' ')[0] + ', recuerde aplicar azufre antes del 25 de octubre. Si ya lo hizo, mándeme una foto 🙂';
+    }
+
+    function dibuja() {
+      var A = ED.agenda, k = A.kpis(S.usuarios, S.visitas, S.hoy), p = S.hoy.split('-').map(Number);
+      var comps = A.conCompromiso(S.usuarios);
+      var sinAgendar = A.sinAgendar(S.usuarios, S.visitas, S.hoy);
+      $('aSaludo').textContent = 'Hoy es ' + B.fechaTxt(S.hoy) + ' de ' + p[0] + '. Este resumen se arma con las fichas y las visitas que agendaste.';
+      $('aKpis').innerHTML =
+        '<div class="kpi"><b>' + k.usuarios + '</b>usuarios con ficha</div>' +
+        '<div class="kpi"><b>' + k.proximos7 + '</b>visitas en los próximos 7 días</div>' +
+        '<div class="kpi"><b>' + k.atrasados + '</b>sin visita hace más de 60 días (' + k.sinAgendar + ' sin agendar)</div>' +
+        '<div class="kpi"><b>' + k.compromisos + '</b>compromisos que vencen esta semana</div>';
+      var prox = S.visitas.filter(function (v) { return v.f >= S.hoy; })
+        .sort(function (a, b) { return a.f < b.f ? -1 : a.f > b.f ? 1 : a.ord - b.ord; });
+      $('aProx').innerHTML = (prox.slice(0, 6).map(function (v) {
+        return '<div class="entry"><span class="fecha">' + esc(B.fechaTxt(v.f)) + '</span><br><b>' + esc(v.n) + '</b>, ' + esc(S.usuario(v.n).c) + '. ' + esc(v.m) + '</div>';
+      }).join('') || '<p class="muted">No hay visitas agendadas. Planifica una en "Calendario y ruta".</p>') +
+        '<button type="button" class="btn ghost" data-ir="aCal">Ver calendario y ruta</button>';
+      $('aAten').innerHTML = sinAgendar.map(function (u) {
+        return '<div class="entry"><b>' + esc(u.n) + '</b>, ' + esc(u.c) + '<br><span class="fecha">' + u.d + ' días sin visita</span><br>' +
+          '<button type="button" class="mini" data-agendar="' + esc(u.n) + '" aria-label="Agendar visita a ' + esc(u.n) + '">Agendar visita</button></div>';
+      }).join('') + comps.map(function (u) {
+        return '<div class="entry"><b>' + esc(u.n) + '</b>, ' + esc(u.c) + '<br><span class="fecha">Vence el 25-oct</span><br>' + esc(u.comp) + '</div>';
+      }).join('') || '<p class="muted">Todo al día. No hay usuarios atrasados ni compromisos por vencer.</p>';
+      $('aRubro').innerHTML = barras(cuenta('r'), function (k2) { return B.COLOR[k2]; });
+      $('aComuna').innerHTML = barras(cuenta('c'));
+      $('aNec').innerHTML = barras(cuenta('nec'));
+      $('aAvisos').innerHTML = comps.map(function (u, i) {
+        return '<div class="entry"><b>' + esc(u.n) + '</b> (' + esc(u.c) + ')<br>"' + esc(mensaje(u)) + '"<br>' +
+          '<button type="button" class="mini" data-copiar="' + i + '" aria-label="Copiar mensaje para ' + esc(u.n) + '">Copiar mensaje</button>' +
+          '<span class="muted" role="status" data-aviso></span>' +
+          '<textarea class="copia" rows="3" readonly hidden aria-label="Mensaje para copiar"></textarea></div>';
+      }).join('') || '<p class="muted">No hay avisos para esta semana.</p>';
+    }
+
+    // Un solo oyente para todo el Inicio: los bloques se vuelven a dibujar.
+    $('aInicio').addEventListener('click', function (e) {
+      var ir = e.target.closest('[data-ir]'), ag = e.target.closest('[data-agendar]'), cp = e.target.closest('[data-copiar]');
+      if (ir) { S.irA(ir.dataset.ir); return; }
+      if (ag) { S.irA('aCal'); S.rellenaAgenda(ag.dataset.agendar); return; }
+      if (cp) {
+        var u = ED.agenda.conCompromiso(S.usuarios)[+cp.dataset.copiar], caja = cp.parentNode;
+        ui.copia(mensaje(u), caja.querySelector('textarea'), caja.querySelector('[data-aviso]'));
+      }
+    });
+
+    return { dibuja: dibuja };
+  };
+})(globalThis.ED = globalThis.ED || {});
+
+// Organizador de terreno (A): MAQUETA con datos inventados. No usa ED.storage ni ningun almacenamiento,
+// no envia nada a ningun lado y la "lectura de fotos" es una simulacion.
+(function (ED) {
+  var ui = ED.ui = ED.ui || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = ui.esc;
+  var B = ui.aBase;
+  var S = B.estado();
+  var inicio = ui.aInicio(S, $);
+  var cal = ui.aCal(S, $);
+
+  // ---- Subpestanas (tablist) ----
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('#aTabs [role="tab"]'));
+  function irA(id) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.s === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      $(t.dataset.s).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { irA(t.dataset.s); });
+    t.addEventListener('keydown', function (e) {
+      var j = e.key === 'ArrowRight' ? (i + 1) % tabs.length : e.key === 'ArrowLeft' ? (i + tabs.length - 1) % tabs.length :
+        e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
+      if (j < 0) return;
+      e.preventDefault();
+      irA(tabs[j].dataset.s);
+      tabs[j].focus();
+    });
+  });
+  S.irA = irA;
+  S.redibujaInicio = inicio.dibuja;
+
+  // ---- Subir fotos: lectura simulada, no se lee ni se envia ninguna imagen ----
+  $('aSimula').addEventListener('click', function () { $('aFicha').hidden = false; $('aFMsg').textContent = ''; });
+  $('aFGuardar').addEventListener('click', function () {
+    $('aFMsg').textContent = 'Es una maqueta: la ficha no se guarda en ninguna parte. En la versión real quedaría en tu ficha del usuario.';
+  });
+
+  // ---- Buscar usuario ----
+  function resultados() {
+    var q = $('aBuscarTxt').value.trim().toLowerCase();
+    var res = q ? S.usuarios.filter(function (u) { return u.n.toLowerCase().indexOf(q) >= 0; }) : [];
+    $('aResultados').innerHTML = res.map(function (u) {
+      return '<button type="button" class="btn ghost" data-n="' + esc(u.n) + '">' + esc(u.n) + ' · ' + esc(u.c) + ' · ' + esc(u.r) + '</button>';
+    }).join('') || (q ? '<p class="muted">No hay usuarios con ese nombre. Prueba con otra parte del nombre.</p>' : '');
+    if (!res.length) $('aFichaU').innerHTML = '';
+  }
+  function verUsuario(nombre) {
+    var u = S.usuario(nombre);
+    if (!u) return;
+    $('aFichaU').innerHTML = '<div class="card ficha"><h3>' + esc(u.n) + ', ' + esc(u.c) + ' · ' + esc(u.r) + ' · ' + String(u.ha).replace('.', ',') + ' ha</h3>' +
+      '<p>Última visita hace ' + u.d + ' días ' + (u.d > 60 ? '<span class="pill alerta">atrasada</span>' : '') + '</p>' +
+      '<p><b>Necesidad principal:</b> ' + esc(u.nec) + '<br><b>Compromiso vigente:</b> ' + esc(u.comp) + '</p>' +
+      '<h3>Historial de visitas</h3>' + u.h.map(function (x) { return '<div class="entry">' + esc(x) + '</div>'; }).join('') +
+      '<button type="button" class="btn" data-ficha="visita" data-n="' + esc(u.n) + '">Agregar visita</button>' +
+      '<button type="button" class="btn ghost" data-ficha="wsp">Escribirle por WhatsApp</button>' +
+      '<p class="muted" id="aFichaMsg" role="status"></p></div>';
+  }
+  $('aBuscarTxt').addEventListener('input', resultados);
+  $('aResultados').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-n]');
+    if (b) verUsuario(b.dataset.n);
+  });
+  $('aFichaU').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-ficha]');
+    if (!b) return;
+    if (b.dataset.ficha === 'visita') { irA('aCal'); S.rellenaAgenda(b.dataset.n); }
+    else $('aFichaMsg').textContent = 'Es una maqueta: no se abre WhatsApp ni se envía ningún mensaje.';
+  });
+
+  // ---- Mapa esquematico ----
+  var COMUNAS = [['Coelemu', 60, 100], ['Quillón', 90, 300], ['El Carmen', 200, 150], ['Carahue', 390, 80], ['Freire', 440, 310]];
+  function dibujaMapa() {
+    var f = $('aFiltro').value;
+    var sel = S.usuarios.filter(function (u) { return f === 'todos' || (f === 'atrasados' ? u.d > 60 : u.r === f); });
+    $('aMapaSvg').innerHTML = COMUNAS.map(function (c) {
+      return '<text x="' + c[1] + '" y="' + c[2] + '" fill="#3D6270" font-size="13">' + esc(c[0]) + '</text>';
+    }).join('') + sel.map(function (u) {
+      return '<circle cx="' + u.x + '" cy="' + u.y + '" r="9" fill="' + B.COLOR[u.r] + '" stroke="' + (u.d > 60 ? '#B0563F' : '#fff') + '" stroke-width="' + (u.d > 60 ? 4 : 1.5) + '"><title>' +
+        esc(u.n + ', ' + u.r + ', ' + u.d + ' días sin visita') + '</title></circle>';
+    }).join('');
+    var porComuna = {}, orden = [];
+    sel.filter(function (u) { return u.d > 30; }).forEach(function (u) {
+      if (!porComuna[u.c]) { porComuna[u.c] = []; orden.push(u.c); }
+      porComuna[u.c].push(u.n);
+    });
+    $('aRutaMapa').innerHTML = '<h3>Ruta sugerida (visitas atrasadas agrupadas por comuna)</h3>' +
+      (orden.map(function (c) { return '<div class="entry"><b>' + esc(c) + ':</b> ' + porComuna[c].map(esc).join(', ') + '</div>'; }).join('') ||
+        '<p class="muted">Sin visitas atrasadas en este filtro.</p>');
+  }
+  $('aFiltro').addEventListener('change', dibujaMapa);
+
+  dibujaMapa();
+  cal.dibujaTodo();
+  ui.a = { estado: S, irA: irA };
+})(globalThis.ED = globalThis.ED || {});
+
+</script>
+</body>
+</html>

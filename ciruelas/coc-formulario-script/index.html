@@ -325,7 +325,7 @@ function st(id){
   var n = function(x){ return x != null && String(x).trim() !== ''; };
   if (id === 'meta'){ var m = D.meta; return n(m.empresa) && n(m.persona) && n(m.cargo) && n(m.correo) ? 'ok' : (n(m.empresa) || n(m.persona) ? 'part' : 'none'); }
   if (id === 'pc'){ return obsCount() ? 'ok' : 'none'; }
-  if (id === 'esp'){ var b = D.neb; return n(b.desc) && b.orig.length ? 'ok' : (n(b.desc) || b.orig.length || b.adj.length || n(D.cert.tiene) || n(D.pc.post.m) ? 'part' : 'none'); }
+  if (id === 'esp'){ var b = D.neb; return n(b.desc) && b.orig.length ? 'ok' : (n(b.desc) || n(b.prov) || b.orig.length || b.adj.length || n(D.cert.tiene) || n(D.pc.post.m) ? 'part' : 'none'); }
   return 'none';
 }
 function obsCount(){
@@ -432,6 +432,7 @@ function vPc(){
     pager('meta', 'esp');
 }
 var ORIG = [['propiofresca','Fruta fresca de huertos propios'],['propioseca','Fruta seca en huertos propios'],['prodfresca','Fruta fresca de productores'],['prodseca','Fruta seca por productores'],['canchat','Secada en cancha de terceros'],['hornot','Secada en horno de terceros'],['acop','Acopiadores o intermediarios'],['otro','Otro origen']];
+var PROV = [['propios','Solo producción de huertos propios'],['1-10','Entre 1 y 10 proveedores'],['11-20','Entre 11 y 20 proveedores'],['21-50','Entre 21 y 50 proveedores'],['50+','Más de 50 proveedores']];
 function esec(n, title, lead, body, opt){
   return '<section class="esec"><div class="eh"><span class="en">' + n + '</span><div><h3>' + esc(title) + (opt ? '<span class="tag opt">Opcional</span>' : '') + '</h3>' + (lead ? '<p class="lead">' + esc(lead) + '</p>' : '') + '</div></div>' + body + '</section>';
 }
@@ -439,6 +440,7 @@ function vEsp(){
   return head('Especificaciones', null, 'Entre la cosecha y la planta la fruta puede recorrer caminos muy distintos. Cuéntanos cómo llega a tu instalación y si ya tienen un esquema de trazabilidad por otra certificación.') +
     esec(1, 'Cómo llega la fruta a tu planta', null,
       checks('neb.orig', '¿De qué orígenes recibe fruta tu planta o tu empresa?', ORIG) +
+      '<div style="margin-top:14px">' + radios('neb.prov', '¿Con cuántos proveedores de ciruela fresca trabaja tu planta?', PROV) + '</div>' +
       '<div style="margin-top:14px">' + ta('neb.desc', 'Para cada origen, ¿cómo aseguran que el lote mantenga su identidad?', { hint:'Por ejemplo: tarja desde la cosecha, guía de despacho, contrato, visita al lugar de secado.', ph:'Un párrafo o una lista por origen' }) + '</div>') +
     esec(2, 'Tu propio flujo', 'Si prefieres mostrarlo en un diagrama, adjunta el flujo de llegada de la fruta a tu planta (imagen o PDF). Ayuda mucho.', upBlock('m1.adj'), true) +
     esec(3, 'Otra certificación', 'Si ya tienen un esquema de trazabilidad por otra certificación (por ejemplo, halal, kosher u otra), puede servir como referencia para el protocolo.',

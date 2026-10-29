@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umbral y progresión · Cadena de custodia de la ciruela</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--morado:#6a4580;--lila:#f3ecf7;--verde:#4f7f22;--verde-claro:#eff5e5;--texto:#33323a;--suave:#6b6b73;--linea:#e6d8f0;--borde:#c9b6d6;--rojo:#b3372c}
+  *{box-sizing:border-box}
+  body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,sans-serif;background:#fff;color:var(--texto);margin:0;padding:20px 16px 60px;line-height:1.5;font-size:16px}
+  main{max-width:680px;margin:0 auto}
+  .logos{display:flex;gap:22px;align-items:center;flex-wrap:wrap;padding-top:6px}
+  .logos img{height:34px;width:auto;display:block}.logos img.cp{height:46px}
+  .linea{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--morado) 0 70%,var(--verde) 70% 100%);margin:8px 0 20px}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--verde);font-weight:700}
+  h1{color:var(--morado);font-size:clamp(24px,5vw,32px);line-height:1.15;margin:4px 0 8px}
+  .intro{color:var(--suave);margin:0 0 18px}
+  .barra{position:sticky;top:0;background:#fff;padding:8px 0;z-index:2;border-bottom:1px solid var(--linea);display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--suave);margin-bottom:12px}
+  .prog{flex:1;height:6px;border-radius:3px;background:var(--linea);overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--verde);transition:width .25s}
+  fieldset{border:0;margin:0 0 16px;padding:18px 20px;border-radius:12px;background:var(--lila)}
+  fieldset.ok{background:var(--verde-claro)}
+  legend{padding:0;float:left;width:100%;margin:0 0 4px;color:var(--morado);font-weight:700;font-size:1.08rem}
+  legend span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--morado);color:#fff;font-size:.9rem;margin-right:8px}
+  fieldset>*:not(legend){clear:both}
+  .ayuda{font-size:14px;color:var(--suave);margin:0 0 10px}
+  .op{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--borde);border-radius:9px;padding:9px 12px;margin:6px 0;cursor:pointer}
+  .op input{margin-top:4px;accent-color:var(--morado);flex:none}
+  .op:has(input:checked){border-color:var(--morado);box-shadow:0 0 0 1px var(--morado);background:#fbf8fd}
+  .rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+  .rejilla .op{margin:0;padding:8px 10px;justify-content:center;text-align:center}
+  label.c{display:block;font-weight:600;margin:10px 0 4px}
+  input[type=text],input[type=email],select,textarea{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--borde);border-radius:9px;background:#fff;color:var(--texto)}
+  textarea{min-height:76px;resize:vertical}
+  input:focus-visible,select:focus-visible,textarea:focus-visible,.op:has(input:focus-visible){outline:2px solid var(--morado);outline-offset:2px}
+  .dos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .calc{background:#fff;border:1px dashed var(--borde);border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center}
+  .calc b{font-size:1.5rem;color:var(--verde);line-height:1.1}
+  .na{background:#fff;border:1px dashed var(--borde);border-radius:9px;padding:10px 12px;color:var(--suave)}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:9px;overflow:hidden}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--linea)}
+  th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--suave);background:#fbf8fd}
+  td:first-child{font-weight:600;width:46%}
+  .aviso{font-size:13.5px;color:#8a5a00;background:#fff6dc;border-radius:8px;padding:7px 10px;margin-top:8px}
+  .err{color:var(--rojo);font-size:14px;margin:6px 0 0}
+  .falta{outline:2px solid var(--rojo);outline-offset:3px}
+  button.env{background:var(--morado);color:#fff;border:0;font:inherit;font-weight:700;padding:13px 26px;border-radius:10px;cursor:pointer;font-size:1.05rem}
+  button.env:hover{filter:brightness(1.1)}button.env:disabled{opacity:.55;cursor:wait}
+  .gracias{background:var(--verde-claro);border-radius:12px;padding:26px 22px;text-align:center}
+  .gracias h2{color:var(--verde);margin:0 0 8px}
+  .priv{font-size:13px;color:var(--suave);margin-top:14px}
+  @media(max-width:520px){.dos{grid-template-columns:1fr}td:first-child{width:auto}}
+</style>
+</head>
+<body>
+<main id="app">
+  <div class="logos"><img class="cp" src="../coc-formulario-script/logos/chileprunes.png" alt="Chileprunes Association"><img src="../coc-formulario-script/logos/iica.png" alt="IICA"><img src="../coc-formulario-script/logos/agencia-scc.png" alt="Agencia de Sustentabilidad y Cambio Climático"><img src="../coc-formulario-script/logos/chile-origen-consciente.png" alt="Chile Origen Consciente"></div>
+  <div class="linea"></div>
+  <div class="eyebrow">Cadena de custodia · Ciruela deshidratada</div>
+  <h1>Umbral y progresión del balance de masa</h1>
+  <p class="intro">Seis preguntas, unos 5 minutos. Sus respuestas ayudan a definir qué porcentaje de fruta certificada exigir y en cuántos años llegar a él. Se piden solo porcentajes y rangos, nunca kilos ni hectáreas.</p>
+
+  <div class="barra"><span id="avance">0 de 6</span><div class="prog"><i id="pbar"></i></div><span id="chip">Se guarda solo</span></div>
+
+  <form id="f" novalidate>
+    <fieldset id="meta">
+      <legend>Identificación</legend>
+      <div class="dos">
+        <div><label class="c" for="empresa">Empresa o planta</label><input type="text" id="empresa" autocomplete="organization"></div>
+        <div><label class="c" for="persona">Su nombre</label><input type="text" id="persona" autocomplete="name"></div>
+        <div><label class="c" for="cargo">Cargo</label><input type="text" id="cargo" autocomplete="organization-title"></div>
+        <div><label class="c" for="correo">Correo</label><input type="email" id="correo" autocomplete="email"></div>
+      </div>
+      <p class="ayuda" style="margin-top:10px">Los resultados se presentan sin nombres de empresas.</p>
+    </fieldset>
+
+    <fieldset id="q1">
+      <legend><span>1</span>Fruta propia y de proveedores</legend>
+      <p class="ayuda">Del volumen que procesa su planta, ¿qué porcentaje viene de huertos propios? El resto se toma como fruta de proveedores.</p>
+      <div class="dos">
+        <div><label class="c" for="propio">Huertos propios</label><select id="propio"></select></div>
+        <div class="calc"><span>Proveedores</span><b id="provpct">—</b></div>
+      </div>
+    </fieldset>
+
+    <fieldset id="q2">
+      <legend><span>2</span>Cuántos proveedores suman la mitad de su compra</legend>
+      <p class="ayuda">Ordene a sus proveedores de <b>mayor a menor</b> según la fruta que le entregan. ¿Cuántos de los primeros necesita sumar para llegar a <b>la mitad</b> de la fruta que compra a terceros?<br>Por ejemplo, si con sus 3 mayores proveedores ya completa la mitad de lo que compra, responda «2 a 3».</p>
+      <div class="rejilla" id="o-mitad"></div>
+    </fieldset>
+
+    <fieldset id="q3">
+      <legend><span>3</span>Peso de sus 5 mayores proveedores</legend>
+      <p class="ayuda">Tome sus <b>5 proveedores más grandes</b>. Juntos, ¿qué porcentaje de la fruta que compra a terceros le entregan?<br>Es el porcentaje de lo que compra a terceros, sin contar su fruta propia.</p>
+      <div id="o-top5"></div>
+    </fieldset>
+
+    <fieldset id="q4">
+      <legend><span>4</span>Exigir certificación a sus proveedores</legend>
+      <p class="ayuda">Si el Protocolo lo requiriera, ¿podría pedir la certificación a sus proveedores principales?</p>
+      <div id="o-exigir"></div>
+    </fieldset>
+
+    <fieldset id="q5">
+      <legend><span>5</span>Adicional por fruta certificada</legend>
+      <p class="ayuda">¿Estaría dispuesta su planta a pagar un adicional por la fruta de predios certificados?</p>
+      <div id="o-adicional"></div>
+    </fieldset>
+
+    <fieldset id="q6">
+      <legend><span>6</span>Porcentaje exigible cada año</legend>
+      <p class="ayuda">¿Qué porcentaje mínimo de fruta certificada le parece razonable que el Protocolo exija cada año? Es su opinión sobre la regla, no una estimación de lo que harán sus proveedores.</p>
+      <table><thead><tr><th>Temporada</th><th>Porcentaje exigible</th></tr></thead><tbody id="t6"></tbody></table>
+      <div class="aviso" id="av6" hidden>Marcó un porcentaje menor que el de un año anterior. Puede dejarlo así si es lo que piensa.</div>
+      <label class="c" for="necesita">Si esos porcentajes no le parecen cumplibles, ¿qué necesitaría para lograrlos? (opcional)</label>
+      <textarea id="necesita"></textarea>
+    </fieldset>
+
+    <p class="err" id="err" hidden></p>
+    <button class="env" type="submit" id="enviar">Enviar respuestas</button>
+    <p class="priv">Puede cerrar la página y volver más tarde con el mismo enlace: lo que haya contestado queda guardado.</p>
+  </form>
+</main>
+
+<script>
+/* Dirección del script de Google (Apps Script) que guarda las respuestas en la hoja. Pegar aquí la URL /exec. */
+var EXEC = 'https://script.google.com/macros/s/AKfycbwav7Wj6VnpLEpsEzDNTTu-kr3vlXiRwjQCnkM5YgoDdVCR5CeYRhQ2fknzeajxCvQLFw/exec';
+
+var MITAD = ['Solo 1', '2 a 3', '4 a 5', '6 a 10', '11 a 20', 'Más de 20'];
+var TOP5 = ['Menos de 25 %', '25 a 50 %', '50 a 75 %', 'Más de 75 %', 'Tengo menos de 5 proveedores'];
+var EXIGIR = [['condicion', 'Sí, como condición de compra'], ['recomienda', 'Sí, como recomendación'], ['apoyo', 'Solo si recibe apoyo (capacitación o información)'], ['no', 'No']];
+var ADIC = [['definido', 'Sí, ya lo tenemos definido'], ['cliente', 'Sí, si el cliente lo reconoce en el precio'], ['evalua', 'Lo evaluaría'], ['no', 'No']];
+var RANGOS = ['0 a 10 %', '10 a 20 %', '20 a 30 %', '30 a 40 %', '40 a 50 %', '50 a 60 %', '60 a 70 %', 'Más de 70 %'];
+var TEMPORADAS = [['t1', 'Temporada 1'], ['t2', 'Temporada 2'], ['t3', 'Temporada 3'], ['t4', 'Temporada 4 (2030)']];
+var ID_OK = /^[a-f0-9]{16,64}$/;
+var $ = function(s){ return document.querySelector(s); };
+var D = { meta: {}, p: {}, anio: {}, necesita: '' }, uid = null, saveTimer = null, enviado = false;
+
+function nuevoId(){ var a = new Uint8Array(16); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
+function obtenerUid(){
+  var id = null;
+  try { var q = new URLSearchParams(location.search).get('c'); if (q && ID_OK.test(q)) id = q; } catch (_) {}
+  try { if (!id){ var s = localStorage.getItem('umbral-uid'); if (s && ID_OK.test(s)) id = s; } } catch (_) {}
+  if (!id) id = nuevoId();
+  try { localStorage.setItem('umbral-uid', id); } catch (_) {}
+  try { history.replaceState(null, '', '?c=' + id); } catch (_) {}
+  return id;
+}
+function cargarRemoto(id){
+  return new Promise(function(res){
+    if (!/^https:/.test(EXEC)) return res(null);
+    var cb = 'cb' + Date.now(), s = document.createElement('script'), t;
+    function fin(v){ clearTimeout(t); delete window[cb]; s.remove(); res(v); }
+    window[cb] = function(r){ fin(r && r.ok ? r.datos : null); };
+    s.onerror = function(){ fin(null); };
+    t = setTimeout(function(){ fin(null); }, 8000);
+    s.src = EXEC + '?q=cargar&id=' + id + '&callback=' + cb + '&_=' + Date.now();
+    document.head.appendChild(s);
+  });
+}
+
+/* ---- construcción */
+function radios(cont, name, lista, plano){
+  $(cont).innerHTML = lista.map(function(o){
+    var v = Array.isArray(o) ? o[0] : o, t = Array.isArray(o) ? o[1] : o;
+    return '<label class="op"><input type="radio" name="' + name + '" value="' + v + '"><span>' + t + '</span></label>';
+  }).join('');
+}
+function construir(){
+  var sel = '<option value="">Elija…</option>';
+  for (var i = 0; i <= 100; i += 10) sel += '<option value="' + i + '">' + i + ' %</option>';
+  $('#propio').innerHTML = sel;
+  radios('#o-mitad', 'mitad', MITAD); radios('#o-top5', 'top5', TOP5);
+  radios('#o-exigir', 'exigir', EXIGIR); radios('#o-adicional', 'adicional', ADIC);
+  var opt = '<option value="">Elija…</option>' + RANGOS.map(function(r){ return '<option>' + r + '</option>'; }).join('');
+  $('#t6').innerHTML = TEMPORADAS.map(function(t){ return '<tr><td><label for="a-' + t[0] + '">' + t[1] + '</label></td><td><select id="a-' + t[0] + '">' + opt + '</select></td></tr>'; }).join('');
+}
+
+/* ---- estado */
+function aplicar(){
+  var m = D.meta || {};
+  ['empresa', 'persona', 'cargo', 'correo'].forEach(function(k){ $('#' + k).value = m[k] || ''; });
+  $('#propio').value = D.p.propio == null ? '' : D.p.propio;
+  [['mitad', 'mitad'], ['top5', 'top5'], ['exigir', 'exigir'], ['adicional', 'adicional']].forEach(function(k){
+    var el = document.querySelector('input[name="' + k[0] + '"][value="' + (D.p[k[1]] || '__') + '"]'); if (el) el.checked = true;
+  });
+  TEMPORADAS.forEach(function(t){ $('#a-' + t[0]).value = (D.anio || {})[t[0]] || ''; });
+  $('#necesita').value = D.necesita || '';
+  refrescar();
+}
+function leer(){
+  D.meta = { empresa: $('#empresa').value.trim(), persona: $('#persona').value.trim(), cargo: $('#cargo').value.trim(), correo: $('#correo').value.trim() };
+  D.p = D.p || {};
+  D.p.propio = $('#propio').value;
+  ['mitad', 'top5', 'exigir', 'adicional'].forEach(function(n){ var c = document.querySelector('input[name="' + n + '"]:checked'); D.p[n] = c ? c.value : ''; });
+  D.anio = {}; TEMPORADAS.forEach(function(t){ D.anio[t[0]] = $('#a-' + t[0]).value; });
+  D.necesita = $('#necesita').value.trim();
+}
+function soloPropio(){ return D.p.propio === '100'; }
+function refrescar(){
+  leer();
+  $('#provpct').textContent = D.p.propio === '' ? '—' : (100 - Number(D.p.propio)) + ' %';
+  var np = soloPropio();
+  ['q2', 'q3', 'q4'].forEach(function(id){
+    var fs = $('#' + id), on = !np;
+    fs.querySelectorAll('input').forEach(function(i){ i.disabled = !on; if (!on) i.checked = false; });
+    var aviso = fs.querySelector('.na');
+    if (!on && !aviso){ var d = document.createElement('div'); d.className = 'na'; d.textContent = 'No aplica: toda su fruta es propia.'; fs.appendChild(d); }
+    if (on && aviso) aviso.remove();
+    fs.style.opacity = on ? '' : '.6';
+  });
+  if (np){ D.p.mitad = D.p.top5 = D.p.exigir = ''; }
+  var o = RANGOS, idx = TEMPORADAS.map(function(t){ return o.indexOf(D.anio[t[0]]); }), baja = false;
+  for (var i = 1; i < idx.length; i++) if (idx[i] >= 0 && idx[i - 1] >= 0 && idx[i] < idx[i - 1]) baja = true;
+  $('#av6').hidden = !baja;
+  var ok = estado(); var n = 0;
+  Object.keys(ok).forEach(function(k){ if (k !== 'meta' && ok[k]) n++; $('#' + k).classList.toggle('ok', !!ok[k]); $('#' + k).classList.remove('falta'); });
+  $('#avance').textContent = n + ' de 6';
+  $('#pbar').style.width = (n / 6 * 100) + '%';
+}
+function estado(){
+  var p = D.p, np = soloPropio(), m = D.meta;
+  return { meta: !!(m.empresa && m.persona && m.cargo && m.correo),
+    q1: p.propio !== '', q2: np || !!p.mitad, q3: np || !!p.top5, q4: np || !!p.exigir, q5: !!p.adicional,
+    q6: TEMPORADAS.every(function(t){ return D.anio[t[0]]; }) };
+}
+function cambio(){
+  refrescar();
+  var c = $('#chip'); c.textContent = 'Guardando…';
+  clearTimeout(saveTimer); saveTimer = setTimeout(guardar, 900);
+  try { localStorage.setItem('umbral-borrador', JSON.stringify(D)); } catch (_) {}
+}
+async function guardar(){
+  var c = $('#chip');
+  if (!/^https:/.test(EXEC)){ c.textContent = 'Guardado solo en este navegador'; return; }
+  try {
+    await fetch(EXEC, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: 'guardar', id: uid, datos: D }) });
+    c.textContent = 'Guardado ' + new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    return true;
+  } catch (e) { c.textContent = 'No se pudo guardar; reintentando'; clearTimeout(saveTimer); saveTimer = setTimeout(guardar, 4000); return false; }
+}
+
+async function enviarForm(ev){
+  ev.preventDefault(); refrescar();
+  var est = estado(), faltan = Object.keys(est).filter(function(k){ return !est[k]; });
+  var err = $('#err');
+  if (faltan.length){
+    faltan.forEach(function(k){ $('#' + k).classList.add('falta'); });
+    err.hidden = false; err.textContent = 'Faltan respuestas en: ' + faltan.map(function(k){ return k === 'meta' ? 'identificación' : 'pregunta ' + k.slice(1); }).join(', ') + '.';
+    $('#' + faltan[0]).scrollIntoView({ behavior: 'smooth', block: 'center' }); return;
+  }
+  err.hidden = true;
+  var b = $('#enviar'); b.disabled = true; b.textContent = 'Enviando…';
+  D.enviado = D.enviado || Date.now();
+  clearTimeout(saveTimer);
+  var ok = await guardar();
+  if (ok === false){ b.disabled = false; b.textContent = 'Enviar respuestas'; err.hidden = false; err.textContent = 'No se pudo enviar. Revise su conexión y vuelva a intentarlo.'; return; }
+  $('#f').hidden = true; $('.barra').hidden = true;
+  var g = document.createElement('div'); g.className = 'gracias';
+  g.innerHTML = '<h2>Gracias por responder</h2><p>Sus respuestas quedaron registradas. Si quiere cambiar algo, vuelva a abrir este mismo enlace y reenvíe.</p>';
+  $('#app').appendChild(g); window.scrollTo(0, 0);
+}
+
+(async function(){
+  construir(); uid = obtenerUid();
+  var remoto = await cargarRemoto(uid), local = null;
+  try { local = JSON.parse(localStorage.getItem('umbral-borrador') || 'null'); } catch (_) {}
+  var elegido = remoto || local;
+  if (elegido && typeof elegido === 'object'){ D = elegido; D.meta = D.meta || {}; D.p = D.p || {}; D.anio = D.anio || {}; }
+  aplicar();
+  $('#f').addEventListener('input', cambio); $('#f').addEventListener('change', cambio);
+  $('#f').addEventListener('submit', enviarForm);
+})();
+</script>
+</body>
+</html>

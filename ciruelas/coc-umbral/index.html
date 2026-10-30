@@ -48,6 +48,9 @@
   button.env:hover{filter:brightness(1.1)}button.env:disabled{opacity:.55;cursor:wait}
   .gracias{background:var(--verde-claro);border-radius:12px;padding:26px 22px;text-align:center}
   .gracias h2{color:var(--verde);margin:0 0 8px}
+  .ctx{border:1px solid var(--borde);border-radius:12px;padding:16px 20px;margin:0 0 16px}
+  .ctx h2{color:var(--morado);font-size:1.08rem;margin:0 0 8px}
+  .ctx p{margin:0 0 9px}.ctx p:last-child{margin:0}
   .priv{font-size:13px;color:var(--suave);margin-top:14px}
   @media(max-width:520px){.dos{grid-template-columns:1fr}td:first-child{width:auto}}
 </style>
@@ -58,9 +61,9 @@
   <div class="linea"></div>
   <div class="eyebrow">Cadena de custodia · Ciruela deshidratada</div>
   <h1>Umbral y progresión del balance de masa</h1>
-  <p class="intro">Cuatro preguntas, unos 4 minutos. Sus respuestas ayudan a definir qué porcentaje de fruta certificada exigir y en cuántos años llegar a él. Se piden solo porcentajes y rangos, nunca kilos ni hectáreas.</p>
+  <p class="intro">Tres preguntas, unos 3 minutos. Sus respuestas ayudan a definir qué porcentaje de fruta certificada exigir y en cuántos años llegar a él.</p>
 
-  <div class="barra"><span id="avance">0 de 4</span><div class="prog"><i id="pbar"></i></div><span id="chip">Se guarda solo</span></div>
+  <div class="barra"><span id="avance">0 de 3</span><div class="prog"><i id="pbar"></i></div><span id="chip">Se guarda solo</span></div>
 
   <form id="f" novalidate>
     <fieldset id="meta">
@@ -74,34 +77,32 @@
       <p class="ayuda" style="margin-top:10px">Los resultados se presentan sin nombres de empresas.</p>
     </fieldset>
 
+    <section class="ctx" id="ctx">
+      <h2>Antes de responder: de qué se trata</h2>
+      <p><b>Cadena de custodia.</b> Es el sistema que permite seguir la fruta certificada desde el huerto hasta el producto exportado, para poder respaldar el atributo de sustentabilidad de lo que se vende.</p>
+      <p><b>Balance de masa.</b> En una planta, la fruta certificada y la que no lo está se procesan juntas. Con este método la planta no separa la fruta: lleva la cuenta de cuánta fruta certificada recibió y, según eso, cuánto producto puede vender con el atributo.</p>
+      <p><b>Umbral.</b> Es el porcentaje mínimo de fruta certificada que la planta debe recibir para vender producto con el atributo. Todavía no está definido.</p>
+      <p><b>Por qué debe ser progresivo.</b> Hoy ningún predio está certificado. Un umbral alto desde el primer día no lo cumpliría nadie, y uno bajo para siempre le quitaría valor al atributo. Por eso se propone partir de un porcentaje que se pueda cumplir en la primera temporada y subir año a año hasta una meta. Sus respuestas ayudan a definir esos tres datos: el punto de partida, la meta y los años para llegar a ella.</p>
+      <p class="ayuda">Se piden solo porcentajes y años, nunca kilos ni hectáreas. Es su opinión como conocedor del sector, no un compromiso de su empresa.</p>
+    </section>
+
     <fieldset id="q1">
-      <legend><span>1</span>Fruta propia y de proveedores</legend>
-      <p class="ayuda">Del volumen que procesa su planta, ¿qué porcentaje viene de huertos propios? El resto se toma como fruta de proveedores.</p>
-      <div class="dos">
-        <div><label class="c" for="propio">Huertos propios</label><select id="propio"></select></div>
-        <div class="calc"><span>Proveedores</span><b id="provpct">—</b></div>
-      </div>
+      <legend><span>1</span>Fruta certificada en la primera temporada</legend>
+      <p class="ayuda">¿Qué porcentaje de fruta certificada considera que podría tener disponible durante la primera temporada de certificación?</p>
+      <label class="c" for="primera">Porcentaje</label><select id="primera"></select>
     </fieldset>
 
     <fieldset id="q2">
-      <legend><span>2</span>Cuántos proveedores suman la mitad de su compra</legend>
-      <p class="ayuda">Ordene a sus proveedores de <b>mayor a menor</b> según la fruta que le entregan. ¿Cuántos de los primeros necesita sumar para llegar a <b>la mitad</b> de la fruta que compra a terceros?<br>Por ejemplo, si con sus 3 mayores proveedores ya completa la mitad de lo que compra, responda «2 a 3».</p>
-      <div class="rejilla" id="o-mitad"></div>
+      <legend><span>2</span>Umbral meta del estándar</legend>
+      <p class="ayuda">¿Cuál es el umbral de porcentaje de fruta certificada que considera que debería ser la meta para este estándar?</p>
+      <label class="c" for="meta-pct">Porcentaje</label><select id="meta-pct"></select>
+      <div class="aviso" id="av2" hidden>La meta es menor que el porcentaje de la primera temporada. Puede dejarlo así si es lo que piensa.</div>
     </fieldset>
 
     <fieldset id="q3">
-      <legend><span>3</span>Peso de sus 5 mayores proveedores</legend>
-      <p class="ayuda">Tome sus <b>5 proveedores más grandes</b>. Juntos, ¿qué porcentaje de la fruta que compra a terceros le entregan?<br>Es el porcentaje de lo que compra a terceros, sin contar su fruta propia.</p>
-      <div id="o-top5"></div>
-    </fieldset>
-
-    <fieldset id="q4">
-      <legend><span>4</span>Porcentaje exigible cada año</legend>
-      <p class="ayuda">¿Qué porcentaje mínimo de fruta certificada le parece razonable que el Protocolo exija cada año? Es su opinión sobre la regla, no una estimación de lo que harán sus proveedores.</p>
-      <table><thead><tr><th>Temporada</th><th>Porcentaje exigible</th></tr></thead><tbody id="t6"></tbody></table>
-      <div class="aviso" id="av6" hidden>Marcó un porcentaje menor que el de un año anterior. Puede dejarlo así si es lo que piensa.</div>
-      <label class="c" for="necesita">Si esos porcentajes no le parecen cumplibles, ¿qué necesitaría para lograrlos? (opcional)</label>
-      <textarea id="necesita"></textarea>
+      <legend><span>3</span>Años para llegar a la meta</legend>
+      <p class="ayuda">¿En cuántos años cree que se podría alcanzar ese porcentaje meta?</p>
+      <div class="rejilla" id="o-anios"></div>
     </fieldset>
 
     <p class="err" id="err" hidden></p>
@@ -114,13 +115,10 @@
 /* Dirección del script de Google (Apps Script) que guarda las respuestas en la hoja. Pegar aquí la URL /exec. */
 var EXEC = 'https://script.google.com/macros/s/AKfycbwav7Wj6VnpLEpsEzDNTTu-kr3vlXiRwjQCnkM5YgoDdVCR5CeYRhQ2fknzeajxCvQLFw/exec';
 
-var MITAD = ['Solo 1', '2 a 3', '4 a 5', '6 a 10', '11 a 20', 'Más de 20'];
-var TOP5 = ['Menos de 25 %', '25 a 50 %', '50 a 75 %', 'Más de 75 %', 'Tengo menos de 5 proveedores'];
-var RANGOS = ['0 a 10 %', '10 a 20 %', '20 a 30 %', '30 a 40 %', '40 a 50 %', '50 a 60 %', '60 a 70 %', 'Más de 70 %'];
-var TEMPORADAS = [['t1', 'Temporada 1'], ['t2', 'Temporada 2'], ['t3', 'Temporada 3'], ['t4', 'Temporada 4 (2030)']];
+var ANIOS = ['1 año', '2 años', '3 años', '4 años', '5 años', '6 años', '7 años', '8 años', '9 años', '10 años', 'Más de 10 años'];
 var ID_OK = /^[a-f0-9]{16,64}$/;
 var $ = function(s){ return document.querySelector(s); };
-var D = { meta: {}, p: {}, anio: {}, necesita: '' }, uid = null, saveTimer = null, enviado = false;
+var D = { meta: {}, q: {} }, uid = null, saveTimer = null, enviado = false;
 
 function nuevoId(){ var a = new Uint8Array(16); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
 function obtenerUid(){
@@ -154,60 +152,38 @@ function radios(cont, name, lista, plano){
 }
 function construir(){
   var sel = '<option value="">Elija…</option>';
-  for (var i = 0; i <= 100; i += 10) sel += '<option value="' + i + '">' + i + ' %</option>';
-  $('#propio').innerHTML = sel;
-  radios('#o-mitad', 'mitad', MITAD); radios('#o-top5', 'top5', TOP5);
-  var opt = '<option value="">Elija…</option>' + RANGOS.map(function(r){ return '<option>' + r + '</option>'; }).join('');
-  $('#t6').innerHTML = TEMPORADAS.map(function(t){ return '<tr><td><label for="a-' + t[0] + '">' + t[1] + '</label></td><td><select id="a-' + t[0] + '">' + opt + '</select></td></tr>'; }).join('');
+  for (var i = 0; i <= 100; i += 5) sel += '<option value="' + i + '">' + i + ' %</option>';
+  $('#primera').innerHTML = sel; $('#meta-pct').innerHTML = sel;
+  radios('#o-anios', 'anios', ANIOS);
 }
 
 /* ---- estado */
 function aplicar(){
-  var m = D.meta || {};
+  var m = D.meta || {}, q = D.q || {};
   ['empresa', 'persona', 'cargo', 'correo'].forEach(function(k){ $('#' + k).value = m[k] || ''; });
-  $('#propio').value = D.p.propio == null ? '' : D.p.propio;
-  [['mitad', 'mitad'], ['top5', 'top5']].forEach(function(k){
-    var el = document.querySelector('input[name="' + k[0] + '"][value="' + (D.p[k[1]] || '__') + '"]'); if (el) el.checked = true;
-  });
-  TEMPORADAS.forEach(function(t){ $('#a-' + t[0]).value = (D.anio || {})[t[0]] || ''; });
-  $('#necesita').value = D.necesita || '';
+  $('#primera').value = q.primera == null ? '' : q.primera;
+  $('#meta-pct').value = q.meta == null ? '' : q.meta;
+  var el = document.querySelector('input[name="anios"][value="' + (q.anios || '__') + '"]'); if (el) el.checked = true;
   refrescar();
 }
 function leer(){
   D.meta = { empresa: $('#empresa').value.trim(), persona: $('#persona').value.trim(), cargo: $('#cargo').value.trim(), correo: $('#correo').value.trim() };
-  D.p = D.p || {};
-  D.p.propio = $('#propio').value;
-  ['mitad', 'top5'].forEach(function(n){ var c = document.querySelector('input[name="' + n + '"]:checked'); D.p[n] = c ? c.value : ''; });
-  D.anio = {}; TEMPORADAS.forEach(function(t){ D.anio[t[0]] = $('#a-' + t[0]).value; });
-  D.necesita = $('#necesita').value.trim();
+  var c = document.querySelector('input[name="anios"]:checked');
+  D.q = { primera: $('#primera').value, meta: $('#meta-pct').value, anios: c ? c.value : '' };
 }
-function soloPropio(){ return D.p.propio === '100'; }
 function refrescar(){
   leer();
-  $('#provpct').textContent = D.p.propio === '' ? '—' : (100 - Number(D.p.propio)) + ' %';
-  var np = soloPropio();
-  ['q2', 'q3'].forEach(function(id){
-    var fs = $('#' + id), on = !np;
-    fs.querySelectorAll('input').forEach(function(i){ i.disabled = !on; if (!on) i.checked = false; });
-    var aviso = fs.querySelector('.na');
-    if (!on && !aviso){ var d = document.createElement('div'); d.className = 'na'; d.textContent = 'No aplica: toda su fruta es propia.'; fs.appendChild(d); }
-    if (on && aviso) aviso.remove();
-    fs.style.opacity = on ? '' : '.6';
-  });
-  if (np){ D.p.mitad = D.p.top5 = ''; }
-  var o = RANGOS, idx = TEMPORADAS.map(function(t){ return o.indexOf(D.anio[t[0]]); }), baja = false;
-  for (var i = 1; i < idx.length; i++) if (idx[i] >= 0 && idx[i - 1] >= 0 && idx[i] < idx[i - 1]) baja = true;
-  $('#av6').hidden = !baja;
+  var q = D.q;
+  $('#av2').hidden = !(q.primera !== '' && q.meta !== '' && Number(q.meta) < Number(q.primera));
   var ok = estado(); var n = 0;
   Object.keys(ok).forEach(function(k){ if (k !== 'meta' && ok[k]) n++; $('#' + k).classList.toggle('ok', !!ok[k]); $('#' + k).classList.remove('falta'); });
-  $('#avance').textContent = n + ' de 4';
-  $('#pbar').style.width = (n / 4 * 100) + '%';
+  $('#avance').textContent = n + ' de 3';
+  $('#pbar').style.width = (n / 3 * 100) + '%';
 }
 function estado(){
-  var p = D.p, np = soloPropio(), m = D.meta;
+  var q = D.q, m = D.meta;
   return { meta: !!(m.empresa && m.persona && m.cargo && m.correo),
-    q1: p.propio !== '', q2: np || !!p.mitad, q3: np || !!p.top5,
-    q4: TEMPORADAS.every(function(t){ return D.anio[t[0]]; }) };
+    q1: q.primera !== '', q2: q.meta !== '', q3: !!q.anios };
 }
 function cambio(){
   refrescar();
@@ -251,7 +227,7 @@ async function enviarForm(ev){
   var remoto = await cargarRemoto(uid), local = null;
   try { local = JSON.parse(localStorage.getItem('umbral-borrador') || 'null'); } catch (_) {}
   var elegido = remoto || local;
-  if (elegido && typeof elegido === 'object'){ D = elegido; D.meta = D.meta || {}; D.p = D.p || {}; D.anio = D.anio || {}; }
+  if (elegido && typeof elegido === 'object'){ D = elegido; D.meta = D.meta || {}; D.q = D.q || {}; }
   aplicar();
   $('#f').addEventListener('input', cambio); $('#f').addEventListener('change', cambio);
   $('#f').addEventListener('submit', enviarForm);

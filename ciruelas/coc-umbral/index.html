@@ -58,9 +58,9 @@
   <div class="linea"></div>
   <div class="eyebrow">Cadena de custodia · Ciruela deshidratada</div>
   <h1>Umbral y progresión del balance de masa</h1>
-  <p class="intro">Seis preguntas, unos 5 minutos. Sus respuestas ayudan a definir qué porcentaje de fruta certificada exigir y en cuántos años llegar a él. Se piden solo porcentajes y rangos, nunca kilos ni hectáreas.</p>
+  <p class="intro">Cuatro preguntas, unos 4 minutos. Sus respuestas ayudan a definir qué porcentaje de fruta certificada exigir y en cuántos años llegar a él. Se piden solo porcentajes y rangos, nunca kilos ni hectáreas.</p>
 
-  <div class="barra"><span id="avance">0 de 6</span><div class="prog"><i id="pbar"></i></div><span id="chip">Se guarda solo</span></div>
+  <div class="barra"><span id="avance">0 de 4</span><div class="prog"><i id="pbar"></i></div><span id="chip">Se guarda solo</span></div>
 
   <form id="f" novalidate>
     <fieldset id="meta">
@@ -96,19 +96,7 @@
     </fieldset>
 
     <fieldset id="q4">
-      <legend><span>4</span>Exigir certificación a sus proveedores</legend>
-      <p class="ayuda">Si el Protocolo lo requiriera, ¿podría pedir la certificación a sus proveedores principales?</p>
-      <div id="o-exigir"></div>
-    </fieldset>
-
-    <fieldset id="q5">
-      <legend><span>5</span>Adicional por fruta certificada</legend>
-      <p class="ayuda">¿Estaría dispuesta su planta a pagar un adicional por la fruta de predios certificados?</p>
-      <div id="o-adicional"></div>
-    </fieldset>
-
-    <fieldset id="q6">
-      <legend><span>6</span>Porcentaje exigible cada año</legend>
+      <legend><span>4</span>Porcentaje exigible cada año</legend>
       <p class="ayuda">¿Qué porcentaje mínimo de fruta certificada le parece razonable que el Protocolo exija cada año? Es su opinión sobre la regla, no una estimación de lo que harán sus proveedores.</p>
       <table><thead><tr><th>Temporada</th><th>Porcentaje exigible</th></tr></thead><tbody id="t6"></tbody></table>
       <div class="aviso" id="av6" hidden>Marcó un porcentaje menor que el de un año anterior. Puede dejarlo así si es lo que piensa.</div>
@@ -128,8 +116,6 @@ var EXEC = 'https://script.google.com/macros/s/AKfycbwav7Wj6VnpLEpsEzDNTTu-kr3vl
 
 var MITAD = ['Solo 1', '2 a 3', '4 a 5', '6 a 10', '11 a 20', 'Más de 20'];
 var TOP5 = ['Menos de 25 %', '25 a 50 %', '50 a 75 %', 'Más de 75 %', 'Tengo menos de 5 proveedores'];
-var EXIGIR = [['condicion', 'Sí, como condición de compra'], ['recomienda', 'Sí, como recomendación'], ['apoyo', 'Solo si recibe apoyo (capacitación o información)'], ['no', 'No']];
-var ADIC = [['definido', 'Sí, ya lo tenemos definido'], ['cliente', 'Sí, si el cliente lo reconoce en el precio'], ['evalua', 'Lo evaluaría'], ['no', 'No']];
 var RANGOS = ['0 a 10 %', '10 a 20 %', '20 a 30 %', '30 a 40 %', '40 a 50 %', '50 a 60 %', '60 a 70 %', 'Más de 70 %'];
 var TEMPORADAS = [['t1', 'Temporada 1'], ['t2', 'Temporada 2'], ['t3', 'Temporada 3'], ['t4', 'Temporada 4 (2030)']];
 var ID_OK = /^[a-f0-9]{16,64}$/;
@@ -171,7 +157,6 @@ function construir(){
   for (var i = 0; i <= 100; i += 10) sel += '<option value="' + i + '">' + i + ' %</option>';
   $('#propio').innerHTML = sel;
   radios('#o-mitad', 'mitad', MITAD); radios('#o-top5', 'top5', TOP5);
-  radios('#o-exigir', 'exigir', EXIGIR); radios('#o-adicional', 'adicional', ADIC);
   var opt = '<option value="">Elija…</option>' + RANGOS.map(function(r){ return '<option>' + r + '</option>'; }).join('');
   $('#t6').innerHTML = TEMPORADAS.map(function(t){ return '<tr><td><label for="a-' + t[0] + '">' + t[1] + '</label></td><td><select id="a-' + t[0] + '">' + opt + '</select></td></tr>'; }).join('');
 }
@@ -181,7 +166,7 @@ function aplicar(){
   var m = D.meta || {};
   ['empresa', 'persona', 'cargo', 'correo'].forEach(function(k){ $('#' + k).value = m[k] || ''; });
   $('#propio').value = D.p.propio == null ? '' : D.p.propio;
-  [['mitad', 'mitad'], ['top5', 'top5'], ['exigir', 'exigir'], ['adicional', 'adicional']].forEach(function(k){
+  [['mitad', 'mitad'], ['top5', 'top5']].forEach(function(k){
     var el = document.querySelector('input[name="' + k[0] + '"][value="' + (D.p[k[1]] || '__') + '"]'); if (el) el.checked = true;
   });
   TEMPORADAS.forEach(function(t){ $('#a-' + t[0]).value = (D.anio || {})[t[0]] || ''; });
@@ -192,7 +177,7 @@ function leer(){
   D.meta = { empresa: $('#empresa').value.trim(), persona: $('#persona').value.trim(), cargo: $('#cargo').value.trim(), correo: $('#correo').value.trim() };
   D.p = D.p || {};
   D.p.propio = $('#propio').value;
-  ['mitad', 'top5', 'exigir', 'adicional'].forEach(function(n){ var c = document.querySelector('input[name="' + n + '"]:checked'); D.p[n] = c ? c.value : ''; });
+  ['mitad', 'top5'].forEach(function(n){ var c = document.querySelector('input[name="' + n + '"]:checked'); D.p[n] = c ? c.value : ''; });
   D.anio = {}; TEMPORADAS.forEach(function(t){ D.anio[t[0]] = $('#a-' + t[0]).value; });
   D.necesita = $('#necesita').value.trim();
 }
@@ -201,7 +186,7 @@ function refrescar(){
   leer();
   $('#provpct').textContent = D.p.propio === '' ? '—' : (100 - Number(D.p.propio)) + ' %';
   var np = soloPropio();
-  ['q2', 'q3', 'q4'].forEach(function(id){
+  ['q2', 'q3'].forEach(function(id){
     var fs = $('#' + id), on = !np;
     fs.querySelectorAll('input').forEach(function(i){ i.disabled = !on; if (!on) i.checked = false; });
     var aviso = fs.querySelector('.na');
@@ -209,20 +194,20 @@ function refrescar(){
     if (on && aviso) aviso.remove();
     fs.style.opacity = on ? '' : '.6';
   });
-  if (np){ D.p.mitad = D.p.top5 = D.p.exigir = ''; }
+  if (np){ D.p.mitad = D.p.top5 = ''; }
   var o = RANGOS, idx = TEMPORADAS.map(function(t){ return o.indexOf(D.anio[t[0]]); }), baja = false;
   for (var i = 1; i < idx.length; i++) if (idx[i] >= 0 && idx[i - 1] >= 0 && idx[i] < idx[i - 1]) baja = true;
   $('#av6').hidden = !baja;
   var ok = estado(); var n = 0;
   Object.keys(ok).forEach(function(k){ if (k !== 'meta' && ok[k]) n++; $('#' + k).classList.toggle('ok', !!ok[k]); $('#' + k).classList.remove('falta'); });
-  $('#avance').textContent = n + ' de 6';
-  $('#pbar').style.width = (n / 6 * 100) + '%';
+  $('#avance').textContent = n + ' de 4';
+  $('#pbar').style.width = (n / 4 * 100) + '%';
 }
 function estado(){
   var p = D.p, np = soloPropio(), m = D.meta;
   return { meta: !!(m.empresa && m.persona && m.cargo && m.correo),
-    q1: p.propio !== '', q2: np || !!p.mitad, q3: np || !!p.top5, q4: np || !!p.exigir, q5: !!p.adicional,
-    q6: TEMPORADAS.every(function(t){ return D.anio[t[0]]; }) };
+    q1: p.propio !== '', q2: np || !!p.mitad, q3: np || !!p.top5,
+    q4: TEMPORADAS.every(function(t){ return D.anio[t[0]]; }) };
 }
 function cambio(){
   refrescar();

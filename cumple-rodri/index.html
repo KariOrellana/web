@@ -227,6 +227,8 @@ textarea.in{min-height:84px;resize:vertical}
 .entrada h3{font-size:clamp(2rem,8vw,3.2rem);line-height:1}
 .entrada .num{font-family:var(--f-tipo);letter-spacing:.2em;border-top:3px dashed var(--tinta);border-bottom:3px dashed var(--tinta);padding:8px 0;margin:12px 0}
 .entrada p{font-weight:600}
+.entrada .fotos{margin-top:16px;padding-top:12px;border-top:3px dashed var(--tinta)}
+.entrada .fotos a{color:var(--tinta);font-weight:700;word-break:break-word}
 
 /* Panel organizadores */
 #org{display:none}
@@ -364,6 +366,7 @@ footer b{color:var(--amarillo)}
         <a class="btn grande verde" id="btnCal" href="#" target="_blank" rel="noopener">Crear cita en mi calendario</a>
         <button class="btn sec" id="btnLink">Copiar link de la invitación</button>
       </div>
+      <p class="fotos" id="enFotos">El día de la fiesta, sube tus fotos y videos acá:<br><a href="https://extensiondigital.cl/cumple-rodri/fotos/" target="_blank" rel="noopener">extensiondigital.cl/cumple-rodri/fotos</a></p>
     </div>
   </div>
 </section>
@@ -611,10 +614,10 @@ function muestraEntrada(d){
   $("#en-num").textContent="N° "+String(hash(d.nombre.toLowerCase())%900+100);
   var rest=(d.asis==="no")?"":(". Restricción: "+(d.die.length?d.die.join(", "):"ninguna")+".");
   $("#en-det").textContent=d.asis==="no"?"Te vamos a extrañar. Gracias por avisar.":(d.asis==="tal"?"Quedaste como tal vez. Avísanos cuando sepas.":"Crea la cita en tu calendario para no olvidarla. Sábado 7 de noviembre, 17:00 hrs · "+(d.ad+d.ni)+" persona"+((d.ad+d.ni)>1?"s":""))+rest;
-  e.classList.add("on");$("#btnCal").style.display=d.asis==="no"?"none":"";
+  e.classList.add("on");$("#btnCal").style.display=d.asis==="no"?"none":"";$("#enFotos").style.display=d.asis==="no"?"none":"";
   setTimeout(function(){e.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"})},150);
 }
-$("#btnCal").href="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("Mis 40 años, cumpleaños de Rodri")+"&dates=20261107T200000Z/20261108T050000Z&location="+encodeURIComponent(DIRECCION)+"&details="+encodeURIComponent("La cita es a las 17:00. Bandas en vivo desde las 19:00.");
+$("#btnCal").href="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("Mis 40 años, cumpleaños de Rodri")+"&dates=20261107T200000Z/20261108T050000Z&location="+encodeURIComponent(DIRECCION)+"&details="+encodeURIComponent("La cita es a las 17:00. Bandas en vivo desde las 19:00.\n\nSube tus fotos y videos del día acá: https://extensiondigital.cl/cumple-rodri/fotos/");
 $("#btnLink").addEventListener("click",function(){copiar(location.href.split("#")[0],"Link copiado")});
 
 cargaBorrador();pintaAcomp();actualiza();

@@ -124,7 +124,7 @@ section{padding:46px 0}
 .afiche .play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:#e0301ee6;border:4px solid var(--tinta);display:grid;place-items:center;box-shadow:0 5px 0 #000a;transition:transform .15s;z-index:2}
 .afiche:hover .play{transform:scale(1.1)}
 .afiche .play::before{content:"";margin-left:6px;border-style:solid;border-width:14px 0 14px 24px;border-color:transparent transparent transparent #fff}
-.lb video{max-width:min(960px,96vw);max-height:84vh;border:6px solid var(--hueso);background:#000;cursor:default}
+.lb video{max-width:min(960px,96vw);max-height:84vh;border:6px solid var(--hueso);background:#000;cursor:pointer}
 .lb .cerrar{position:absolute;top:14px;right:14px;background:var(--rojo);color:#fff;border:3px solid var(--tinta);border-radius:6px;padding:8px 16px;font-weight:700;cursor:pointer;z-index:2}
 .lb .nota-vid{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-family:var(--f-tipo);color:var(--hueso);font-size:.9rem}
 
@@ -350,7 +350,7 @@ footer b{color:var(--amarillo)}
       </div>
 
       <div class="enviar">
-        <a class="btn grande verde" id="btnEnviar" href="#" target="_blank" rel="noopener">Enviar inscripción</a>
+        <button type="button" class="btn grande verde" id="btnEnviar">Enviar inscripción</button>
       </div>
 
     </form>
@@ -490,25 +490,35 @@ $$("[data-ir]").forEach(function(b){b.addEventListener("click",function(){var el
   tick();setInterval(tick,1000);
 })();
 
-/* Video del afiche: suena una sola vez, luego en silencio */
-var yaSono=false;
+/* Video del afiche: solo suena cuando se abre, y siempre con sonido */
 (function(){
   var lb=$("#lb"),v=$("#vid"),nota=$("#notaVid"),img=$("#abrirAfiche img");
   if(img)v.poster=img.src;
-  function abrir(){
-    lb.classList.add("on");
-    v.muted=yaSono;
-    nota.textContent=yaSono?"Sin sonido":"";
+  function reproducir(){
+    v.muted=false;v.volume=1;nota.textContent="";
     v.currentTime=0;
     var pr=v.play();
-    if(pr&&pr.catch)pr.catch(function(){v.muted=true;nota.textContent="Sin sonido";var q=v.play();if(q&&q.catch)q.catch(function(){})});
-    yaSono=true;
+    if(pr&&pr.catch)pr.catch(function(){nota.textContent="Toca el video para reproducirlo"});
   }
-  function cerrar(){lb.classList.remove("on");v.pause()}
-  $("#abrirAfiche").addEventListener("click",abrir);
+  function cerrar(){lb.classList.remove("on");v.pause();v.currentTime=0}
+  $("#abrirAfiche").addEventListener("click",function(){lb.classList.add("on");reproducir()});
+  v.addEventListener("click",reproducir);
+  v.addEventListener("ended",function(){nota.textContent="Toca el video para verlo otra vez"});
   $("#cerrarVid").addEventListener("click",function(e){e.stopPropagation();cerrar()});
   lb.addEventListener("click",function(e){if(e.target===lb)cerrar()});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape")cerrar()});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&lb.classList.contains("on"))cerrar()});
+  document.addEventListener("visibilitychange",function(){if(document.hidden)v.pause()});
+})();
+
+/* Barra fija "Anótate" */
+(function(){
+  var barra=$("#barraAnota"),sec=$("#anotate");if(!barra||!sec)return;
+  var visible=false,hecho=false;
+  function pinta(){barra.classList.toggle("on",!visible&&!hecho)}
+  if("IntersectionObserver" in window)new IntersectionObserver(function(es){visible=es[0].isIntersecting;pinta()},{threshold:.08}).observe(sec);
+  var ent=$("#entrada");
+  if(ent&&window.MutationObserver)new MutationObserver(function(){hecho=ent.classList.contains("on");pinta()}).observe(ent,{attributes:true,attributeFilter:["class"]});
+  pinta();
 })();
 
 /* Dirección */
@@ -571,7 +581,6 @@ function actualiza(){
   $("#prog").style.width=Math.round(pasos/total*100)+"%";
   var ok=valida(false);
   var b=$("#btnEnviar");
-  b.href=ok&&SCRIPT_URL?SCRIPT_URL+(SCRIPT_URL.indexOf("?")>=0?"&":"?")+consulta(d):"#";
   b.style.opacity=ok?1:.55;
   guardaBorrador();
 }

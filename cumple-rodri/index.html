@@ -290,7 +290,7 @@ footer b{color:var(--amarillo)}
 <main>
 <section id="anotate">
   <div class="wrap">
-    <form class="ficha" id="form" novalidate>
+    <form class="ficha" id="form" novalidate autocomplete="off">
       <h2>Anótate</h2>
       <div class="progreso" aria-hidden="true"><i id="prog"></i></div>
 
@@ -531,19 +531,8 @@ $$("[data-st]",form).forEach(function(b){
   });
 });
 var BORRADOR="r40-borrador";
-function guardaBorrador(){try{localStorage.setItem(BORRADOR,JSON.stringify(datos()))}catch(e){}}
-function cargaBorrador(){
-  try{
-    var d=JSON.parse(localStorage.getItem(BORRADOR)||"null");if(!d)return;
-    $("#f-nombre").value=d.nombre||"";$("#f-alergias").value=d.alergias||"";$("#f-saludo").value=d.saludo||"";
-    if(d.asis){var r=$('input[name="asis"][value="'+d.asis+'"]');if(r)r.checked=true}
-    ["lle","vue"].forEach(function(k){if(d[k]){$$('input[name="'+k+'"]').forEach(function(x){if(x.value===d[k])x.checked=true})}});
-    (d.die||[]).forEach(function(v){$$('input[name="die"]').forEach(function(x){if(x.value===v)x.checked=true})});
-    if(d.ninguna)$("#die-ninguna").checked=true;
-    estado.ad=d.ad||1;estado.ni=d.ni||0;estado.acomp=d.acomp||[];
-    $("#o-ad").textContent=estado.ad-1;
-  }catch(e){}
-}
+function guardaBorrador(){}
+function cargaBorrador(){try{localStorage.removeItem(BORRADOR)}catch(e){}$$('input[name="asis"]').forEach(function(x){x.checked=false})}
 function datos(){
   return{nombre:$("#f-nombre").value.trim(),asis:val("asis"),ad:estado.ad,ni:estado.ni,acomp:estado.acomp.slice(),lle:val("lle"),die:vals("die").filter(function(x){return x!=="Ninguna"}),ninguna:vals("die").indexOf("Ninguna")>=0,alergias:$("#f-alergias").value.trim(),vue:val("vue"),saludo:$("#f-saludo").value.trim()};
 }

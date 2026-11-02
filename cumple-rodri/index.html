@@ -604,7 +604,7 @@ function muestraEntrada(d){
   var e=$("#entrada");
   $("#en-nombre").textContent=d.nombre;
   $("#en-num").textContent="N° "+String(hash(d.nombre.toLowerCase())%900+100);
-  var rest=(d.asis==="no")?"":(" Restricción: "+(d.die.length?d.die.join(", "):"ninguna")+".");
+  var rest=(d.asis==="no")?"":(". Restricción: "+(d.die.length?d.die.join(", "):"ninguna")+".");
   $("#en-det").textContent=d.asis==="no"?"Te vamos a extrañar. Gracias por avisar.":(d.asis==="tal"?"Quedaste como tal vez. Avísanos cuando sepas.":"Crea la cita en tu calendario para no olvidarla. Sábado 7 de noviembre, 17:00 hrs · "+(d.ad+d.ni)+" persona"+((d.ad+d.ni)>1?"s":""))+rest;
   e.classList.add("on");$("#btnCal").style.display=d.asis==="no"?"none":"";
   setTimeout(function(){e.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"})},150);

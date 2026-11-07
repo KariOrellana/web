@@ -5,10 +5,10 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mis 40 Años</title>
-<meta name="description" content="Mis 40 años. Sábado 7 de noviembre, 17:00 hrs, La Vilana 23, Parcela 23, Lampa. Bandas en vivo desde las 19:00.">
+<meta name="description" content="Mis 40 años. Sábado 7 de noviembre, 17:00 hrs, Sexta Avenida 1527, San Miguel. Bandas en vivo desde las 19:00.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="¡¡Mis 40 años!! Cumpleaños de Rodrigo">
-<meta property="og:description" content="Sábado 7 de noviembre, 17:00 hrs, en Lampa. Bandas en vivo desde las 19:00. Anótate acá.">
+<meta property="og:description" content="Sábado 7 de noviembre, 17:00 hrs, en San Miguel (cambio de lugar). Bandas en vivo desde las 19:00. Anótate acá.">
 <meta property="og:image" content="https://extensiondigital.cl/cumple-rodri/afiche.jpg">
 <meta property="og:url" content="https://extensiondigital.cl/cumple-rodri/">
 <meta name="twitter:card" content="summary_large_image">
@@ -246,6 +246,17 @@ footer{padding:36px 0 60px;text-align:center;font-family:var(--f-tipo);color:#b9
 footer b{color:var(--amarillo)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--tinta);color:var(--amarillo);border:3px solid var(--amarillo);padding:10px 18px;font-family:var(--f-tipo);z-index:60;transition:transform .3s;max-width:90vw;text-align:center}
 .toast.on{transform:translateX(-50%) translateY(0)}
+.aviso{background:var(--amarillo);color:#111;border:6px solid #111;outline:4px solid var(--amarillo);box-shadow:0 0 0 10px #111,0 0 40px #ffd23f99;margin:18px auto 22px;padding:22px 18px;text-align:center;position:relative;z-index:5;animation:avisoLatido 1.6s ease-in-out infinite}
+.aviso .tag{display:inline-block;background:#c8102e;color:#fff;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;font-size:clamp(1rem,4vw,1.35rem)}
+.aviso h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,9vw,3.6rem);line-height:1;margin:14px 0 8px;color:#111}
+.aviso .nueva{font-size:clamp(1.5rem,6.5vw,2.6rem);font-weight:900;line-height:1.1;margin:6px 0}
+.aviso .nueva a{color:#111;text-decoration:underline;text-decoration-thickness:4px}
+.aviso .antes{font-size:clamp(1rem,4vw,1.25rem);margin:10px 0 14px}
+.aviso .antes s{opacity:.75}
+.aviso .acc{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.aviso .acc a{background:#111;color:var(--amarillo);font-weight:800;font-size:1.15rem;padding:14px 22px;text-decoration:none;border:3px solid #111}
+@keyframes avisoLatido{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@media(prefers-reduced-motion:reduce){.aviso{animation:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -263,13 +274,20 @@ footer b{color:var(--amarillo)}
 
 <header class="hero">
   <div class="wrap">
+    <div class="aviso" role="alert">
+      <span class="tag">⚠ Atención: cambio de lugar</span>
+      <h2>¡Nuevo lugar!</h2>
+      <p class="nueva"><a href="https://waze.com/ul?q=Sexta%20Avenida%201527%20San%20Miguel&navigate=yes" target="_blank" rel="noopener">Sexta Avenida 1527, San Miguel</a></p>
+      <p class="antes">Ya <b>no</b> es en Lampa (<s>La Vilana 23, Parcela 23</s>). Mismo día y misma hora: hoy sábado 7 a las 17:00.</p>
+      <div class="acc"><a href="https://waze.com/ul?q=Sexta%20Avenida%201527%20San%20Miguel&navigate=yes" target="_blank" rel="noopener">Ir con Waze</a><a href="https://www.google.com/maps/search/?api=1&query=Sexta+Avenida+1527+San+Miguel+Chile" target="_blank" rel="noopener">Ver en Google Maps</a></div>
+    </div>
     <div class="luces" id="luces" aria-hidden="true"></div>
     <div class="letrero"><span>Cumpleaños Rodrigo</span></div>
     <div class="titulo">
       <div class="llamas" id="llamas" aria-hidden="true"></div>
       <h1>¡¡Mis 40 años!!</h1>
     </div>
-    <p class="sub">Sábado 7 de noviembre de 2026 · Lampa</p>
+    <p class="sub">Sábado 7 de noviembre de 2026 · San Miguel</p>
 
     <div class="hero-grid">
       <button class="afiche" id="abrirAfiche" aria-label="Ver el video de la invitación">
@@ -281,7 +299,7 @@ footer b{color:var(--amarillo)}
       <div class="datos">
         <div class="dato"><small>La cita es a las</small><strong>17:00 hrs</strong></div>
         <div class="dato"><small>Bandas en vivo desde las</small><strong>19:00 hrs</strong></div>
-        <div class="dato"><small>Dirección (toca para abrir en Waze)</small><strong><a class="dir-link" href="https://waze.com/ul?q=La%20Vilana%2023%20Parcela%2023%20Lampa&navigate=yes" target="_blank" rel="noopener">La Vilana 23, Parcela 23, Lampa</a></strong></div>
+        <div class="dato"><small>Dirección (toca para abrir en Waze)</small><strong><a class="dir-link" href="https://waze.com/ul?q=Sexta%20Avenida%201527%20San%20Miguel&navigate=yes" target="_blank" rel="noopener">Sexta Avenida 1527, San Miguel</a></strong></div>
         <div>
           <div class="cuenta" id="cuenta" role="timer" aria-live="off">
             <div><b id="cd-d">00</b><span>días</span></div>
@@ -391,14 +409,14 @@ footer b{color:var(--amarillo)}
 
 <section id="llegar">
   <div class="wrap">
-    <div class="sec-t"><h2>Cómo llegar</h2><p>Lampa, Región Metropolitana</p></div>
+    <div class="sec-t"><h2>Cómo llegar</h2><p>San Miguel, Región Metropolitana</p></div>
     <div class="donde">
       <div class="mapa ladrillo">
         <h3>El lugar</h3>
-        <a class="dir" id="dirTexto" href="https://waze.com/ul?q=La%20Vilana%2023%20Parcela%2023%20Lampa&navigate=yes" target="_blank" rel="noopener" style="display:block;color:inherit;text-decoration:none">La Vilana 23, Parcela 23, Lampa. Región Metropolitana 9380000<small style="display:block;color:var(--amarillo);font-size:.8rem;margin-top:4px">Toca la dirección para abrirla en Waze</small></a>
+        <a class="dir" id="dirTexto" href="https://waze.com/ul?q=Sexta%20Avenida%201527%20San%20Miguel&navigate=yes" target="_blank" rel="noopener" style="display:block;color:inherit;text-decoration:none">Sexta Avenida 1527, San Miguel. Región Metropolitana<small style="display:block;color:var(--amarillo);font-size:.8rem;margin-top:4px">Toca la dirección para abrirla en Waze</small></a>
         <div class="btns">
-          <a class="btn" id="verMapa" href="https://www.google.com/maps/search/?api=1&query=La+Vilana+23+Parcela+23+Lampa+Chile" target="_blank" rel="noopener">Abrir en Google Maps</a>
-          <a class="btn" id="verWaze" href="https://waze.com/ul?q=La%20Vilana%2023%20Parcela%2023%20Lampa&navigate=yes" target="_blank" rel="noopener">Abrir en Waze</a>
+          <a class="btn" id="verMapa" href="https://www.google.com/maps/search/?api=1&query=Sexta+Avenida+1527+San+Miguel+Chile" target="_blank" rel="noopener">Abrir en Google Maps</a>
+          <a class="btn" id="verWaze" href="https://waze.com/ul?q=Sexta%20Avenida%201527%20San%20Miguel&navigate=yes" target="_blank" rel="noopener">Abrir en Waze</a>
           <button class="btn sec" id="copiarDir">Copiar dirección</button>
         </div>
       </div>
@@ -421,7 +439,7 @@ footer b{color:var(--amarillo)}
 "use strict";
 var EVENTO_ISO="2026-11-07T17:00:00-03:00";
 var SCRIPT_URL="https://script.google.com/macros/s/AKfycbzliKnS3swM9Avq5wpEPLlGmPO5ZblR1wrobYsVb19dbtjdYMq1H31avcPjgXVWmI18rg/exec";              // pega acá la dirección de la implementación de Apps Script (termina en /exec)
-var DIRECCION="La Vilana 23, Parcela 23, Lampa, Región Metropolitana";
+var DIRECCION="Sexta Avenida 1527, San Miguel, Región Metropolitana";
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;

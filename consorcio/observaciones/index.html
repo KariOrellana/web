@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--
+  Formulario de observaciones a la demo de la plataforma ChOC (Consorcio Lechero).
+  Envía lo que escribe la persona, con sus capturas de pantalla, a un Google Apps Script de
+  Extensión Digital que lo guarda en una hoja y en una carpeta de Drive privadas.
+  No lleva claves: la dirección del script (EXEC) es pública por diseño.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Observaciones a la demo de la plataforma ChOC · Extensión Digital</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='10' cy='45' r='4' fill='%2312414E'/%3E%3Ccircle cx='24' cy='33' r='5.2' fill='%2312414E'/%3E%3Ccircle cx='38' cy='27' r='6.2' fill='%233FB5B1'/%3E%3Ccircle cx='53' cy='34' r='7.6' fill='%23E8442B'/%3E%3C/svg%3E">
+<style>
+  :root{--azul:#12414E; --crema:#F2F0EA; --blanco:#FFFFFF; --texto:#12414E; --suave:#3D6270; --linea:#D9D4C7; --turquesa:#17807C; --peligro:#B0563F; --ok:#2E6B3A}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--crema); color:var(--texto); margin:0; padding:22px 16px 56px; line-height:1.55; font-size:16px}
+  main{max-width:680px; margin:0 auto}
+  .marca{display:flex; align-items:center; gap:9px; padding:6px 0 14px}
+  .marca span{font-weight:800; letter-spacing:-.025em}
+  .marca b{color:#1F7F7B}
+  h1{font-size:clamp(24px,5vw,32px); line-height:1.15; margin:4px 0 8px}
+  .intro{color:var(--suave); margin:0 0 18px}
+  form{background:var(--blanco); border:1px solid var(--linea); border-radius:12px; padding:20px}
+  .campo{margin:0 0 18px; border:0; padding:0}
+  label,legend{display:block; font-weight:700; margin:0 0 4px; padding:0}
+  .ayuda{display:block; font-weight:400; font-size:14px; color:var(--suave); margin:0 0 6px}
+  .req{color:var(--peligro)}
+  input[type=text],select,textarea{width:100%; font:inherit; color:inherit; padding:10px 12px; border:1px solid var(--linea); border-radius:8px; background:#fff}
+  textarea{min-height:110px; resize:vertical}
+  input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.zona:focus-visible{outline:3px solid var(--turquesa); outline-offset:2px}
+  .opciones{display:flex; flex-wrap:wrap; gap:8px}
+  .opciones label{display:flex; align-items:center; gap:8px; font-weight:500; margin:0; border:1px solid var(--linea); border-radius:8px; padding:8px 12px; cursor:pointer}
+  .opciones label:has(input:checked){border-color:var(--azul); background:#E7F0F2; font-weight:700}
+  .zona{border:2px dashed var(--linea); border-radius:10px; padding:16px; text-align:center; color:var(--suave); background:#FAF9F5; cursor:pointer}
+  .zona.sobre{border-color:var(--turquesa); background:#E7F4F3}
+  .zona input{display:none}
+  .miniaturas{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px}
+  .mini{position:relative; width:110px; height:84px; border:1px solid var(--linea); border-radius:8px; overflow:hidden; background:#eee}
+  .mini img{width:100%; height:100%; object-fit:cover; display:block}
+  .mini button{position:absolute; top:3px; right:3px; width:24px; height:24px; border:0; border-radius:50%; background:rgba(18,65,78,.9); color:#fff; font-size:15px; line-height:1; cursor:pointer}
+  .boton{background:var(--azul); color:var(--blanco); font:inherit; font-weight:700; padding:12px 24px; border:0; border-radius:9px; cursor:pointer}
+  .boton:hover{filter:brightness(1.25)}
+  .boton[disabled]{opacity:.55; cursor:wait}
+  .aviso{margin:14px 0 0; padding:12px 14px; border-radius:8px; font-size:15px}
+  .aviso.error{background:#FBEAE5; border:1px solid var(--peligro); color:#7A3321}
+  .aviso.ok{background:#E8F3EA; border:1px solid var(--ok); color:#1F4D29}
+  .nota{font-size:14px; color:var(--suave); margin-top:18px}
+  .trampa{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div class="marca">
+    <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><circle cx="10" cy="45" r="4" fill="#12414E"/><circle cx="24" cy="33" r="5.2" fill="#12414E"/><circle cx="38" cy="27" r="6.2" fill="#3FB5B1"/><circle cx="53" cy="34" r="7.6" fill="#E8442B"/></svg>
+    <span>Extensión <b>Digital</b></span>
+  </div>
+
+  <h1>Observaciones a la demo de la plataforma ChOC</h1>
+  <p class="intro">Gracias por probar la plataforma. Complete un formulario por cada observación: quién la hace, con qué perfil, en qué etapa o página, y qué ocurrió. Si puede, adjunte una captura de pantalla y proponga una solución (es opcional).</p>
+
+  <form id="f" novalidate>
+    <div class="trampa" aria-hidden="true"><label>No llenar este campo <input type="text" id="sitio" name="sitio" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="campo">
+      <label for="nombre">Nombre de quien hace la observación <span class="req">*</span></label>
+      <input type="text" id="nombre" name="nombre" autocomplete="name" required maxlength="120">
+    </div>
+
+    <fieldset class="campo">
+      <legend>Perfil con el que estaba usando la plataforma <span class="req">*</span></legend>
+      <div class="opciones">
+        <label><input type="radio" name="perfil" value="Empresa (Encargado)" required> Empresa (Encargado)</label>
+        <label><input type="radio" name="perfil" value="Administrador"> Administrador</label>
+        <label><input type="radio" name="perfil" value="Otro"> Otro</label>
+      </div>
+    </fieldset>
+
+    <div class="campo">
+      <label for="etapa">Etapa en la que está <span class="req">*</span></label>
+      <select id="etapa" name="etapa" required>
+        <option value="">Elija una etapa</option>
+        <option>Ingreso y cuenta</option>
+        <option>1 · Registro</option>
+        <option>2 · Autodiagnóstico</option>
+        <option>3 · Plan de implementación</option>
+        <option>4 · Adhesión</option>
+        <option>5 · Auditoría y certificación</option>
+        <option>6 · Seguimiento y recertificación</option>
+        <option>Inicio o panel</option>
+        <option>Indicadores</option>
+        <option>Avisos</option>
+        <option>Otra</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="pagina">Página o pantalla <span class="ayuda" style="display:inline">(opcional)</span></label>
+      <span class="ayuda">Por ejemplo: «Plan de implementación, botón Marcar como implementada», o la dirección que ve arriba en el navegador.</span>
+      <input type="text" id="pagina" name="pagina" maxlength="300">
+    </div>
+
+    <div class="campo">
+      <label id="lblCaptura" for="archivos">Captura de pantalla <span class="ayuda" style="display:inline">(recomendada)</span></label>
+      <span class="ayuda">Hasta 3 imágenes. Puede elegirlas, arrastrarlas a este recuadro o pegarlas con Ctrl+V (Cmd+V en Mac).</span>
+      <div class="zona" id="zona" tabindex="0" role="button" aria-labelledby="lblCaptura">
+        Haga clic para elegir imágenes, o arrástrelas aquí
+        <input type="file" id="archivos" accept="image/*" multiple>
+      </div>
+      <div class="miniaturas" id="miniaturas" aria-live="polite"></div>
+    </div>
+
+    <div class="campo">
+      <label for="error">Explique el error o la observación <span class="req">*</span></label>
+      <span class="ayuda">Qué hizo, qué esperaba que pasara y qué pasó en realidad.</span>
+      <textarea id="error" name="error" required maxlength="4000"></textarea>
+    </div>
+
+    <div class="campo">
+      <label for="solucion">Solución que propone <span class="ayuda" style="display:inline">(opcional)</span></label>
+      <span class="ayuda">Si tiene una idea de cómo debería funcionar, cuéntenos.</span>
+      <textarea id="solucion" name="solucion" maxlength="4000"></textarea>
+    </div>
+
+    <button class="boton" id="enviar" type="submit">Enviar observación</button>
+    <div id="aviso" class="aviso" role="status" hidden></div>
+  </form>
+
+  <p class="nota">Lo que escribe y las capturas que adjunta llegan al equipo de Extensión Digital, que las usa solo para corregir la plataforma. Puede enviar todas las observaciones que quiera con este mismo enlace.</p>
+</main>
+
+<script>
+// Dirección del Google Apps Script que recibe las observaciones. Se completa al publicar el script.
+var EXEC = '';
+
+var MAX_IMAGENES = 3, LADO_MAX = 1600, CALIDAD = 0.85;
+var f = document.getElementById('f'), aviso = document.getElementById('aviso'), boton = document.getElementById('enviar');
+var zona = document.getElementById('zona'), entrada = document.getElementById('archivos'), mini = document.getElementById('miniaturas');
+var imagenes = []; // {nombre, tipo, datos(base64), url}
+
+function mostrar(tipo, texto) { aviso.className = 'aviso ' + tipo; aviso.textContent = texto; aviso.hidden = false; }
+
+// ---- Capturas: se reducen en el navegador antes de enviarlas ----
+function reducir(archivo) {
+  return new Promise(function (ok, fallo) {
+    var url = URL.createObjectURL(archivo), img = new Image();
+    img.onload = function () {
+      var k = Math.min(1, LADO_MAX / Math.max(img.width, img.height));
+      var c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+      var data = c.toDataURL('image/jpeg', CALIDAD); URL.revokeObjectURL(url);
+      ok({ nombre: (archivo.name || 'captura').replace(/\.[^.]+$/, '') + '.jpg', tipo: 'image/jpeg', datos: data.split(',')[1], url: data });
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); fallo(new Error('imagen')); };
+    img.src = url;
+  });
+}
+function pintar() {
+  mini.textContent = '';
+  imagenes.forEach(function (im, i) {
+    var d = document.createElement('div'); d.className = 'mini';
+    var g = document.createElement('img'); g.src = im.url; g.alt = 'Captura ' + (i + 1);
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = '×'; b.setAttribute('aria-label', 'Quitar captura ' + (i + 1));
+    b.onclick = function () { imagenes.splice(i, 1); pintar(); };
+    d.appendChild(g); d.appendChild(b); mini.appendChild(d);
+  });
+}
+function agregar(lista) {
+  var archivos = Array.prototype.filter.call(lista, function (a) { return /^image\//.test(a.type); });
+  if (!archivos.length) { mostrar('error', 'Solo se pueden adjuntar imágenes (capturas de pantalla).'); return; }
+  aviso.hidden = true;
+  var libres = MAX_IMAGENES - imagenes.length;
+  if (archivos.length > libres) mostrar('error', 'Se pueden adjuntar hasta ' + MAX_IMAGENES + ' imágenes.');
+  archivos.slice(0, Math.max(0, libres)).reduce(function (p, a) {
+    return p.then(function () { return reducir(a).then(function (im) { imagenes.push(im); pintar(); }); });
+  }, Promise.resolve()).catch(function () { mostrar('error', 'No pudimos leer una de las imágenes. Pruebe con otra.'); });
+}
+zona.addEventListener('click', function () { entrada.click(); });
+zona.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); entrada.click(); } });
+entrada.addEventListener('change', function () { agregar(entrada.files); entrada.value = ''; });
+['dragenter', 'dragover'].forEach(function (n) { zona.addEventListener(n, function (e) { e.preventDefault(); zona.classList.add('sobre'); }); });
+['dragleave', 'drop'].forEach(function (n) { zona.addEventListener(n, function (e) { e.preventDefault(); zona.classList.remove('sobre'); }); });
+zona.addEventListener('drop', function (e) { agregar(e.dataTransfer.files); });
+document.addEventListener('paste', function (e) {
+  var items = (e.clipboardData && e.clipboardData.files) || [];
+  if (items.length) { agregar(items); }
+});
+
+// ---- Envío ----
+f.addEventListener('submit', function (e) {
+  e.preventDefault();
+  aviso.hidden = true;
+  var v = function (id) { return document.getElementById(id).value.trim(); };
+  var perfil = (f.querySelector('input[name=perfil]:checked') || {}).value || '';
+  var faltan = [];
+  if (!v('nombre')) faltan.push('el nombre');
+  if (!perfil) faltan.push('el perfil');
+  if (!v('etapa')) faltan.push('la etapa');
+  if (!v('error')) faltan.push('la explicación del error');
+  if (faltan.length) { mostrar('error', 'Falta completar: ' + faltan.join(', ') + '.'); return; }
+  if (!EXEC) { mostrar('error', 'El formulario todavía no está activado. Escríbanos a karinaorellanamoreira@gmail.com y lo resolvemos.'); return; }
+
+  var carga = {
+    sitio: document.getElementById('sitio').value, // campo trampa: si viene lleno, se descarta
+    nombre: v('nombre'), perfil: perfil, etapa: v('etapa'), pagina: v('pagina'),
+    error: v('error'), solucion: v('solucion'),
+    capturas: imagenes.map(function (im) { return { nombre: im.nombre, tipo: im.tipo, datos: im.datos }; }),
+    pantalla: window.innerWidth + 'x' + window.innerHeight, navegador: navigator.userAgent
+  };
+  boton.disabled = true; boton.textContent = 'Enviando…';
+  fetch(EXEC, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(carga) })
+    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (!r || !r.ok) throw new Error((r && r.error) || 'respuesta');
+      f.reset(); imagenes = []; pintar();
+      mostrar('ok', 'Gracias, recibimos su observación. Puede enviar otra con este mismo formulario.');
+    })
+    .catch(function () {
+      mostrar('error', 'No pudimos confirmar el envío. Sus datos siguen en la pantalla: revise su conexión e inténtelo de nuevo, o escríbanos a karinaorellanamoreira@gmail.com.');
+    })
+    .then(function () { boton.disabled = false; boton.textContent = 'Enviar observación'; });
+});
+</script>
+</body>
+</html>

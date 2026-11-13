@@ -229,11 +229,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <footer>
   <img src="logos-franja.png" alt="Gobierno Regional de Tarapacá, CORE Tarapacá, PUCV, NBC, IICA">
   <p id="f-proyecto"></p>
-  <p style="opacity:.7">Versión 13-nov-2026 e</p>
+  <p style="opacity:.7">Versión 13-nov-2026 f</p>
 </footer>
 
-<script src="calculo.js?v=20261113e"></script>
-<script src="config.js?v=20261113e"></script>
+<script src="calculo.js?v=20261113f"></script>
+<script src="config.js?v=20261113f"></script>
 <script>
 (function(){
 'use strict';
@@ -309,8 +309,9 @@ function recalcular(primera){
   var f=estado.ficha,r=C.calcular(f);estado.res=r;var u=f.unidad_venta||'unidad',m=C.metricas(r,f);estado.met=m;
   $('r-saludo').innerHTML='<h1>'+(estado.nombre?'Hola, '+esc(primerNombre(estado.nombre))+'. ':(f.nombre?'Hola, '+esc(primerNombre(f.nombre))+'. ':''))+'Así te fue con '+esc((f.producto||'tu producto').toLowerCase())+'</h1>';
   var av=[];(r.avisos||[]).forEach(function(a){av.push(a)});
+  var dudas=(f.alertas||[]).filter(Boolean);
   if(f.legible==='baja')av.push('La foto se leyó con dificultad. Toca «Corregir mis datos» y revisa que los números estén bien.');
-  (f.alertas||[]).slice(0,4).forEach(function(a){av.push(a)});
+  else if(dudas.length||f.legible==='media')av.push('Leímos tu ficha, pero algunas partes eran difíciles de leer. Toca «Corregir mis datos» y revisa que los números estén bien.');
   $('r-avisos').innerHTML=av.map(function(a){return '<div class="aviso">⚠️ '+esc(a)+'</div>'}).join('');
   var conP=r.completo&&r.P;
   $('r-faltan').innerHTML=conP?'':'<div class="aviso">📈 Para ver tus métricas, la barra de pruebas y la comparación de costo y precio, falta: <b>'+esc((r.faltan&&r.faltan.length?r.faltan:['completar tus datos']).join(', '))+'</b>. Toca «Corregir mis datos» para completarlos.</div>';
@@ -380,7 +381,8 @@ function num(v){if(v===''||v==null)return null;var n=parseFloat(String(v).replac
 function val(v){return v==null?'':Math.round(v*100)/100}
 function campo(id,etq,v,tipo,dud){return '<label for="'+id+'">'+etq+'</label><input id="'+id+'" type="'+(tipo||'text')+'"'+(tipo==='number'?' inputmode="numeric"':'')+' value="'+esc(v==null?'':v)+'"'+(dud?' class="dudoso"':'')+'>'}
 function pintarEditor(f){
-  var h='<div class="sec-ed">1 · Mi producto</div>'+
+  var dd=(f.alertas||[]).filter(Boolean).slice(0,6);
+  var h=(dd.length?'<div class="aviso"><b>Lo que nos costó leer:</b><br>'+dd.map(function(a){return '• '+esc(a)}).join('<br>')+'</div>':'')+'<div class="sec-ed">1 · Mi producto</div>'+
    campo('x-prod','Producto',f.producto||'')+campo('x-loc','Localidad',f.localidad||'')+campo('x-uni','Lo vendo por (kilo, atado, queso…)',f.unidad_venta||'')+
    '<label for="x-per">Calculo por</label><select id="x-per"><option value="mes"'+(f.periodo!=='temporada'?' selected':'')+'>un mes</option><option value="temporada"'+(f.periodo==='temporada'?' selected':'')+'>una temporada</option></select>'+
    '<div id="x-mesesw" class="'+(f.periodo==='temporada'?'':'hide')+'">'+campo('x-meses','Meses que dura la temporada',f.meses_temporada,'number')+'</div>'+

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2A3B66">
 <meta name="robots" content="noindex, nofollow">
-<title>Mi producto estrella · ¿Cómo me fue?</title>
+<title>Mi planilla de costos · ¿Cómo me fue?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -108,17 +108,17 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <body>
 <header>
   <img src="hoja.png" alt="">
-  <div><small>Taller ¿Cuánto me cuesta producir?</small><b>Mi producto estrella</b></div>
+  <div><small>Taller ¿Cuánto me cuesta producir?</small><b>Mi planilla de costos</b></div>
 </header>
 <div id="banner" class="banner hide"></div>
 
 <main>
 <!-- ───────── 1. INICIO ───────── -->
 <section id="s-inicio">
-  <h1>Saca una foto de tu ficha y te cuento cómo te fue</h1>
+  <h1>Saca una foto de tu planilla y te cuento cómo te fue</h1>
   <ol class="pasos">
-    <li><span class="num">1</span><span><b>Saca la foto</b> de la cara 1 de tu ficha, la que dice «Mi producto estrella». Es la única hoja que necesitamos.</span></li>
-    <li><span class="num">2</span><span><b>Espera unos segundos</b> mientras leemos tu ficha.</span></li>
+    <li><span class="num">1</span><span><b>Saca la foto</b> de tu planilla de costos, la hoja que dice «Mi planilla de costos». Entera y con buena luz. Es la única hoja que necesitamos.</span></li>
+    <li><span class="num">2</span><span><b>Espera unos segundos</b> mientras leemos tu planilla.</span></li>
     <li><span class="num">3</span><span><b>Mira tus resultados</b> y observaciones para reflexionar.</span></li>
   </ol>
 
@@ -131,10 +131,10 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <p class="aviso hide" id="e-nombre-falta" style="margin-bottom:0"></p>
   </div>
 
-  <div id="preview"><img id="vista" alt="Foto de tu ficha"></div>
+  <div id="preview"><img id="vista" alt="Foto de tu planilla"></div>
 
   <div class="stack" style="margin-top:16px">
-    <label class="btn prim" id="b-camara" for="in-camara">📷 Sacar foto de mi ficha</label>
+    <label class="btn prim" id="b-camara" for="in-camara">📷 Sacar foto de mi planilla</label>
     <input id="in-camara" type="file" accept="image/*" capture="environment" class="hide">
     <label class="btn sec" id="b-galeria" for="in-galeria">🖼️ Elegir una foto de mi teléfono</label>
     <input id="in-galeria" type="file" accept="image/*" class="hide">
@@ -144,17 +144,17 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <button class="btn ghost" id="b-manual">Prefiero escribir mis números</button>
   </div>
   <div class="card" style="background:var(--tint);border-color:transparent">
-    <b>📄 ¿Aún no llenas tu ficha?</b>
-    <p class="muted" style="margin:4px 0 10px">Descárgala, imprímela, llénala con calma y vuelve aquí para sacarle la foto.</p>
-    <a class="btn sec" href="ficha-para-imprimir.pdf" download>⬇️ Descargar la ficha para imprimir</a>
+    <b>📄 ¿Aún no llenas tu planilla?</b>
+    <p class="muted" style="margin:4px 0 10px">Descárgala, imprímela, llénala con calma y vuelve aquí para sacarle la foto. Tu planilla tiene todo lo necesario.</p>
+    <a class="btn sec" href="planilla-para-imprimir.pdf" download>⬇️ Descargar la planilla para imprimir</a>
   </div>
-  <p class="muted" style="margin-top:6px">🔒 <b>Tu información no se compartirá con nadie</b> y se usará de manera anónima para seguir apoyándote. La foto de tu ficha no se guarda.</p>
+  <p class="muted" style="margin-top:6px">🔒 <b>Tu información no se compartirá con nadie</b> y se usará de manera anónima para seguir apoyándote. La foto de tu planilla no se guarda.</p>
 </section>
 
 <!-- ───────── 2. ANALIZANDO ───────── -->
 <section id="s-analizando" class="hide centro">
   <div class="spin"></div>
-  <h1>Leyendo tu ficha…</h1>
+  <h1>Leyendo tu planilla…</h1>
   <p id="t-espera">Esto toma unos segundos. No cierres esta pantalla.</p>
 </section>
 
@@ -179,11 +179,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
   </div>
 
   <div class="card" id="c-reflexionar"><h2>🔎 Para reflexionar</h2><p class="muted" style="margin:0 0 6px">Observaciones calculadas con los números que anotaste. Son para aprender y conversar.</p><div id="r-recs"></div></div>
-  <div class="card" style="background:var(--tint);border-color:transparent"><b>📘 Herramienta didáctica</b><p class="muted" style="margin:4px 0 0">Estos resultados son un ejercicio de aprendizaje, calculado solo con los datos que anotaste en tu ficha. No constituyen una recomendación, asesoría ni garantía de resultados: cada persona decide qué hacer con su negocio.</p></div>
+  <div class="card" style="background:var(--tint);border-color:transparent"><b>📘 Herramienta didáctica</b><p class="muted" style="margin:4px 0 0">Estos resultados son un ejercicio de aprendizaje, calculado solo con los datos que anotaste en tu planilla. No constituyen una recomendación, asesoría ni garantía de resultados: cada persona decide qué hacer con su negocio.</p></div>
 
   <details class="card" id="d-editar">
-    <summary>✏️ Corregir lo que leímos de tu ficha</summary>
-    <p class="muted" style="margin-top:8px">Dejamos escrito lo que entendimos de tu ficha. Cambia lo que esté mal; lo que no pudimos leer está marcado en naranja. Después toca «Recalcular».</p>
+    <summary>✏️ Corregir lo que leímos de tu planilla</summary>
+    <p class="muted" style="margin-top:8px">Dejamos escrito lo que entendimos de tu planilla. Cambia lo que esté mal; lo que no pudimos leer está marcado en naranja. Después toca «Recalcular».</p>
     <div id="ed"></div>
     <button class="btn prim" id="b-recalcular" style="margin-top:10px">🔄 Recalcular</button>
   </details>
@@ -203,16 +203,16 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <h2>🔁 ¿Otro producto?</h2>
     <p class="muted">Cada producto tiene su propia ficha y sus propios números.</p>
     <div class="stack">
-      <button class="btn sec" id="b-otra">📷 Sacar foto de otra ficha</button>
+      <button class="btn sec" id="b-otra">📷 Sacar foto de otra planilla</button>
       <button class="btn sec" id="b-otro-escrito">✏️ Escribir los números de otro producto</button>
-      <a class="btn sec" href="ficha-para-imprimir.pdf" download>⬇️ Descargar la ficha para imprimir</a>
+      <a class="btn sec" href="planilla-para-imprimir.pdf" download>⬇️ Descargar la planilla para imprimir</a>
     </div>
   </div>
 </section>
 
 <!-- ───────── 4. ERROR ───────── -->
 <section id="s-error" class="hide">
-  <h1 id="er-titulo">No pudimos leer tu ficha</h1>
+  <h1 id="er-titulo">No pudimos leer tu planilla</h1>
   <p id="er-texto"></p>
   <div class="stack">
     <button class="btn prim" id="er-otra">📷 Probar con otra foto</button>
@@ -224,11 +224,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <footer>
   <img src="logos-franja.png" alt="Gobierno Regional de Tarapacá, CORE Tarapacá, PUCV, NBC, IICA">
   <p id="f-proyecto"></p>
-  <p style="opacity:.7">Versión 23-nov-2026 a</p>
+  <p style="opacity:.7">Versión 25-nov-2026 a</p>
 </footer>
 
-<script src="calculo.js?v=20261124a"></script>
-<script src="config.js?v=20261124a"></script>
+<script src="calculo.js?v=20261125a"></script>
+<script src="config.js?v=20261125a"></script>
 <script>
 (function(){
 'use strict';
@@ -270,10 +270,11 @@ function reiniciar(){estado.foto=null;estado.id=nuevoId();estado.corrigio=false;
 $('b-cambiar').addEventListener('click',reiniciar);$('b-otra').addEventListener('click',reiniciar);$('er-otra').addEventListener('click',reiniciar);
 
 /* ───────── lectura con IA ───────── */
-var EJEMPLO={es_ficha:true,legible:'alta',nombre:'Doña Rosa (ejemplo)',localidad:'Tarapacá',producto:'Queso de cabra',unidad_venta:'queso',periodo:'mes',unidades_producidas:60,precio_venta_unidad:6000,
- insumos:[{insumo:'Leche y forraje',costo_por_unidad:1500},{insumo:'Cuajo y sal',costo_por_unidad:300},{insumo:'Gas',costo_por_unidad:200},{insumo:'Bolsa y etiqueta',costo_por_unidad:150}],total_A:2150,
- fijos_escondidos:[{concepto:'Transporte y combustible',monto:48000},{concepto:'Celular, veterinario, trámites',monto:20000},{concepto:'Agua, luz y gas',monto:12000},{concepto:'Desgaste de herramientas',monto:10000},{concepto:'Mi trabajo',monto:120000,dias:20,valor_dia:6000}],total_B:210000,alertas:[]};
-var frases=['Leyendo tu ficha…','Buscando tus números…','Haciendo las cuentas…','Preparando tus resultados…'];
+var EJEMPLO=C.desdePlanilla({es_ficha:true,legible:'alta',nombre:'Doña Rosa (ejemplo)',localidad:'Tarapacá',producto:'Queso de cabra',unidad_venta:'queso',periodo:'mes',unidades_producidas:60,precio_venta_unidad:6000,
+ costos:[{concepto:'Leche y forraje',monto:90000,tipo:'V'},{concepto:'Cuajo y sal',monto:18000,tipo:'V'},{concepto:'Gas',monto:12000,tipo:'V'},{concepto:'Bolsa y etiqueta',monto:9000,tipo:'V'},
+  {concepto:'Bencina para ir a ferias',monto:48000,tipo:'F'},{concepto:'Veterinario',monto:20000,tipo:'F'},{concepto:'Agua purificada',monto:12000,tipo:'F'},
+  {concepto:'Desgaste de ollas y prensa',monto:10000,tipo:'E'},{concepto:'Mi trabajo',monto:120000,dias:20,valor_dia:6000,tipo:'E'}],alertas:[]});
+var frases=['Leyendo tu planilla…','Buscando tus números…','Haciendo las cuentas…','Preparando tus resultados…'];
 function esperar(){var i=0;$('t-espera').textContent='Esto toma unos segundos. No cierres esta pantalla.';return setInterval(function(){i=(i+1)%frases.length;$('t-espera').textContent=frases[i]},3500)}
 function llamar(cuerpo){var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},70000);
   return fetch(CFG.URL_BACKEND,{method:'POST',body:JSON.stringify(Object.assign({clave:CFG.CLAVE||''},cuerpo)),signal:ctl.signal}).then(function(r){clearTimeout(t);return r.json()})}
@@ -283,12 +284,12 @@ $('b-ver').addEventListener('click',function(){
   llamar({tipo:'leer',imagen_base64:estado.foto.base64,tipo_mime:'image/jpeg'}).then(function(r){clearInterval(iv);
     if(!r.ok){
       if(r.error==='limite_diario')return mostrarError('Hoy se llenó el cupo','Muchas personas usaron la aplicación hoy. Intenta mañana o escribe tus números a mano.');
-      return mostrarError('No pudimos leer tu ficha','Puede ser la conexión o la foto. Prueba de nuevo o escribe tus números a mano.')}
-    var d=r.datos||{};
-    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu ficha','Saca la foto de la cara 1, la que dice «Mi producto estrella» arriba, entera y con buena luz. La cara 2 es solo una guía.');
+      return mostrarError('No pudimos leer tu planilla','Puede ser la conexión o la foto. Prueba de nuevo o escribe tus números a mano.')}
+    var d=C.desdePlanilla(r.datos||{});
+    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu planilla','Saca la foto de la hoja que dice «Mi planilla de costos» arriba, entera y con buena luz, sobre una mesa.');
     mostrar(d,false)}).catch(function(){clearInterval(iv);mostrarError('Sin conexión o muy lento','Revisa tu señal e intenta de nuevo. También puedes escribir tus números a mano.')})});
 $('b-ejemplo').addEventListener('click',function(){mostrar(JSON.parse(JSON.stringify(EJEMPLO)),true)});
-function vacia(){return {es_ficha:true,legible:'alta',producto:'',localidad:'',unidad_venta:'unidad',periodo:'mes',unidades_producidas:null,precio_venta_unidad:null,insumos:[{insumo:'',costo_por_unidad:null}],fijos_escondidos:[{concepto:'Transporte y combustible',monto:null},{concepto:'Agua, luz y gas',monto:null},{concepto:'Celular, veterinario, trámites',monto:null},{concepto:'Desgaste de herramientas',monto:null},{concepto:'Mi trabajo',monto:null},{concepto:'Trabajo de mi familia',monto:null}],alertas:[]}}
+function vacia(){return {es_ficha:true,legible:'alta',producto:'',localidad:'',unidad_venta:'unidad',periodo:'mes',unidades_producidas:null,precio_venta_unidad:null,insumos:[{insumo:'',costo_por_unidad:null}],fijos_escondidos:[{concepto:'Bencina o transporte',monto:null,tipo:'F'},{concepto:'Agua, luz y gas',monto:null,tipo:'F'},{concepto:'Celular, veterinario, trámites',monto:null,tipo:'F'},{concepto:'Desgaste de herramientas',monto:null,tipo:'E'},{concepto:'Mi trabajo',monto:null,tipo:'E'},{concepto:'Trabajo de mi familia',monto:null,tipo:'E'}],alertas:[]}}
 function escribir(){if(!estado.nombre&&!pedirNombre()){ver('s-inicio');return}estado.id=nuevoId();estado.corrigio=false;estado.origen='manual';mostrar(vacia(),false,true)}
 $('b-manual').addEventListener('click',escribir);$('er-manual').addEventListener('click',escribir);$('b-otro-escrito').addEventListener('click',escribir);
 function mostrarError(t,x){$('er-titulo').textContent=t;$('er-texto').textContent=x;ver('s-error')}
@@ -366,7 +367,7 @@ function iniciarSim(r,f,u){
     $('simres').innerHTML='Te quedaría<b style="color:'+col+'">'+clp(s.utilidad)+'</b>'+ico+' '+({rojo:'Vendes bajo tu costo',amarillo:'Ganas poco',verde:'Ganas bien'}[s.semaforo])+
       '<div class="muted" style="margin:4px 0 0">'+(s.equilibrio===null?'Con ese precio no alcanzas a cubrir tus gastos':'Con ese precio necesitas vender '+s.equilibrio+' '+C.pl(u,s.equilibrio)+' para no perder')+'</div>'};
   sp.oninput=go;su.oninput=go;go();$('b-simreset').onclick=function(){sp.value=r.P;su.value=r.U;go()}}
-function armarWsp(r,f,u){var t='Mi producto estrella'+(f.producto?': '+f.producto:'')+'\n';
+function armarWsp(r,f,u){var t="Mi planilla de costos"+(f.producto?': '+f.producto:'')+'\n';
   if(r.completo){t+='Me cuesta '+clp(r.costoUnidad)+' hacer 1 '+u+'\n';if(r.P)t+='Vendo a '+clp(r.P)+' → '+({rojo:'🔴 pierdo plata',amarillo:'🟡 gano poco',verde:'🟢 gano bien'}[r.semaforo])+'\n';if(r.equilibrio)t+='Debo vender al menos '+r.equilibrio+' '+C.pl(u,r.equilibrio)+' para no perder\n'}
   $('b-wsp').href='https://wa.me/?text='+encodeURIComponent(t)}
 $('b-imprimir').addEventListener('click',function(){window.print()});
@@ -415,9 +416,10 @@ function pintarEditor(f){
    '<div id="x-mesesw" class="'+(f.periodo==='temporada'?'':'hide')+'">'+campo('x-meses','Meses que dura la temporada',f.meses_temporada,'number')+'</div>'+
    campo('x-uds','Unidades que produzco en ese periodo',f.unidades_producidas,'number',f.unidades_producidas==null)+
    campo('x-precio','Precio al que vendo hoy cada unidad ($)',f.precio_venta_unidad,'number',f.precio_venta_unidad==null)+
-   '<div class="sec-ed">2 · Lo que gasto por cada unidad</div><div id="x-ins"></div><button class="btn sec" style="min-height:48px;font-size:16px" id="x-addi" type="button">+ Agregar insumo</button>'+
-   '<div class="sec-ed">3 · Lo que pago igual y lo que no anoto (en el periodo)</div><div id="x-fij"></div><button class="btn sec" style="min-height:48px;font-size:16px" id="x-addf" type="button">+ Agregar gasto</button>';
+   '<div class="sec-ed">2 · Costos V: lo que cambia si produzco más</div><div id="x-ins"></div><button class="btn sec" style="min-height:48px;font-size:16px" id="x-addi" type="button">+ Agregar insumo</button>'+
+   '<div class="sec-ed">3 · Costos F y E: lo que pago igual y lo que no anoto</div><div id="x-fij"></div><button class="btn sec" style="min-height:48px;font-size:16px" id="x-addf" type="button">+ Agregar gasto</button>';
   $('ed').innerHTML=h;
+  $('x-uds').oninput=function(){[].forEach.call($('x-ins').children,autoCosto)};
   $('x-per').onchange=function(){$('x-mesesw').classList.toggle('hide',this.value!=='temporada')};
   (f.insumos&&f.insumos.length?f.insumos:[{}]).forEach(function(r){addInsumo(r)});
   (f.fijos_escondidos&&f.fijos_escondidos.length?f.fijos_escondidos:[{}]).forEach(function(r){addFijo(r)});
@@ -425,17 +427,19 @@ function pintarEditor(f){
 }
 function quitar(card){var b=document.createElement('button');b.type='button';b.className='quitar';b.textContent='✕';b.setAttribute('aria-label','Quitar');b.onclick=function(){card.remove()};card.appendChild(b)}
 function addInsumo(r){var d=document.createElement('div');d.className='fcard';d.dataset.tipo='insumo';
-  var costo=C.costoInsumo(r),dud=costo===null;
-  d.innerHTML='<label>Insumo</label><input type="text" class="i-n" placeholder="Ej.: saco de guano" value="'+esc(r.insumo||'')+'">'+
-   '<div class="dos"><div><label>Cuánto pago ($)</label><input type="number" inputmode="numeric" class="i-p" value="'+val(r.cuanto_pago)+'"></div><div><label>Alcanza para (unidades)</label><input type="number" inputmode="numeric" class="i-a" value="'+val(r.alcanza_para)+'"></div></div>'+
-   '<label>Costo por unidad ($)</label><input type="number" inputmode="numeric" class="i-c'+(dud?' dudoso':'')+'" value="'+val(costo===null?null:Math.round(costo))+'">'+(dud?'<div class="nota-dud">No pudimos leer este monto: complétalo</div>':'');
-  var p=d.querySelector('.i-p'),a=d.querySelector('.i-a'),c=d.querySelector('.i-c');
-  var auto=function(){var P=num(p.value),A=num(a.value);if(P!==null&&A>0){c.value=Math.round(P/A);c.classList.remove('dudoso')}};p.oninput=auto;a.oninput=auto;
+  var costo=C.costoInsumo(r),dud=costo===null&&r.cuanto_pago==null;
+  d.innerHTML='<label>Gasto V (cambia si produzco más)</label><input type="text" class="i-n" placeholder="Ej.: saco de guano" value="'+esc(r.insumo||'')+'">'+
+   '<label>Lo que gasté en todo el periodo ($)</label><input type="number" inputmode="numeric" class="i-p'+(dud?' dudoso':'')+'" value="'+val(r.cuanto_pago)+'">'+
+   '<label>Por cada unidad ($) <span class="muted" style="font-size:12px">(se calcula solo)</span></label><input type="number" inputmode="numeric" class="i-c" value="'+val(costo===null?null:Math.round(costo))+'">'+(dud?'<div class="nota-dud">No pudimos leer este monto: complétalo</div>':'');
+  var p=d.querySelector('.i-p');p.oninput=function(){autoCosto(d)};
   quitar(d);$('x-ins').appendChild(d)}
+function autoCosto(d){var U=num($('x-uds').value),P=num(d.querySelector('.i-p').value);if(P!==null&&U>0){d.querySelector('.i-c').value=Math.round(P/U);d.querySelector('.i-p').classList.remove('dudoso')}}
 function addFijo(r){var d=document.createElement('div');d.className='fcard';d.dataset.tipo='fijo';
   var esTrab=/trabaj/i.test(r.concepto||'')&&!/famil/i.test(r.concepto||''),dud=(r.monto==null||r.monto===0)&&!!(r.concepto);
+  var tp=r.tipo||(/trabaj|famil|desgast/i.test(r.concepto||'')?'E':'F');
   d.innerHTML='<label>Gasto</label><input type="text" class="f-n" placeholder="Ej.: agua, bencina…" value="'+esc(r.concepto||'')+'">'+
-   '<label>Monto en el periodo ($)</label><input type="number" inputmode="numeric" class="f-m'+(dud?' dudoso':'')+'" value="'+val(r.monto)+'">'+
+   '<label>Tipo</label><select class="f-t"><option value="F"'+(tp==='F'?' selected':'')+'>F · Lo pago igual</option><option value="E"'+(tp==='E'?' selected':'')+'>E · No lo anoto (mi trabajo, desgaste)</option></select>'+
+   '<label>Monto en todo el periodo ($)</label><input type="number" inputmode="numeric" class="f-m'+(dud?' dudoso':'')+'" value="'+val(r.monto)+'">'+
    (esTrab?'<div class="dos"><div><label>Días que trabajo</label><input type="number" inputmode="numeric" class="f-d" value="'+val(r.dias)+'"></div><div><label>Valor de mi día ($)</label><input type="number" inputmode="numeric" class="f-v" value="'+val(r.valor_dia)+'"></div></div><div class="muted" style="font-size:13px">Si anotas días y valor del día, calculamos el monto.</div>':'');
   var m=d.querySelector('.f-m'),dd=d.querySelector('.f-d'),vv=d.querySelector('.f-v');
   if(dd){var auto=function(){var x=num(dd.value),y=num(vv.value);if(x!==null&&y!==null){m.value=Math.round(x*y);m.classList.remove('dudoso')}};dd.oninput=auto;vv.oninput=auto}
@@ -443,8 +447,8 @@ function addFijo(r){var d=document.createElement('div');d.className='fcard';d.da
 function leerEditor(){var f=estado.ficha;
   f.producto=$('x-prod').value;f.localidad=$('x-loc').value;f.unidad_venta=$('x-uni').value||'unidad';f.periodo=$('x-per').value;f.meses_temporada=num($('x-meses')&&$('x-meses').value);
   f.unidades_producidas=num($('x-uds').value);f.precio_venta_unidad=num($('x-precio').value);
-  f.insumos=[].map.call($('x-ins').children,function(d){var q=function(s){return d.querySelector(s).value};return {insumo:q('.i-n'),cuanto_pago:num(q('.i-p')),alcanza_para:num(q('.i-a')),costo_por_unidad:num(q('.i-c'))}}).filter(function(r){return r.insumo||r.costo_por_unidad!==null});
-  f.fijos_escondidos=[].map.call($('x-fij').children,function(d){var g=function(s){var e=d.querySelector(s);return e?e.value:null};return {concepto:g('.f-n'),monto:num(g('.f-m')),dias:num(g('.f-d')),valor_dia:num(g('.f-v'))}}).filter(function(r){return r.concepto||r.monto!==null});
+  f.insumos=[].map.call($('x-ins').children,function(d){var q=function(s){return d.querySelector(s).value};return {insumo:q('.i-n'),cuanto_pago:num(q('.i-p')),alcanza_para:null,costo_por_unidad:num(q('.i-c'))}}).filter(function(r){return r.insumo||r.costo_por_unidad!==null||r.cuanto_pago!==null});
+  f.fijos_escondidos=[].map.call($('x-fij').children,function(d){var g=function(s){var e=d.querySelector(s);return e?e.value:null};return {concepto:g('.f-n'),tipo:g('.f-t')||'F',monto:num(g('.f-m')),dias:num(g('.f-d')),valor_dia:num(g('.f-v'))}}).filter(function(r){return r.concepto||r.monto!==null});
   f.total_A=null;f.total_B=null;f.alertas=[];f.legible='alta'}
 $('b-recalcular').addEventListener('click',function(){leerEditor();estado.corrigio=true;recalcular();window.scrollTo({top:0,behavior:'smooth'})});
 $('b-corregir').addEventListener('click',function(){var d=$('d-editar');d.open=true;setTimeout(function(){d.scrollIntoView({behavior:'smooth',block:'start'})},60)});
@@ -455,7 +459,7 @@ function registrar(primera){
   var f=estado.ficha,r=estado.res,m=estado.met||{};
   var pay={tipo:'registrar',id:estado.id,nombre:estado.nombre,fono:estado.fono,grupo:!!estado.grupo,origen:estado.origen,corrigio:estado.corrigio,
     ficha:{localidad:f.localidad,producto:f.producto,unidad_venta:f.unidad_venta,periodo:f.periodo,meses_temporada:f.meses_temporada,unidades_producidas:f.unidades_producidas,precio_venta_unidad:f.precio_venta_unidad,
-      insumos:r.insumos,fijos_escondidos:f.fijos_escondidos&&f.fijos_escondidos.map(function(x){return {concepto:x.concepto,monto:x.monto,dias:x.dias,valor_dia:x.valor_dia}})},
+      insumos:r.insumos,fijos_escondidos:f.fijos_escondidos&&f.fijos_escondidos.map(function(x){return {concepto:x.concepto,tipo:x.tipo,monto:x.monto,dias:x.dias,valor_dia:x.valor_dia}})},
     resultado:{A:r.A,B:r.B,U:r.U,P:r.P,costoUnidad:r.costoUnidad,equilibrio:r.equilibrio,utilidad:r.utilidad,semaforo:r.semaforo,trabajoIncluido:r.trabajoIncluido},
     metricas:{ingresos:m.ingresos,costoTotal:m.costoTotal,utilidad:m.utilidad,centavosPorCien:m.centavosPorCien,pcInsumo:m.pcGrupos&&m.pcGrupos.insumo,pcFijo:m.pcGrupos&&m.pcGrupos.fijo,pcEscondido:m.pcGrupos&&m.pcGrupos.escondido}};
   llamar(pay).catch(function(){})}

@@ -14,6 +14,33 @@
     return (p !== null && a !== null && a > 0) ? p / a : null;
   }
 
+  /* La planilla de costos (única hoja del taller) trae una sola lista de costos, cada uno marcado V, F o E, con el monto de TODO el
+   * periodo. Aquí se pasa a la estructura que usa el cálculo: V → insumos (monto ÷ unidades producidas = costo por unidad);
+   * F y E → gastos que se pagan una vez al periodo. Entrada: {costos:[{concepto, monto, tipo:'V'|'F'|'E', dias, valor_dia}], unidades_producidas, …}. */
+  var TIPO_E = /trabaj|famil|mano de obra|desgast/i;
+  function desdePlanilla(d) {
+    d = d || {};
+    if (!Array.isArray(d.costos)) return d;
+    var U = num(d.unidades_producidas), alertas = (d.alertas || []).slice();
+    d.insumos = []; d.fijos_escondidos = [];
+    d.costos.forEach(function (c) {
+      if (!c || (num(c.monto) === null && !c.concepto)) return;
+      var t = String(c.tipo || '').toUpperCase();
+      if (t !== 'V' && t !== 'F' && t !== 'E') {
+        t = TIPO_E.test(c.concepto || '') ? 'E' : 'F';
+        if (num(c.monto) !== null) alertas.push('No se marcó V, F o E en «' + (c.concepto || 'un gasto') + '»: lo puse como ' + (t === 'E' ? 'escondido' : 'fijo') + '.');
+      }
+      if (t === 'V') {
+        var m = num(c.monto);
+        d.insumos.push({ insumo: c.concepto || 'Insumo', cuanto_pago: m, alcanza_para: null, costo_por_unidad: (m !== null && U !== null && U > 0) ? m / U : null });
+      } else {
+        d.fijos_escondidos.push({ concepto: c.concepto || 'Gasto', monto: num(c.monto), dias: num(c.dias), valor_dia: num(c.valor_dia), tipo: t });
+      }
+    });
+    d.total_A = null; d.total_B = null; d.alertas = alertas;
+    return d;
+  }
+
   /* ficha = datos leídos de la foto (ver esquema en apps-script/Codigo.gs). Devuelve resultados y avisos. */
   function calcular(f) {
     var avisos = [], faltan = [];
@@ -21,16 +48,16 @@
       .map(function (r) { return { insumo: r.insumo || 'Insumo', costo: costoInsumo(r) }; });
     var A = suma(insumos.map(function (r) { return r.costo; }));
     if (!insumos.length || insumos.every(function (r) { return r.costo === null; })) {
-      if (num(f.total_A) !== null) A = f.total_A; else { A = null; faltan.push('lo que gastas por cada unidad (paso 2)'); }
+      if (num(f.total_A) !== null) A = f.total_A; else { A = null; faltan.push('los gastos V de tu planilla (los que cambian si produces más)'); }
     } else if (num(f.total_A) !== null && Math.abs(f.total_A - A) > Math.max(2, A * 0.03)) {
       avisos.push('La suma que anotaste en A (' + clp(f.total_A) + ') no coincide con la suma de tus insumos (' + clp(Math.round(A)) + '). Usé la suma de tus insumos.');
     }
 
     var fijos = (f.fijos_escondidos || []).filter(function (r) { return r && num(r.monto) !== null && r.monto > 0; })
-      .map(function (r) { return { concepto: r.concepto || 'Gasto', monto: r.monto, trabajo: /trabaj|famil|mano de obra/i.test(r.concepto || '') }; });
+      .map(function (r) { return { concepto: r.concepto || 'Gasto', monto: r.monto, tipo: r.tipo || null, trabajo: /trabaj|famil|mano de obra/i.test(r.concepto || '') }; });
     var B = suma(fijos.map(function (r) { return r.monto; }));
     if (!fijos.length) {
-      if (num(f.total_B) !== null && f.total_B > 0) B = f.total_B; else { B = null; faltan.push('lo que pagas igual y lo que no anotas (paso 3)'); }
+      if (num(f.total_B) !== null && f.total_B > 0) B = f.total_B; else { B = null; faltan.push('los gastos F y E de tu planilla (lo que pagas igual y lo que no anotas)'); }
     } else if (num(f.total_B) !== null && Math.abs(f.total_B - B) > Math.max(2, B * 0.03)) {
       avisos.push('La suma que anotaste en B (' + clp(f.total_B) + ') no coincide con la suma de tus gastos (' + clp(Math.round(B)) + '). Usé la suma de tus gastos.');
     }
@@ -77,7 +104,7 @@
   function recomendaciones(r, f) {
     var out = [], u = (f && f.unidad_venta) ? f.unidad_venta : 'unidad';
     if (!r.completo) {
-      out.push({ icono: '✍️', titulo: 'Completemos tu ficha', texto: 'Para calcular tus números falta: ' + r.faltan.join(', ') + '. Puedes escribirlos abajo, en «Lo que leí de tu ficha», o llenar la ficha de nuevo y sacarle otra foto.' });
+      out.push({ icono: '✍️', titulo: 'Completemos tu planilla', texto: 'Para calcular tus números falta: ' + r.faltan.join(', ') + '. Puedes escribirlos abajo, en «Corregir lo que leímos de tu planilla», o completar la planilla y sacarle otra foto.' });
       return out;
     }
     if (r.P === null) {
@@ -87,7 +114,7 @@
     if (r.semaforo === 'rojo') {
       var perd = -r.ganUnidad;
       out.push({ icono: '🔴', titulo: 'Hoy vendes bajo tu costo', texto: 'Hacer cada ' + u + ' te cuesta ' + clp(r.costoUnidad) + ' y lo vendes a ' + clp(r.P) + ': la diferencia es de ' + clp(perd) + ' en contra por cada uno. Conocer este número es el primer paso para entender tu negocio.' });
-      out.push({ icono: '🏷️', titulo: 'Precios de referencia con tus costos de hoy', texto: 'El precio que cubre tu costo es ' + clp(redondeoArriba(r.precioMinimo)) + ' y el que deja 20% de ganancia es ' + clp(redondeoArriba(r.precio20)) + '. Son referencias calculadas con los números de tu ficha, no un precio sugerido.' });
+      out.push({ icono: '🏷️', titulo: 'Precios de referencia con tus costos de hoy', texto: 'El precio que cubre tu costo es ' + clp(redondeoArriba(r.precioMinimo)) + ' y el que deja 20% de ganancia es ' + clp(redondeoArriba(r.precio20)) + '. Son referencias calculadas con los números de tu planilla, no un precio sugerido.' });
     } else if (r.semaforo === 'amarillo') {
       var falta = r.precio20 - r.P;
       out.push({ icono: '🟡', titulo: 'Cubres tus costos, pero ganas poco', texto: 'Ganas ' + clp(r.ganUnidad) + ' por cada ' + u + ' (' + Math.round(r.margen * 100) + '% sobre el costo). El verde empieza en 20%: con tus costos de hoy, eso corresponde a un precio de referencia de ' + clp(redondeoArriba(r.precio20)) + ', es decir ' + clp(redondeoArriba(falta, 10)) + ' más por ' + u + ' que tu precio actual.' });
@@ -106,7 +133,7 @@
     }
     // lo que no anotas
     if (!r.trabajoIncluido) {
-      out.push({ icono: '🙈', titulo: 'No anotaste tu trabajo', texto: 'En el paso 3 no aparece tu trabajo ni el de tu familia. Sin contarlo, los números se ven mejores de lo que son. Si lo anotas (días trabajados y valor del día en tu zona), el cálculo queda más completo.' });
+      out.push({ icono: '🙈', titulo: 'No anotaste tu trabajo', texto: 'En tu planilla no aparece tu trabajo ni el de tu familia (las filas 11 y 12). Sin contarlo, los números se ven mejores de lo que son. Si lo anotas (días trabajados y valor del día en tu zona), el cálculo queda más completo.' });
     }
     // dónde está el gasto grande
     var partes = [];
@@ -137,7 +164,7 @@
     m.costoTotal = r.costoUnidad * r.U;                       // todo lo que gasta en el periodo (incluye su trabajo)
     m.partes = [];                                            // en qué se va el costo de 1 unidad
     r.insumos.forEach(function (x) { if (x.costo) m.partes.push({ n: x.insumo, v: x.costo, grupo: 'insumo' }); });
-    r.fijos.forEach(function (x) { m.partes.push({ n: x.concepto, v: x.monto / r.U, grupo: ESCONDIDO.test(x.concepto) ? 'escondido' : 'fijo' }); });
+    r.fijos.forEach(function (x) { m.partes.push({ n: x.concepto, v: x.monto / r.U, grupo: x.tipo === 'E' ? 'escondido' : (x.tipo === 'F' ? 'fijo' : (ESCONDIDO.test(x.concepto) ? 'escondido' : 'fijo')) }); });
     m.partes.sort(function (a, b) { return b.v - a.v; });
     var g = { insumo: 0, fijo: 0, escondido: 0 };
     m.partes.forEach(function (x) { g[x.grupo] += x.v; });
@@ -166,6 +193,6 @@
              equilibrio: D > 0 ? Math.ceil(r.B / D - 1e-9) : null, ingresos: precio * vendidas };
   }
 
-  var api = { metricas: metricas, simular: simular, pl: pl, calcular: calcular, recomendaciones: recomendaciones, clp: clp, costoInsumo: costoInsumo, redondeoArriba: redondeoArriba };
+  var api = { desdePlanilla: desdePlanilla, metricas: metricas, simular: simular, pl: pl, calcular: calcular, recomendaciones: recomendaciones, clp: clp, costoInsumo: costoInsumo, redondeoArriba: redondeoArriba };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.FichaCalc = api;
 })(typeof window !== 'undefined' ? window : this);

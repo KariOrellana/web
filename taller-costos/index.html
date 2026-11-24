@@ -102,6 +102,7 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 .fcard input{min-height:46px;font-size:17px;padding:8px 10px}
 .nota-dud{color:#B9740B;font-size:13.5px;font-weight:700;margin-top:4px}
 .sec-ed{font-size:17px;font-weight:800;color:var(--navy);margin:18px 0 6px;border-bottom:2px solid var(--line);padding-bottom:4px}
+#preview .pv{margin-bottom:10px}#preview .pv b{display:block;color:var(--navy);margin:4px 0}#preview .pv img{width:100%;border-radius:12px;border:2px solid var(--line)}
 @media print{header,footer,.noprint,.btn{display:none!important}body{background:#fff}.card{break-inside:avoid}}
 </style>
 </head>
@@ -117,7 +118,7 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <section id="s-inicio">
   <h1>Saca una foto de tu planilla y te cuento cómo te fue</h1>
   <ol class="pasos">
-    <li><span class="num">1</span><span><b>Saca la foto</b> de tu planilla de costos, la hoja que dice «Mi planilla de costos». Entera y con buena luz. Es la única hoja que necesitamos.</span></li>
+    <li><span class="num">1</span><span><b>Saca la foto</b> de tu planilla de costos (página 1), entera y con buena luz. Si usaste la <b>página 2</b>, le sacas otra foto después.</span></li>
     <li><span class="num">2</span><span><b>Espera unos segundos</b> mientras leemos tu planilla.</span></li>
     <li><span class="num">3</span><span><b>Mira tus resultados</b> y observaciones para reflexionar.</span></li>
   </ol>
@@ -131,13 +132,15 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <p class="aviso hide" id="e-nombre-falta" style="margin-bottom:0"></p>
   </div>
 
-  <div id="preview"><img id="vista" alt="Foto de tu planilla"></div>
+  <div id="preview"><div class="pv"><b>Página 1</b><img id="vista" alt="Foto de la página 1 de tu planilla"></div><div class="pv hide" id="pv2"><b>Página 2</b><img id="vista2" alt="Foto de la página 2 de tu planilla"></div></div>
 
   <div class="stack" style="margin-top:16px">
-    <label class="btn prim" id="b-camara" for="in-camara">📷 Sacar foto de mi planilla</label>
+    <label class="btn prim" id="b-camara" for="in-camara">📷 Sacar foto de mi planilla (página 1)</label>
     <input id="in-camara" type="file" accept="image/*" capture="environment" class="hide">
     <label class="btn sec" id="b-galeria" for="in-galeria">🖼️ Elegir una foto de mi teléfono</label>
     <input id="in-galeria" type="file" accept="image/*" class="hide">
+    <button class="btn sec hide" id="b-pag2">➕ Agregar la foto de la página 2 (si la usé)</button>
+    <button class="btn ghost hide" id="b-quitar2">Quitar la página 2</button>
     <button class="btn prim hide" id="b-ver">✅ Ver mis resultados</button>
     <button class="btn ghost hide" id="b-cambiar">Cambiar la foto</button>
     <button class="btn ghost" id="b-ejemplo">Ver un ejemplo (doña Rosa)</button>
@@ -224,11 +227,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <footer>
   <img src="logos-franja.png" alt="Gobierno Regional de Tarapacá, CORE Tarapacá, PUCV, NBC, IICA">
   <p id="f-proyecto"></p>
-  <p style="opacity:.7">Versión 25-nov-2026 a</p>
+  <p style="opacity:.7">Versión 25-nov-2026 b</p>
 </footer>
 
-<script src="calculo.js?v=20261125a"></script>
-<script src="config.js?v=20261125a"></script>
+<script src="calculo.js?v=20261125b"></script>
+<script src="config.js?v=20261125b"></script>
 <script>
 (function(){
 'use strict';
@@ -236,7 +239,7 @@ var C=window.FichaCalc, CFG=window.FICHA_CONFIG||{};
 var $=function(id){return document.getElementById(id)};
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var clp=C.clp;
-var estado={nombre:'',fono:'',ficha:null,res:null,met:null,foto:null,demo:false,origen:'foto',id:nuevoId(),corrigio:false};
+var estado={nombre:'',fono:'',ficha:null,res:null,met:null,foto:null,fotos:[],agregando:false,demo:false,origen:'foto',id:nuevoId(),corrigio:false};
 var DEMO=!CFG.URL_BACKEND||/[?&]demo=1/.test(location.search);
 function nuevoId(){var a=new Uint8Array(8);(window.crypto||{getRandomValues:function(x){for(var i=0;i<x.length;i++)x[i]=Math.random()*256}}).getRandomValues(a);return [].map.call(a,function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
 
@@ -259,13 +262,21 @@ function reducir(file){return new Promise(function(ok,mal){
     var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);
     URL.revokeObjectURL(url);var d=c.toDataURL('image/jpeg',0.86);ok({dataUrl:d,base64:d.split(',')[1]})};
   img.onerror=function(){mal(new Error('imagen'))};img.src=url})}
+function pintarFotos(){var f=estado.fotos;$('vista').src=f[0]?f[0].dataUrl:'';$('preview').style.display=f.length?'block':'none';
+  $('pv2').classList.toggle('hide',f.length<2);if(f[1])$('vista2').src=f[1].dataUrl;
+  $('b-ver').classList.toggle('hide',!f.length);$('b-cambiar').classList.toggle('hide',!f.length);
+  $('b-pag2').classList.toggle('hide',f.length!==1);$('b-quitar2').classList.toggle('hide',f.length<2);
+  ['b-camara','b-galeria','b-ejemplo','b-manual'].forEach(function(i){$(i).classList.toggle('hide',f.length>0)});
+  estado.foto=f[0]||null}
 function alElegir(e){var f=e.target.files&&e.target.files[0];if(!f)return;
-  reducir(f).then(function(r){estado.foto=r;$('vista').src=r.dataUrl;$('preview').style.display='block';
-    ['b-ver','b-cambiar'].forEach(function(i){$(i).classList.remove('hide')});['b-camara','b-galeria','b-ejemplo','b-manual'].forEach(function(i){$(i).classList.add('hide')});
+  reducir(f).then(function(r){if(estado.agregando&&estado.fotos.length){estado.fotos[1]=r}else{estado.fotos=[r]}estado.agregando=false;pintarFotos();
+    $('in-camara').value='';$('in-galeria').value='';
+    if(estado.fotos.length===2)setTimeout(function(){$('b-ver').scrollIntoView({behavior:'smooth',block:'center'})},200);
   }).catch(function(){mostrarError('No pudimos abrir esa foto','Prueba sacando otra foto o eligiendo otra de tu teléfono.')})}
+$('b-pag2').addEventListener('click',function(){estado.agregando=true;$('in-camara').click()});
+$('b-quitar2').addEventListener('click',function(){estado.fotos=estado.fotos.slice(0,1);pintarFotos()});
 $('in-camara').addEventListener('change',alElegir);$('in-galeria').addEventListener('change',alElegir);
-function reiniciar(){estado.foto=null;estado.id=nuevoId();estado.corrigio=false;estado.origen='foto';$('preview').style.display='none';$('in-camara').value='';$('in-galeria').value='';
-  ['b-ver','b-cambiar'].forEach(function(i){$(i).classList.add('hide')});['b-camara','b-galeria','b-ejemplo','b-manual'].forEach(function(i){$(i).classList.remove('hide')});
+function reiniciar(){estado.fotos=[];estado.foto=null;estado.agregando=false;estado.id=nuevoId();estado.corrigio=false;estado.origen='foto';$('in-camara').value='';$('in-galeria').value='';pintarFotos();
   ver('s-inicio')}
 $('b-cambiar').addEventListener('click',reiniciar);$('b-otra').addEventListener('click',reiniciar);$('er-otra').addEventListener('click',reiniciar);
 
@@ -279,14 +290,14 @@ function esperar(){var i=0;$('t-espera').textContent='Esto toma unos segundos. N
 function llamar(cuerpo){var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},70000);
   return fetch(CFG.URL_BACKEND,{method:'POST',body:JSON.stringify(Object.assign({clave:CFG.CLAVE||''},cuerpo)),signal:ctl.signal}).then(function(r){clearTimeout(t);return r.json()})}
 $('b-ver').addEventListener('click',function(){
-  if(!estado.foto||!pedirNombre())return;ver('s-analizando');var iv=esperar();estado.origen='foto';
+  if(!estado.fotos.length||!pedirNombre())return;ver('s-analizando');var iv=esperar();estado.origen='foto';
   if(DEMO){setTimeout(function(){clearInterval(iv);mostrar(JSON.parse(JSON.stringify(EJEMPLO)),true)},1800);return}
-  llamar({tipo:'leer',imagen_base64:estado.foto.base64,tipo_mime:'image/jpeg'}).then(function(r){clearInterval(iv);
+  llamar({tipo:'leer',imagenes:estado.fotos.map(function(x){return {base64:x.base64,mime:'image/jpeg'}})}).then(function(r){clearInterval(iv);
     if(!r.ok){
       if(r.error==='limite_diario')return mostrarError('Hoy se llenó el cupo','Muchas personas usaron la aplicación hoy. Intenta mañana o escribe tus números a mano.');
       return mostrarError('No pudimos leer tu planilla','Puede ser la conexión o la foto. Prueba de nuevo o escribe tus números a mano.')}
     var d=C.desdePlanilla(r.datos||{});
-    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu planilla','Saca la foto de la hoja que dice «Mi planilla de costos» arriba, entera y con buena luz, sobre una mesa.');
+    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu planilla','Saca la foto de la hoja que dice «Mi planilla de costos» arriba, entera y con buena luz, sobre una mesa. Si usaste la página 2, agrega también su foto.');
     mostrar(d,false)}).catch(function(){clearInterval(iv);mostrarError('Sin conexión o muy lento','Revisa tu señal e intenta de nuevo. También puedes escribir tus números a mano.')})});
 $('b-ejemplo').addEventListener('click',function(){mostrar(JSON.parse(JSON.stringify(EJEMPLO)),true)});
 function vacia(){return {es_ficha:true,legible:'alta',producto:'',localidad:'',unidad_venta:'unidad',periodo:'mes',unidades_producidas:null,precio_venta_unidad:null,insumos:[{insumo:'',costo_por_unidad:null}],fijos_escondidos:[{concepto:'Bencina o transporte',monto:null,tipo:'F'},{concepto:'Agua, luz y gas',monto:null,tipo:'F'},{concepto:'Celular, veterinario, trámites',monto:null,tipo:'F'},{concepto:'Desgaste de herramientas',monto:null,tipo:'E'},{concepto:'Mi trabajo',monto:null,tipo:'E'},{concepto:'Trabajo de mi familia',monto:null,tipo:'E'}],alertas:[]}}

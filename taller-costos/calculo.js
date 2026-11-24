@@ -1,4 +1,4 @@
-/* Cálculo y recomendaciones de la ficha «Mi producto estrella».
+/* Cálculo y observaciones didácticas de la ficha «Mi producto estrella».
  * Todo se calcula aquí (no con IA): así los números son siempre los mismos y se pueden recalcular
  * si la persona corrige algo. Funciona en el navegador (window.FichaCalc) y en Node (pruebas). */
 (function (root) {
@@ -72,40 +72,41 @@
   /* redondeo «amable» para sugerir precios: al múltiplo de 50 hacia arriba */
   function redondeoArriba(n, paso) { paso = paso || 50; return Math.ceil(n / paso - 1e-9) * paso; }
 
-  /* Recomendaciones simples, priorizadas, en lenguaje cotidiano. Cada una: {icono, titulo, texto}. */
+  /* «Para reflexionar»: observaciones neutras calculadas con los números de la persona.
+   * Son didácticas: describen lo que muestran los números, no aconsejan qué hacer. Cada una: {icono, titulo, texto}. */
   function recomendaciones(r, f) {
     var out = [], u = (f && f.unidad_venta) ? f.unidad_venta : 'unidad';
     if (!r.completo) {
-      out.push({ icono: '✍️', titulo: 'Completemos tu ficha', texto: 'Para calcular tus números me falta: ' + r.faltan.join(', ') + '. Puedes escribirlos abajo, en «Lo que leí de tu ficha», o llenar la ficha de nuevo y sacarle otra foto.' });
+      out.push({ icono: '✍️', titulo: 'Completemos tu ficha', texto: 'Para calcular tus números falta: ' + r.faltan.join(', ') + '. Puedes escribirlos abajo, en «Lo que leí de tu ficha», o llenar la ficha de nuevo y sacarle otra foto.' });
       return out;
     }
     if (r.P === null) {
-      out.push({ icono: '🏷️', titulo: 'Tu precio mínimo', texto: 'Cada ' + u + ' te cuesta ' + clp(r.costoUnidad) + '. No vendas más barato que eso. Para ganar 20%, véndelo a ' + clp(redondeoArriba(r.precio20)) + '.' });
+      out.push({ icono: '🏷️', titulo: 'Tu precio mínimo', texto: 'Cada ' + u + ' te cuesta ' + clp(r.costoUnidad) + ': ese es el precio mínimo, el que cubre tu costo. Con 20% de ganancia sobre el costo, el precio de referencia sería ' + clp(redondeoArriba(r.precio20)) + '.' });
       return out;
     }
     if (r.semaforo === 'rojo') {
       var perd = -r.ganUnidad;
-      out.push({ icono: '🔴', titulo: 'Hoy pierdes plata en cada ' + u, texto: 'Te cuesta ' + clp(r.costoUnidad) + ' hacer cada ' + u + ' y lo vendes a ' + clp(r.P) + ': pierdes ' + clp(perd) + ' por cada uno. Saberlo es una buena noticia, porque ahora puedes cambiarlo.' });
-      out.push({ icono: '🏷️', titulo: 'Sube tu precio o cambia de canal', texto: 'Para no perder, véndelo al menos a ' + clp(redondeoArriba(r.precioMinimo)) + '. Para ganar 20%, a ' + clp(redondeoArriba(r.precio20)) + '. Si tu comprador no paga eso, prueba otro canal: feria, venta directa o WhatsApp.' });
+      out.push({ icono: '🔴', titulo: 'Hoy vendes bajo tu costo', texto: 'Hacer cada ' + u + ' te cuesta ' + clp(r.costoUnidad) + ' y lo vendes a ' + clp(r.P) + ': la diferencia es de ' + clp(perd) + ' en contra por cada uno. Conocer este número es el primer paso para entender tu negocio.' });
+      out.push({ icono: '🏷️', titulo: 'Precios de referencia con tus costos de hoy', texto: 'El precio que cubre tu costo es ' + clp(redondeoArriba(r.precioMinimo)) + ' y el que deja 20% de ganancia es ' + clp(redondeoArriba(r.precio20)) + '. Son referencias calculadas con los números de tu ficha, no un precio sugerido.' });
     } else if (r.semaforo === 'amarillo') {
       var falta = r.precio20 - r.P;
-      out.push({ icono: '🟡', titulo: 'Cubres tus costos, pero ganas poco', texto: 'Ganas ' + clp(r.ganUnidad) + ' por cada ' + u + ' (' + Math.round(r.margen * 100) + '% sobre el costo). Para llegar al verde (20%) te faltan ' + clp(redondeoArriba(falta, 10)) + ' por ' + u + ': vendiéndolo a ' + clp(redondeoArriba(r.precio20)) + ' o bajando tus costos en ese monto.' });
+      out.push({ icono: '🟡', titulo: 'Cubres tus costos, pero ganas poco', texto: 'Ganas ' + clp(r.ganUnidad) + ' por cada ' + u + ' (' + Math.round(r.margen * 100) + '% sobre el costo). El verde empieza en 20%: con tus costos de hoy, eso corresponde a un precio de referencia de ' + clp(redondeoArriba(r.precio20)) + ', es decir ' + clp(redondeoArriba(falta, 10)) + ' más por ' + u + ' que tu precio actual.' });
     } else {
-      out.push({ icono: '🟢', titulo: '¡Buen trabajo! Tu precio te deja ganancia', texto: 'Ganas ' + clp(r.ganUnidad) + ' por cada ' + u + ' (' + Math.round(r.margen * 100) + '% sobre tu costo). Cuida ese margen: si suben tus insumos, vuelve a calcular.' });
+      out.push({ icono: '🟢', titulo: 'Tu precio cubre tu costo y deja ganancia', texto: 'Ganas ' + clp(r.ganUnidad) + ' por cada ' + u + ' (' + Math.round(r.margen * 100) + '% sobre tu costo). Si el precio de tus insumos cambia, estos números también cambian: los puedes volver a calcular.' });
     }
     // equilibrio
     if (r.equilibrio === null) {
-      out.push({ icono: '⚠️', titulo: 'Tus gastos por ' + u + ' son más altos que tu precio', texto: 'Cada ' + u + ' no alcanza ni para pagar lo que gastas en insumos (' + clp(r.A) + '), así que no logras cubrir tus gastos fijos vendiendo más. Primero hay que subir el precio o bajar esos insumos.' });
+      out.push({ icono: '⚖️', titulo: 'Tu gasto por ' + u + ' es mayor que tu precio', texto: 'Cada ' + u + ' no alcanza ni para pagar lo que gastas en insumos (' + clp(r.A) + '), así que vender más unidades no logra cubrir tus gastos fijos con estos números.' });
     } else if (r.equilibrio > r.U) {
-      out.push({ icono: '⚖️', titulo: 'Con lo que produces no alcanzas a cubrir tus gastos', texto: 'Necesitas vender ' + r.equilibrio + ' ' + pl(u, r.equilibrio) + ' para no perder y produces ' + r.U + '. Aunque vendas todo, quedas con pérdida. Mira tus gastos fijos o sube el precio.' });
+      out.push({ icono: '⚖️', titulo: 'Con lo que produces no alcanzas a cubrir tus gastos', texto: 'Para no perder se necesita vender ' + r.equilibrio + ' ' + pl(u, r.equilibrio) + ' y produces ' + r.U + '. Aunque se venda todo, el resultado queda en pérdida.' });
     } else if (r.colchon <= r.U * 0.1) {
-      out.push({ icono: '⚖️', titulo: 'Tu margen de seguridad es muy justo', texto: 'Necesitas vender ' + r.equilibrio + ' de los ' + r.U + ' ' + pl(u, r.U) + ' que produces para no perder. Si un mes vendes un poco menos, pierdes plata. Vender más o reducir gastos fijos te da tranquilidad.' });
+      out.push({ icono: '⚖️', titulo: 'Tu margen de seguridad es justo', texto: 'Para no perder se necesita vender ' + r.equilibrio + ' de los ' + r.U + ' ' + pl(u, r.U) + ' que produces. Si un mes se vende un poco menos, el resultado pasa a pérdida.' });
     } else {
       out.push({ icono: '⚖️', titulo: 'Tu punto de equilibrio: ' + r.equilibrio + ' ' + pl(u, r.equilibrio), texto: 'Desde el número ' + r.equilibrio + ' empiezas a ganar. Te sobran ' + r.colchon + ' de los ' + r.U + ' que produces: ese es tu margen de seguridad.' });
     }
     // lo que no anotas
     if (!r.trabajoIncluido) {
-      out.push({ icono: '🙈', titulo: 'No anotaste tu trabajo', texto: 'En el paso 3 no aparece tu trabajo ni el de tu familia. Sin contarlo, tus números se ven mejor de lo que son. Anota los días que trabajas y cuánto pagarías a un trabajador por día en tu zona, y vuelve a calcular.' });
+      out.push({ icono: '🙈', titulo: 'No anotaste tu trabajo', texto: 'En el paso 3 no aparece tu trabajo ni el de tu familia. Sin contarlo, los números se ven mejores de lo que son. Si lo anotas (días trabajados y valor del día en tu zona), el cálculo queda más completo.' });
     }
     // dónde está el gasto grande
     var partes = [];
@@ -114,16 +115,14 @@
     partes.sort(function (a, b) { return b.v - a.v; });
     if (partes.length) {
       var g = partes[0], pc = Math.round(g.v / r.costoUnidad * 100);
-      var consejo = g.tipo === 'insumo'
-        ? 'Compara precios de este insumo y, si puedes, cómpralo junto con otros productores: comprando en conjunto suele salir más barato.'
-        : (/trabaj|famil/i.test(g.n) ? 'Es normal: tu trabajo es parte del costo. Venderlo en mejor canal o más cantidad hace que ese costo se reparta mejor.' : 'Mira si puedes compartirlo con otros productores (transporte, arriendo, trámites) para repartir el gasto.');
-      out.push({ icono: '🔎', titulo: 'Tu gasto más grande: ' + g.n.toLowerCase(), texto: 'Pesa ' + clp(g.v) + ' en cada ' + u + ' (' + pc + '% de tu costo). ' + consejo });
+      var nota = (g.tipo !== 'insumo' && /trabaj|famil/i.test(g.n)) ? ' Es normal: tu trabajo es parte del costo.' : '';
+      out.push({ icono: '🔎', titulo: 'Tu gasto más grande: ' + g.n.toLowerCase(), texto: 'Pesa ' + clp(g.v) + ' en cada ' + u + ' (' + pc + '% de tu costo).' + nota });
     }
-    // vender más si los fijos pesan mucho
+    // peso de los gastos fijos
     if (r.C / r.costoUnidad > 0.5 && r.semaforo !== 'verde') {
-      out.push({ icono: '📦', titulo: 'Vender más te ayuda a repartir tus gastos fijos', texto: 'Más de la mitad de tu costo (' + clp(r.C) + ' por ' + u + ') son gastos que pagas igual. Cada ' + u + ' extra que vendes reparte mejor esos gastos y baja tu costo.' });
+      out.push({ icono: '📦', titulo: 'El peso de los gastos que pagas igual', texto: 'Más de la mitad de tu costo (' + clp(r.C) + ' por ' + u + ') son gastos que pagas igual. Por eso, la cantidad de unidades que se vende cambia mucho el costo de cada una.' });
     }
-    out.push({ icono: '📒', titulo: 'Tu tarea de estos 30 días', texto: 'Anota en tu libreta todo lo que entra y todo lo que sale. En la próxima visita recalculamos con tus datos reales. Después pasa estos números a tu Canvas: costos en el recuadro 8, ingresos en el 9 y utilidad en el 12.' });
+    out.push({ icono: '📒', titulo: 'Tarea del taller: 30 días de registro', texto: 'Anota en tu libreta todo lo que entra y todo lo que sale. En la próxima visita se recalcula con tus datos reales. Después pasa estos números a tu Canvas: costos en el recuadro 8, ingresos en el 9 y utilidad en el 12.' });
     return out;
   }
 

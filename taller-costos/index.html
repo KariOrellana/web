@@ -117,9 +117,9 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <section id="s-inicio">
   <h1>Saca una foto de tu ficha y te cuento cómo te fue</h1>
   <ol class="pasos">
-    <li><span class="num">1</span><span><b>Saca la foto</b> de la cara donde anotaste tus gastos (y si puedes, también la otra).</span></li>
+    <li><span class="num">1</span><span><b>Saca la foto</b> de la cara 1 de tu ficha, la que dice «Mi producto estrella». Es la única hoja que necesitamos.</span></li>
     <li><span class="num">2</span><span><b>Espera unos segundos</b> mientras leemos tu ficha.</span></li>
-    <li><span class="num">3</span><span><b>Mira tus resultados</b> y las ideas para ganar más.</span></li>
+    <li><span class="num">3</span><span><b>Mira tus resultados</b> y observaciones para reflexionar.</span></li>
   </ol>
 
   <div class="card" id="c-nombre">
@@ -127,6 +127,7 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <input id="i-nombre" type="text" autocomplete="name" placeholder="Escribe tu nombre">
     <label for="i-fono" style="font-size:17px;color:var(--navy);font-weight:700">Tu número de WhatsApp</label>
     <input id="i-fono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 …">
+    <label class="chk" for="i-grupo" style="background:var(--tint);border-radius:14px;padding:14px"><input id="i-grupo" type="checkbox"><span><b>💬 Quiero que me agreguen al grupo de WhatsApp del programa</b><br><span class="muted" style="font-size:15px">Es voluntario y puedo salirme cuando quiera. Mi grupo verá mi nombre y mi número. El equipo nunca envía enlaces ni pide claves. Si no la marco, sigo en el programa y recibo el material impreso.</span></span></label>
     <p class="aviso hide" id="e-nombre-falta" style="margin-bottom:0"></p>
   </div>
 
@@ -177,7 +178,8 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <button class="btn ghost" id="b-simreset">Volver a mis números</button>
   </div>
 
-  <div class="card"><h2>💡 Qué te recomendamos</h2><div id="r-recs"></div></div>
+  <div class="card" id="c-reflexionar"><h2>🔎 Para reflexionar</h2><p class="muted" style="margin:0 0 6px">Observaciones calculadas con los números que anotaste. Son para aprender y conversar.</p><div id="r-recs"></div></div>
+  <div class="card" style="background:var(--tint);border-color:transparent"><b>📘 Herramienta didáctica</b><p class="muted" style="margin:4px 0 0">Estos resultados son un ejercicio de aprendizaje, calculado solo con los datos que anotaste en tu ficha. No constituyen una recomendación, asesoría ni garantía de resultados: cada persona decide qué hacer con su negocio.</p></div>
 
   <details class="card" id="d-editar">
     <summary>✏️ Corregir lo que leímos de tu ficha</summary>
@@ -190,18 +192,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
     <h2>📤 Guardar o compartir mis resultados</h2>
     <div class="stack">
       <a class="btn sec" id="b-wsp" target="_blank" rel="noopener">💬 Enviármelo por WhatsApp</a>
+      <button class="btn sec" id="b-herr-wsp">💬 Enviar la herramienta didáctica por WhatsApp</button>
+      <button class="btn sec" id="b-descargar">⬇️ Descargar herramienta didáctica</button>
       <button class="btn sec" id="b-imprimir">🖨️ Guardar / imprimir mis resultados</button>
+      <p class="muted hide" id="e-descarga" style="margin:0"></p>
     </div>
-  </div>
-
-  <div class="card noprint" id="c-equipo">
-    <h2>🤝 ¿Quieres que el equipo te apoye?</h2>
-    <p class="muted">Si quieres, una persona del equipo revisará tus registros contigo y te ayudará a mejorar. Tú decides.</p>
-    <div class="stack" id="apoyo-botones">
-      <button class="btn prim" id="b-apoyo-si">✅ Sí, quiero que me apoyen</button>
-      <button class="btn sec" id="b-apoyo-no">No, gracias</button>
-    </div>
-    <p class="muted hide" id="e-gracias"></p>
   </div>
 
   <div class="card noprint">
@@ -229,11 +224,11 @@ input[type=range]{width:100%;height:44px;accent-color:var(--green)}
 <footer>
   <img src="logos-franja.png" alt="Gobierno Regional de Tarapacá, CORE Tarapacá, PUCV, NBC, IICA">
   <p id="f-proyecto"></p>
-  <p style="opacity:.7">Versión 13-nov-2026 f</p>
+  <p style="opacity:.7">Versión 23-nov-2026 a</p>
 </footer>
 
-<script src="calculo.js?v=20261113f"></script>
-<script src="config.js?v=20261113f"></script>
+<script src="calculo.js?v=20261124a"></script>
+<script src="config.js?v=20261124a"></script>
 <script>
 (function(){
 'use strict';
@@ -252,7 +247,7 @@ function pedirNombre(){var n=$('i-nombre').value.trim(),f=$('i-fono').value.trim
   if(!n&&dig<8)m='Escribe tu nombre y tu número de WhatsApp para continuar.';else if(!n)m='Escribe tu nombre para continuar.';else if(dig<8)m='Escribe tu número de WhatsApp (con todos sus dígitos) para continuar.';
   var av=$('e-nombre-falta');av.textContent=m;av.classList.toggle('hide',!m);
   if(m){(n?$('i-fono'):$('i-nombre')).focus();$('c-nombre').scrollIntoView({behavior:'smooth',block:'center'});return false}
-  estado.nombre=n;estado.fono=f;return true}
+  estado.nombre=n;estado.fono=f;estado.grupo=$('i-grupo').checked;return true}
 ['i-nombre','i-fono'].forEach(function(i){$(i).addEventListener('input',function(){$('e-nombre-falta').classList.add('hide')})});
 function ver(id){['s-inicio','s-analizando','s-resultados','s-error'].forEach(function(s){$(s).classList.toggle('hide',s!==id)});window.scrollTo(0,0)}
 
@@ -271,14 +266,14 @@ function alElegir(e){var f=e.target.files&&e.target.files[0];if(!f)return;
 $('in-camara').addEventListener('change',alElegir);$('in-galeria').addEventListener('change',alElegir);
 function reiniciar(){estado.foto=null;estado.id=nuevoId();estado.corrigio=false;estado.origen='foto';$('preview').style.display='none';$('in-camara').value='';$('in-galeria').value='';
   ['b-ver','b-cambiar'].forEach(function(i){$(i).classList.add('hide')});['b-camara','b-galeria','b-ejemplo','b-manual'].forEach(function(i){$(i).classList.remove('hide')});
-  apoyoReset();ver('s-inicio')}
+  ver('s-inicio')}
 $('b-cambiar').addEventListener('click',reiniciar);$('b-otra').addEventListener('click',reiniciar);$('er-otra').addEventListener('click',reiniciar);
 
 /* ───────── lectura con IA ───────── */
 var EJEMPLO={es_ficha:true,legible:'alta',nombre:'Doña Rosa (ejemplo)',localidad:'Tarapacá',producto:'Queso de cabra',unidad_venta:'queso',periodo:'mes',unidades_producidas:60,precio_venta_unidad:6000,
  insumos:[{insumo:'Leche y forraje',costo_por_unidad:1500},{insumo:'Cuajo y sal',costo_por_unidad:300},{insumo:'Gas',costo_por_unidad:200},{insumo:'Bolsa y etiqueta',costo_por_unidad:150}],total_A:2150,
  fijos_escondidos:[{concepto:'Transporte y combustible',monto:48000},{concepto:'Celular, veterinario, trámites',monto:20000},{concepto:'Agua, luz y gas',monto:12000},{concepto:'Desgaste de herramientas',monto:10000},{concepto:'Mi trabajo',monto:120000,dias:20,valor_dia:6000}],total_B:210000,alertas:[]};
-var frases=['Leyendo tu ficha…','Buscando tus números…','Haciendo las cuentas…','Preparando tus recomendaciones…'];
+var frases=['Leyendo tu ficha…','Buscando tus números…','Haciendo las cuentas…','Preparando tus resultados…'];
 function esperar(){var i=0;$('t-espera').textContent='Esto toma unos segundos. No cierres esta pantalla.';return setInterval(function(){i=(i+1)%frases.length;$('t-espera').textContent=frases[i]},3500)}
 function llamar(cuerpo){var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},70000);
   return fetch(CFG.URL_BACKEND,{method:'POST',body:JSON.stringify(Object.assign({clave:CFG.CLAVE||''},cuerpo)),signal:ctl.signal}).then(function(r){clearTimeout(t);return r.json()})}
@@ -290,11 +285,11 @@ $('b-ver').addEventListener('click',function(){
       if(r.error==='limite_diario')return mostrarError('Hoy se llenó el cupo','Muchas personas usaron la aplicación hoy. Intenta mañana o escribe tus números a mano.');
       return mostrarError('No pudimos leer tu ficha','Puede ser la conexión o la foto. Prueba de nuevo o escribe tus números a mano.')}
     var d=r.datos||{};
-    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu ficha','Busca la hoja «Mi producto estrella» y sácale la foto entera, con buena luz.');
+    if(d.es_ficha===false)return mostrarError('Esa foto no parece tu ficha','Saca la foto de la cara 1, la que dice «Mi producto estrella» arriba, entera y con buena luz. La cara 2 es solo una guía.');
     mostrar(d,false)}).catch(function(){clearInterval(iv);mostrarError('Sin conexión o muy lento','Revisa tu señal e intenta de nuevo. También puedes escribir tus números a mano.')})});
 $('b-ejemplo').addEventListener('click',function(){mostrar(JSON.parse(JSON.stringify(EJEMPLO)),true)});
 function vacia(){return {es_ficha:true,legible:'alta',producto:'',localidad:'',unidad_venta:'unidad',periodo:'mes',unidades_producidas:null,precio_venta_unidad:null,insumos:[{insumo:'',costo_por_unidad:null}],fijos_escondidos:[{concepto:'Transporte y combustible',monto:null},{concepto:'Agua, luz y gas',monto:null},{concepto:'Celular, veterinario, trámites',monto:null},{concepto:'Desgaste de herramientas',monto:null},{concepto:'Mi trabajo',monto:null},{concepto:'Trabajo de mi familia',monto:null}],alertas:[]}}
-function escribir(){if(!estado.nombre&&!pedirNombre()){ver('s-inicio');return}estado.id=nuevoId();estado.corrigio=false;estado.origen='manual';apoyoReset();mostrar(vacia(),false,true)}
+function escribir(){if(!estado.nombre&&!pedirNombre()){ver('s-inicio');return}estado.id=nuevoId();estado.corrigio=false;estado.origen='manual';mostrar(vacia(),false,true)}
 $('b-manual').addEventListener('click',escribir);$('er-manual').addEventListener('click',escribir);$('b-otro-escrito').addEventListener('click',escribir);
 function mostrarError(t,x){$('er-titulo').textContent=t;$('er-texto').textContent=x;ver('s-error')}
 
@@ -321,7 +316,7 @@ function recalcular(primera){
     var tit={rojo:'Hoy vendes bajo tu costo',amarillo:'Cubres tus costos, pero ganas poco',verde:'Tu precio te deja ganancia'}[r.semaforo];
     var sub={rojo:'Pierdes '+clp(-r.ganUnidad)+' por cada '+u,amarillo:'Ganas '+clp(r.ganUnidad)+' por cada '+u+' (menos de 20%)',verde:'Ganas '+clp(r.ganUnidad)+' por cada '+u+' (20% o más)'}[r.semaforo];
     $('r-semaforo').innerHTML='<div class="semaforo '+r.semaforo+'"><div class="luz">'+{rojo:'🔴',amarillo:'🟡',verde:'🟢'}[r.semaforo]+'</div><div><b>'+tit+'</b>'+sub+'</div></div>';
-    $('r-tiles').innerHTML=tile('Lo que te cuesta hacer 1 '+u,clp(r.costoUnidad))+tile('Tu precio mínimo (no vendas más barato)',clp(r.precioMinimo),'dest')+
+    $('r-tiles').innerHTML=tile('Lo que te cuesta hacer 1 '+u,clp(r.costoUnidad))+tile('Tu precio mínimo (el que cubre tu costo)',clp(r.precioMinimo),'dest')+
       tile('Para no perder, vende al menos',(r.equilibrio===null?'—':r.equilibrio+' '+C.pl(u,r.equilibrio)))+
       tile('Lo que te queda si vendes todo',clp(r.utilidad),r.utilidad<0?'neg':'');
     pintarMetricas(r,m,u);pintarComposicion(r,m,u);pintarBarra(r,u);iniciarSim(r,f,u)}
@@ -341,7 +336,7 @@ function pintarMetricas(r,m,u){
   if(m.utilidadMensual!==undefined)k.push(kpi('Lo que te queda, por mes',clp(m.utilidadMensual),m.utilidadMensual<0?'neg':''));
   k.push(kpi('Si vendes 10% menos, te quedaría',clp(m.menos10),m.menos10<0?'neg':''));
   k.push(kpi('Si subes el precio $100 (y vendes lo mismo), ganas de más',clp(m.mas100),'pos'));
-  if(m.paraVerde>0)k.push(kpi('Para llegar al verde, sube el precio o baja el costo',clp(C.redondeoArriba(m.paraVerde,10))+' por '+u));
+  if(m.paraVerde>0)k.push(kpi('Para llegar al verde (20%) falta, por unidad',clp(C.redondeoArriba(m.paraVerde,10))+' por '+u));
   $('kpis').innerHTML=k.join('');
 }
 function pintarComposicion(r,m,u){
@@ -375,6 +370,38 @@ function armarWsp(r,f,u){var t='Mi producto estrella'+(f.producto?': '+f.product
   if(r.completo){t+='Me cuesta '+clp(r.costoUnidad)+' hacer 1 '+u+'\n';if(r.P)t+='Vendo a '+clp(r.P)+' → '+({rojo:'🔴 pierdo plata',amarillo:'🟡 gano poco',verde:'🟢 gano bien'}[r.semaforo])+'\n';if(r.equilibrio)t+='Debo vender al menos '+r.equilibrio+' '+C.pl(u,r.equilibrio)+' para no perder\n'}
   $('b-wsp').href='https://wa.me/?text='+encodeURIComponent(t)}
 $('b-imprimir').addEventListener('click',function(){window.print()});
+/* Descargar la herramienta didáctica: un solo archivo .html con los resultados (y el simulador) que se puede guardar y enviar */
+function descargarHerramienta(modo){
+  var msg=$('e-descarga');
+  function aviso(t){msg.textContent=t;msg.classList.remove('hide')}
+  var f=estado.ficha;if(!f||!estado.res){return}
+  var r=estado.res,u=f.unidad_venta||'unidad',conSim=!!(r.completo&&r.P);
+  var sec=$('s-resultados').cloneNode(true);
+  [].forEach.call(sec.querySelectorAll('.noprint,#b-corregir,#d-editar,#r-faltan'),function(e){e.parentNode&&e.parentNode.removeChild(e)});
+  var nombre=(estado.nombre||f.nombre||'').trim(),prod=(f.producto||'producto').trim();
+  var css=document.querySelector('style').textContent;
+  var fuentes='<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
+  var cabecera='<header><div><small>Taller ¿Cuánto me cuesta producir?</small><b>Mi herramienta didáctica</b></div></header>';
+  var pie='<footer><p>'+esc((CFG.NOMBRE_PROYECTO||'')+(CFG.CODIGO_BIP?' · Código BIP '+CFG.CODIGO_BIP:''))+'</p><p style="opacity:.7">Herramienta didáctica generada el '+new Date().toLocaleDateString('es-CL')+'</p></footer>';
+  function armar(calcSrc){
+    var sim=conSim&&calcSrc;
+    if(!sim){var s=sec.querySelector('#r-sim');if(s&&s.parentNode)s.parentNode.removeChild(s)}
+    var script=sim?'<script>'+calcSrc.replace(/<\/script/gi,'<\\/script')+'<\/script><script>(function(){var C=window.FichaCalc,$=function(id){return document.getElementById(id)},clp=C.clp;var F='+JSON.stringify(f).replace(/</g,'\\u003c')+';var r=C.calcular(F);'+iniciarSim.toString()+';iniciarSim(r,F,'+JSON.stringify(u)+')})()<\/script>':'';
+    var html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mi herramienta didáctica'+(prod?' · '+esc(prod):'')+'</title>'+fuentes+'<style>'+css+'</style></head><body>'+cabecera+'<main>'+sec.outerHTML.replace(/\sclass="hide"/,'')+'</main>'+pie+script+'</body></html>';
+    var base='Mi_herramienta_didactica_'+prod.replace(/[^\wáéíóúñÁÉÍÓÚÑ]+/g,'_').replace(/^_+|_+$/g,'')+'.html';
+    var arch=new Blob([html],{type:'text/html;charset=utf-8'});
+    function bajar(){var url=URL.createObjectURL(arch),a=document.createElement('a');a.href=url;a.download=base;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url)},1500)}
+    if(modo==='wsp'){
+      var fl=null;try{fl=new File([arch],base,{type:'text/html'})}catch(e){}
+      if(fl&&navigator.canShare&&navigator.canShare({files:[fl]})){
+        navigator.share({files:[fl],title:'Mi herramienta didáctica',text:'Mi herramienta didáctica: mis resultados del taller ¿Cuánto me cuesta producir?'}).then(function(){aviso('Listo. Si elegiste WhatsApp, el archivo ya va en camino.')},function(er){if(!er||er.name!=='AbortError')aviso('No se pudo abrir WhatsApp desde aquí. Usa «Descargar herramienta didáctica» y envía el archivo desde WhatsApp con el clip 📎 → Documento.')});
+        return}
+      bajar();aviso('Se descargó el archivo «'+base+'». Para enviarlo por WhatsApp: abre el chat, toca el clip 📎, elige «Documento» y busca ese archivo.');return}
+    bajar();
+    aviso(sim?'Listo: se descargó un archivo .html con tus resultados y el simulador. Puedes guardarlo o enviarlo por WhatsApp o correo.':'Listo: se descargó un archivo .html con tus resultados. Puedes guardarlo o enviarlo por WhatsApp o correo.')}
+  fetch('calculo.js').then(function(x){if(!x.ok)throw 0;return x.text()}).then(armar,function(){armar('')});
+}
+$('b-descargar').addEventListener('click',function(){descargarHerramienta()});$('b-herr-wsp').addEventListener('click',function(){descargarHerramienta('wsp')});
 
 /* ───────── corrección guiada: el editor trae lo que se leyó ───────── */
 function num(v){if(v===''||v==null)return null;var n=parseFloat(String(v).replace(/\./g,'').replace(',','.'));return isFinite(n)?n:null}
@@ -426,19 +453,12 @@ $('b-corregir').addEventListener('click',function(){var d=$('d-editar');d.open=t
 function registrar(primera){
   if(DEMO||estado.demo||!CFG.URL_BACKEND||!estado.res||!estado.res.completo)return;
   var f=estado.ficha,r=estado.res,m=estado.met||{};
-  var pay={tipo:'registrar',id:estado.id,nombre:estado.nombre,fono:estado.fono,origen:estado.origen,corrigio:estado.corrigio,
+  var pay={tipo:'registrar',id:estado.id,nombre:estado.nombre,fono:estado.fono,grupo:!!estado.grupo,origen:estado.origen,corrigio:estado.corrigio,
     ficha:{localidad:f.localidad,producto:f.producto,unidad_venta:f.unidad_venta,periodo:f.periodo,meses_temporada:f.meses_temporada,unidades_producidas:f.unidades_producidas,precio_venta_unidad:f.precio_venta_unidad,
       insumos:r.insumos,fijos_escondidos:f.fijos_escondidos&&f.fijos_escondidos.map(function(x){return {concepto:x.concepto,monto:x.monto,dias:x.dias,valor_dia:x.valor_dia}})},
     resultado:{A:r.A,B:r.B,U:r.U,P:r.P,costoUnidad:r.costoUnidad,equilibrio:r.equilibrio,utilidad:r.utilidad,semaforo:r.semaforo,trabajoIncluido:r.trabajoIncluido},
     metricas:{ingresos:m.ingresos,costoTotal:m.costoTotal,utilidad:m.utilidad,centavosPorCien:m.centavosPorCien,pcInsumo:m.pcGrupos&&m.pcGrupos.insumo,pcFijo:m.pcGrupos&&m.pcGrupos.fijo,pcEscondido:m.pcGrupos&&m.pcGrupos.escondido}};
   llamar(pay).catch(function(){})}
-function apoyoReset(){$('e-gracias').classList.add('hide');$('apoyo-botones').classList.remove('hide')}
-function responderApoyo(quiere){
-  var fin=function(){$('apoyo-botones').classList.add('hide');var g=$('e-gracias');g.textContent=quiere?'✅ ¡Listo! El equipo te contactará por WhatsApp. Gracias.':'Gracias por avisarnos. Si cambias de opinión, puedes volver a esta página cuando quieras.';g.classList.remove('hide')};
-  if(DEMO||estado.demo||!CFG.URL_BACKEND){fin();return}
-  llamar({tipo:'apoyo',id:estado.id,quiere:!!quiere}).then(function(x){if(x.ok)fin();else throw 0}).catch(function(){alert('No pudimos guardar tu respuesta. Intenta de nuevo.')})}
-$('b-apoyo-si').addEventListener('click',function(){responderApoyo(true)});
-$('b-apoyo-no').addEventListener('click',function(){responderApoyo(false)});
 
 window.__ficha={mostrar:mostrar,EJEMPLO:EJEMPLO};
 if(/[?&]ejemplo=1/.test(location.search))mostrar(JSON.parse(JSON.stringify(EJEMPLO)),true);
